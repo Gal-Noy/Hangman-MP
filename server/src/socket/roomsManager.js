@@ -38,7 +38,8 @@ const createRoom = (data, ws) => {
       })
     );
 
-    broadcastRoomsListToLobby(); // Broadcast to all clients
+    room.updateRoomInfoPlayers(); // Broadcast to clients in the room
+    broadcastRoomsListToLobby(); // Broadcast to clients in the lobby
   } catch (error) {
     console.log("Create room failed.", error);
   }
@@ -60,7 +61,8 @@ const joinRoom = (data, ws) => {
       })
     );
 
-    broadcastRoomsListToLobby(); // Broadcast to all clients
+    room.updateRoomInfoPlayers(); // Broadcast to clients in the room
+    broadcastRoomsListToLobby(); // Broadcast to clients in the lobby
   } else {
     console.log("Join room failed.", error);
     ws.send(
@@ -90,7 +92,8 @@ const leaveRoom = (data, ws) => {
       delete rooms[roomId];
     }
 
-    broadcastRoomsListToLobby();
+    room.updateRoomInfoPlayers(); // Broadcast to clients in the room
+    broadcastRoomsListToLobby(); // Broadcast to clients in the lobby
   } else {
     console.log("Leave room failed.", error);
     ws.send(

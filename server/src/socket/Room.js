@@ -35,7 +35,7 @@ class Room {
     return {
       id: this.id,
       name: this.name,
-      players: this.players.map((player) => ({ player: player.user.name, status: player.status })),
+      players: this.players.map((player) => ({ name: player.user.name, status: player.status })),
       status: this.status,
     };
   }
@@ -43,9 +43,10 @@ class Room {
   // Broadcast to all clients in the room
   updateRoomInfoPlayers() {
     this.players.forEach((player) => {
+      console.log(player.user.name, "updateRoomInfoPlayers");
       player.ws.send(
         JSON.stringify({
-          type: "updateRoom",
+          type: "updateRoomInfo",
           content: { success: true, message: "Update players about room info.", data: { room: this.getRoomData() } },
         })
       );
@@ -55,8 +56,6 @@ class Room {
   joinRoom(player) {
     if (this.players.length < 4) {
       this.players.push({ user: player.user, ws: player.ws, status: "idle" });
-
-      this.updateRoomInfoPlayers();
 
       return true;
     } else {
