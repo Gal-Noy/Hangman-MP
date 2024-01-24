@@ -3,7 +3,7 @@ import { useWebSocketContext } from "../../WebSocketContext";
 import { setLobby } from "../../store/clientStateSlice";
 import { useEffect } from "react";
 
-function BackToLobby({ roomId }) {
+function BackToLobbyBtn({ roomId }) {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const dispatch = useDispatch();
 
@@ -33,4 +33,4 @@ function BackToLobby({ roomId }) {
   );
 }
 
-export default BackToLobby;
+export default BackToLobbyBtn;

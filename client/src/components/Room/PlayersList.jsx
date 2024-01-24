@@ -4,7 +4,7 @@ import { useWebSocketContext } from "../../WebSocketContext";
 const PlayerBox = ({ player }) => {
   return (
     <div className="rounded bg-gray-400 m-1 d-flex align-items-center p-2">
-      <div className="ms-2">{player.status === "ready" ? "▶" : " "}</div>
+      <div className="ms-2">{player.status === "ready" ? "✔️" : " "}</div>
       <div className="ms-2 mb-1 fs-5">{player.name}</div>
     </div>
   );

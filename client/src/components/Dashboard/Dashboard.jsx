@@ -1,5 +1,6 @@
-import Logout from "./Logout";
-import BackToLobby from "./BackToLobby";
+import LogoutBtn from "./LogoutBtn";
+import BackToLobbyBtn from "./BackToLobbyBtn";
+import ReadyBtn from "./ReadyBtn";
 import { useSelector } from "react-redux";
 
 function Dashboard({ onLogout }) {
@@ -22,8 +23,11 @@ function Dashboard({ onLogout }) {
           )}
         </div>
       )}
-      <Logout onLogout={onLogout} />
-      {clientState !== "lobby" && <BackToLobby roomId={roomData.id} />}
+      <div className="d-flex flex-row justify-content-between">
+        <LogoutBtn onLogout={onLogout} />
+        {clientState === "room" && <ReadyBtn roomId={roomData.id} />}
+        {clientState !== "lobby" && <BackToLobbyBtn roomId={roomData.id} />}
+      </div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { v4 } from "uuid";
 import Game from "./Game.js";
+import { set } from "mongoose";
 
 /*
 player: {
@@ -43,7 +44,6 @@ class Room {
   // Broadcast to all clients in the room
   updateRoomInfoPlayers() {
     this.players.forEach((player) => {
-      console.log(player.user.name, "updateRoomInfoPlayers");
       player.ws.send(
         JSON.stringify({
           type: "updateRoomInfo",
@@ -78,21 +78,20 @@ class Room {
     }
   }
 
-  readyPlayer(player) {
-    const playerIndex = this.players.findIndex((p) => p.user.id === player.user.id);
+  toggleReadyPlayer(player) {
+    const playerIndex = this.players.findIndex((p) => p.user._id === player.user._id);
     if (playerIndex !== -1) {
-      this.players[playerIndex].status = "ready";
+      this.players[playerIndex].status = this.players[playerIndex].status === "idle" ? "ready" : "idle";
 
-      this.updateRoomInfoPlayers();
-
-      if (this.players.every((player) => player.status === "ready")) {
-        this.startGame();
-      }
       return true;
     } else {
       console.log("Player not found.");
       return false;
     }
+  }
+
+  checkAllPlayersReady() {
+    return this.players.every((player) => player.status === "ready");
   }
 
   startGame() {
@@ -102,12 +101,14 @@ class Room {
       this.updateRoomInfoPlayers();
 
       // Delete this line
-      ws.send(
-        JSON.stringify({
-          type: "startGameResponse",
-          content: { success: true, message: "Start game success.", data: { room: this.getRoomData() } },
-        })
-      );
+      this.players.forEach((player) => {
+        player.ws.send(
+          JSON.stringify({
+            type: "START GAME",
+            content: { success: true, message: "START GAME.", data: { room: this.getRoomData() } },
+          })
+        );
+      });
       // this.game.startGame(this.players); TODO: Uncomment this line
 
       return true;

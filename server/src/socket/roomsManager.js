@@ -13,7 +13,8 @@ const roomsManager = (content, ws) => {
     create: createRoom,
     join: joinRoom,
     leave: leaveRoom,
-    ready: readyPlayer,
+    ready: toggleReadyPlayer,
+    unready: toggleReadyPlayer,
   }[action];
 
   if (handler) {
@@ -105,23 +106,30 @@ const leaveRoom = (data, ws) => {
   }
 };
 
-const readyPlayer = (data, ws) => {
-  const { roomId, player } = data;
+const toggleReadyPlayer = (data, ws) => {
+  const { roomId } = data;
+  const player = { user: ws.session.user };
   const room = rooms[roomId];
 
-  if (room.readyPlayer(player)) {
+  if (room.toggleReadyPlayer(player)) {
     ws.send(
       JSON.stringify({
         type: "readyPlayerResponse",
-        content: { success: true, message: "Ready player success.", data: { room: room.getRoomData() } },
+        content: { success: true, message: "Toggle ready player success.", data: {} },
       })
     );
+
+    room.updateRoomInfoPlayers(); // Broadcast to clients in the room
+
+    if (room.checkAllPlayersReady()) {
+      room.startGame();
+    }
   } else {
-    console.log("Ready player failed.", error);
+    console.log("Toggle ready player failed.", error);
     ws.send(
       JSON.stringify({
-        type: "readyPlayerResponse",
-        content: { success: false, message: "Ready player failed.", data: null },
+        type: "toggleReadyPlayerResponse",
+        content: { success: false, message: "Toggle player failed.", data: null },
       })
     );
   }

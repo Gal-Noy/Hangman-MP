@@ -5,7 +5,7 @@ import { useWebSocketContext } from "../../WebSocketContext";
 import { useDispatch } from "react-redux";
 import { setLobby } from "../../store/clientStateSlice";
 
-function Logout({ onLogout }) {
+function LogoutBtn({ onLogout }) {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -71,4 +71,4 @@ function Logout({ onLogout }) {
   );
 }
 
-export default Logout;
+export default LogoutBtn;
