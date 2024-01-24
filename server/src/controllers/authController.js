@@ -11,6 +11,14 @@ const authController = {
 
       const { name, email, password } = req.body;
 
+      const existingUser = await User.findOne({
+        $or: [{ email: req.body.email.toLowerCase() }, { name: req.body.name.toLowerCase() }],
+      }).exec();
+
+      if (existingUser) {
+        return res.status(400).json({ msg: "User with same name or email already exists." });
+      }
+
       if (password.length < 6) {
         return res.status(400).json({ msg: "Password must be at least 6 characters long." });
       }

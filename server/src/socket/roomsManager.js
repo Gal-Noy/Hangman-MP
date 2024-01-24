@@ -7,6 +7,7 @@ const roomsManager = (content, ws) => {
   const { action, data } = content;
 
   const handler = {
+    list: sendRoomsList,
     create: createRoom,
     join: joinRoom,
     leave: leaveRoom,
@@ -20,9 +21,11 @@ const roomsManager = (content, ws) => {
 
 const createRoom = (data, ws) => {
   try {
-    const { roomName, players } = data;
-    const room = new Room(roomName, players);
+    const { name } = data;
+    const players = [{ user: ws.session.user, ws }];
+    const room = new Room(name, players);
     rooms[room.id] = room;
+    console.log(rooms);
 
     ws.send(
       // Response to creator client
@@ -119,16 +122,18 @@ export const getAllRooms = () => {
 };
 
 // for a single client
-export const sendRoomsList = (ws) => {
+export const sendRoomsList = (data, ws) => {
   try {
+    console.log(rooms);
     const roomsList = Object.values(rooms).map((room) => room.getRoomData());
-    ws.send(
-      // Response to client
-      JSON.stringify({
-        type: "sendRoomsList",
-        content: { success: true, message: "Rooms list.", data: { rooms: roomsList } },
-      })
-    );
+    if (roomsList.length > 0) {
+      ws.send(
+        JSON.stringify({
+          type: "updateRoomsList",
+          content: { success: true, message: "Send rooms list.", data: { rooms: roomsList } },
+        })
+      );
+    }
   } catch (error) {
     console.log("Send rooms list failed.", error);
   }

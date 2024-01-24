@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useWebSocketContext } from "../WebSocketContext";
+import { useWebSocketContext } from "../../WebSocketContext";
 
 function Login({ onLogin }) {
   const { sendJsonMessage } = useWebSocketContext();

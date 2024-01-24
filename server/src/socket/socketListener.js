@@ -20,7 +20,7 @@ const handleSocket = (app) => {
 
         const handler = {
           auth: authHandler,
-          rooms: roomsManager,
+          room: roomsManager,
         }[type];
 
         if (handler) {

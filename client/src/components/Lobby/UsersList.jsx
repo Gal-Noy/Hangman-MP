@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useWebSocketContext } from "../WebSocketContext";
+import { useWebSocketContext } from "../../WebSocketContext";
 import axios from "axios";
 
 const UserBox = ({ user }) => {

@@ -1,15 +1,16 @@
 import Dashboard from "../components/Dashboard/Dashboard";
-import UsersList from "../components/UsersList";
-import Chat from "../components/Chat/Chat";
+import { useSelector } from "react-redux";
+import Lobby from "./Lobby";
 
 function HomePage({ onLogout }) {
+  const clientState = useSelector((state) => state.clientState.clientState);
+
   return (
     <div className="bg-secondary vh-100 d-flex flex-column justify-content-center align-items-center">
       <Dashboard onLogout={onLogout} />
-      <div className=" mb-1 w-75 d-flex flex-row">
-        <Chat />
-        <UsersList />
-      </div>
+      {clientState === "lobby" && <Lobby />}
+      {/* {clientState === 'room' && <Room /> }
+      {clientState === 'game' && <Game /> } */}
     </div>
   );
 }

@@ -25,7 +25,7 @@ const handleLogin = (data, ws) => {
     ws.session = { user, token };
 
     broadcastUsersList();
-    sendRoomsList(ws);
+    sendRoomsList({}, ws);
   } catch (error) {
     console.log("Login failed.", error);
   }

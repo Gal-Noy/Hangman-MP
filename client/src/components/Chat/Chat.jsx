@@ -52,7 +52,10 @@ function Chat() {
   }, [lastMessage]);
 
   return (
-    <div className="bg-gray-400 rounded d-flex flex-column w-75">
+    <div className="bg-gray-400 rounded d-flex flex-column w-50 h-90">
+      <div className="users-list-header rounded bg-light mt-2 mx-2">
+        <p className="text-center pt-2 fs-4 fw-bold text-dark">Lobby Chat</p>
+      </div>
       <ChatFeed
         messages={messages}
         setMessages={setMessages}
