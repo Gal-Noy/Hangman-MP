@@ -21,10 +21,10 @@ const broadcastUsersList = async () => {
   }
 };
 
-const broadcastRoomsList = async () => {
+const broadcastRoomsListToLobby = async () => {
   try {
     Object.values(clients).forEach(async (clientWs) => {
-      if (clientWs.session && clientWs.session.user) {
+      if (clientWs.session && clientWs.session.user && !clientWs.session.room) {
         const roomsList = getAllRooms();
         clientWs.send(
           JSON.stringify({
@@ -39,4 +39,4 @@ const broadcastRoomsList = async () => {
   }
 };
 
-export { broadcastUsersList, broadcastRoomsList };
+export { broadcastUsersList, broadcastRoomsListToLobby };

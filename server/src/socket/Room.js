@@ -41,22 +41,22 @@ class Room {
   }
 
   // Broadcast to all clients in the room
-  broadcastUpdateRoom() {
-    // this.players.forEach((player) => {
-    //   player.ws.send(
-    //     JSON.stringify({
-    //       type: "updateRoom",
-    //       content: { success: true, message: "Update room.", data: { room: this.getRoomData() } },
-    //     })
-    //   );
-    // });
+  updateRoomInfoPlayers() {
+    this.players.forEach((player) => {
+      player.ws.send(
+        JSON.stringify({
+          type: "updateRoom",
+          content: { success: true, message: "Update players about room info.", data: { room: this.getRoomData() } },
+        })
+      );
+    });
   }
 
   joinRoom(player) {
     if (this.players.length < 4) {
       this.players.push({ user: player.user, ws: player.ws, status: "idle" });
 
-      this.broadcastUpdateRoom();
+      this.updateRoomInfoPlayers();
 
       return true;
     } else {
@@ -66,11 +66,11 @@ class Room {
   }
 
   leaveRoom(player) {
-    const playerIndex = this.players.findIndex((p) => p.user.id === player.user.id);
+    const playerIndex = this.players.findIndex((p) => p.user._id === player.user._id);
     if (playerIndex !== -1) {
       this.players.splice(playerIndex, 1);
 
-      this.broadcastUpdateRoom();
+      this.updateRoomInfoPlayers();
 
       return true;
     } else {
@@ -84,7 +84,7 @@ class Room {
     if (playerIndex !== -1) {
       this.players[playerIndex].status = "ready";
 
-      this.broadcastUpdateRoom();
+      this.updateRoomInfoPlayers();
 
       if (this.players.every((player) => player.status === "ready")) {
         this.startGame();
@@ -100,7 +100,7 @@ class Room {
     if (this.players.every((player) => player.status === "ready")) {
       this.status = "playing";
 
-      this.broadcastUpdateRoom();
+      this.updateRoomInfoPlayers();
 
       // Delete this line
       ws.send(

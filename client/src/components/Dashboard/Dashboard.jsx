@@ -23,7 +23,7 @@ function Dashboard({ onLogout }) {
         </div>
       )}
       <Logout onLogout={onLogout} />
-      {clientState !== "lobby" && <BackToLobby />}
+      {clientState !== "lobby" && <BackToLobby roomId={roomData.id} />}
     </div>
   );
 }

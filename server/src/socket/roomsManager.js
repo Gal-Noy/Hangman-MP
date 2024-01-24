@@ -1,5 +1,5 @@
 import Room from "./Room.js";
-import { broadcastRoomsList } from "./notifyAll.js";
+import { broadcastRoomsListToLobby } from "./notifyAll.js";
 
 const rooms = {};
 
@@ -25,9 +25,11 @@ const createRoom = (data, ws) => {
   try {
     const { name } = data;
     const players = [{ user: ws.session.user, ws }]; // Join the creator to the room
+
     const room = new Room(name, players);
     rooms[room.id] = room;
 
+    ws.session.room = room;
     ws.send(
       // Response to creator client
       JSON.stringify({
@@ -36,7 +38,7 @@ const createRoom = (data, ws) => {
       })
     );
 
-    broadcastRoomsList(); // Broadcast to all clients
+    broadcastRoomsListToLobby(); // Broadcast to all clients
   } catch (error) {
     console.log("Create room failed.", error);
   }
@@ -45,9 +47,11 @@ const createRoom = (data, ws) => {
 const joinRoom = (data, ws) => {
   const { roomId } = data;
   const player = { user: ws.session.user, ws };
+
   const room = rooms[roomId];
 
   if (room.joinRoom(player)) {
+    ws.session.room = room;
     ws.send(
       // Response to joiner client
       JSON.stringify({
@@ -56,7 +60,7 @@ const joinRoom = (data, ws) => {
       })
     );
 
-    broadcastRoomsList(); // Broadcast to all clients
+    broadcastRoomsListToLobby(); // Broadcast to all clients
   } else {
     console.log("Join room failed.", error);
     ws.send(
@@ -69,10 +73,12 @@ const joinRoom = (data, ws) => {
 };
 
 const leaveRoom = (data, ws) => {
-  const { roomId, player } = data;
+  const { roomId } = data;
+  const player = { user: ws.session.user };
   const room = rooms[roomId];
 
   if (room.leaveRoom(player)) {
+    ws.session.room = null;
     ws.send(
       JSON.stringify({
         type: "leaveRoomResponse",
@@ -84,7 +90,7 @@ const leaveRoom = (data, ws) => {
       delete rooms[roomId];
     }
 
-    broadcastRoomsList();
+    broadcastRoomsListToLobby();
   } else {
     console.log("Leave room failed.", error);
     ws.send(
