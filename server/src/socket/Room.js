@@ -16,7 +16,7 @@ class Room {
   constructor(name, players) {
     this.id = v4();
     this.name = name;
-    this.players = players.map((player) => ({ user: player.user, ws: player.ws, status: "idle", score: 0 }));
+    this.players = players.map((player) => ({ user: player.user, ws: player.ws, status: "idle" }));
     this.status = "waiting";
     this.game = new Game(this);
   }
@@ -35,24 +35,28 @@ class Room {
     return {
       id: this.id,
       name: this.name,
-      players: this.players.map((player) => ({ user: player.user, status: player.status, score: player.score })),
+      players: this.players.map((player) => ({ player: player.user.name, status: player.status })),
       status: this.status,
     };
   }
 
   // Broadcast to all clients in the room
   broadcastUpdateRoom() {
-    this.broadcast({
-      type: "updateRoom",
-      content: { success: true, message: "Update room.", data: { room: this.getRoomData() } },
-    });
+    // this.players.forEach((player) => {
+    //   player.ws.send(
+    //     JSON.stringify({
+    //       type: "updateRoom",
+    //       content: { success: true, message: "Update room.", data: { room: this.getRoomData() } },
+    //     })
+    //   );
+    // });
   }
 
   joinRoom(player) {
-    if (players.length < 4) {
-      this.players.push({ user: player.user, ws: player.ws, status: "idle", score: 0 });
+    if (this.players.length < 4) {
+      this.players.push({ user: player.user, ws: player.ws, status: "idle" });
 
-      broadcastUpdateRoom();
+      this.broadcastUpdateRoom();
 
       return true;
     } else {
@@ -66,7 +70,7 @@ class Room {
     if (playerIndex !== -1) {
       this.players.splice(playerIndex, 1);
 
-      broadcastUpdateRoom();
+      this.broadcastUpdateRoom();
 
       return true;
     } else {
@@ -80,7 +84,7 @@ class Room {
     if (playerIndex !== -1) {
       this.players[playerIndex].status = "ready";
 
-      broadcastUpdateRoom();
+      this.broadcastUpdateRoom();
 
       if (this.players.every((player) => player.status === "ready")) {
         this.startGame();
@@ -96,7 +100,7 @@ class Room {
     if (this.players.every((player) => player.status === "ready")) {
       this.status = "playing";
 
-      broadcastUpdateRoom();
+      this.broadcastUpdateRoom();
 
       // Delete this line
       ws.send(

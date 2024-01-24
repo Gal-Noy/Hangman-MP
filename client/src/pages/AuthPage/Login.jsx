@@ -3,12 +3,15 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useWebSocketContext } from "../../WebSocketContext";
+import { useDispatch } from "react-redux";
+import { setLobby } from "../../store/clientStateSlice";
 
 function Login({ onLogin }) {
   const { sendJsonMessage } = useWebSocketContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   axios.defaults.withCredentials = true;
 
   const handleSubmit = (e) => {
@@ -27,6 +30,7 @@ function Login({ onLogin }) {
           const user = JSON.stringify(res.data.user);
           localStorage.setItem("auth_token", token);
           localStorage.setItem("user", user);
+          dispatch(setLobby())
 
           // Send login data to websocket server
           sendJsonMessage({

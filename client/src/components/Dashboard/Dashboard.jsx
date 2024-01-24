@@ -1,8 +1,10 @@
 import Logout from "./Logout";
+import BackToLobby from "./BackToLobby";
 import { useSelector } from "react-redux";
 
 function Dashboard({ onLogout }) {
   const clientState = useSelector((state) => state.clientState.clientState);
+  const roomData = useSelector((state) => state.clientState.roomData);
   const user = JSON.parse(localStorage.getItem("user"));
 
   return (
@@ -13,11 +15,15 @@ function Dashboard({ onLogout }) {
             Hello <strong>{user.name}</strong>, welcome to chat!
           </div>
           {clientState === "lobby" && <div>Lobby</div>}
-          {/* {clientState === "room" && <div>Click on a user to invite them to a game.</div>}
-          {clientState === "game" && <div>Play the game!</div>} */}
+          {clientState === "room" && (
+            <div>
+              <strong>{roomData.name}</strong>
+            </div>
+          )}
         </div>
       )}
       <Logout onLogout={onLogout} />
+      {clientState !== "lobby" && <BackToLobby />}
     </div>
   );
 }

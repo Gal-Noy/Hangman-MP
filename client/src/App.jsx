@@ -4,14 +4,12 @@ import HomePage from "./pages/HomePage";
 import Login from "./pages/AuthPage/Login";
 import Signup from "./pages/AuthPage/Signup";
 import useWebSocket from "react-use-websocket";
-import { WebSocketProvider, handleReceivedMessage } from "./WebSocketContext";
-import { useSelector } from "react-redux";
+import { WebSocketProvider } from "./WebSocketContext";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("auth_token") && !!localStorage.getItem("user"));
-  const clientState = useSelector((state) => state.clientState.clientState);
 
-  const { sendJsonMessage, lastMessage } = useWebSocket(import.meta.env.VITE_WS_URL, {
+  const { sendJsonMessage, lastJsonMessage } = useWebSocket(import.meta.env.VITE_WS_URL, {
     onOpen: () => {
       console.log("WebSocket connection opened");
       if (isLoggedIn) {
@@ -32,7 +30,7 @@ function App() {
   });
 
   return (
-    <WebSocketProvider value={{ sendJsonMessage, lastMessage, handleReceivedMessage }}>
+    <WebSocketProvider value={{ sendJsonMessage, lastJsonMessage }}>
       <Router>
         <Routes>
           <Route

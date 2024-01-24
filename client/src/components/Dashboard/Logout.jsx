@@ -2,10 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import { useWebSocketContext } from "../../WebSocketContext";
+import { useDispatch } from "react-redux";
+import { setLobby } from "../../store/clientStateSlice";
 
 function Logout({ onLogout }) {
-  const { lastMessage, sendJsonMessage, handleReceivedMessage } = useWebSocketContext();
+  const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
     axios
@@ -23,6 +26,7 @@ function Logout({ onLogout }) {
         if (res.status === 200) {
           localStorage.removeItem("auth_token");
           localStorage.removeItem("user");
+          dispatch(setLobby());
 
           // Send logout message to websocket server
           sendJsonMessage({
@@ -44,22 +48,21 @@ function Logout({ onLogout }) {
   };
 
   useEffect(() => {
-    handleReceivedMessage(
-      lastMessage,
-      "reAuthResponse",
-      (content) => {
+    if (lastJsonMessage) {
+      const { type, content } = lastJsonMessage;
+      if (type === "reAuthResponse") {
         const { success, message } = content;
         if (!success) {
           localStorage.removeItem("auth_token");
           localStorage.removeItem("user");
+          dispatch(setLobby());
           alert(message);
           onLogout();
           navigate("/login");
         }
-      },
-      () => {}
-    );
-  }, [lastMessage]);
+      }
+    }
+  }, [lastJsonMessage]);
 
   return (
     <button className="btn btn-danger mt-3" onClick={handleLogout}>

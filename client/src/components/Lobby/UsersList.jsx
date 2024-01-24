@@ -14,7 +14,7 @@ const UserBox = ({ user }) => {
 };
 
 function UsersList() {
-  const { lastMessage, handleReceivedMessage } = useWebSocketContext();
+  const { lastJsonMessage } = useWebSocketContext();
   const [users, setUsers] = useState([]);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
@@ -49,25 +49,20 @@ function UsersList() {
   }, [isPending]);
 
   useEffect(() => {
-    handleReceivedMessage(
-      lastMessage,
-      "updateUsersList",
-      (content) => {
+    if (lastJsonMessage) {
+      const { type, content } = lastJsonMessage;
+      if (type === "updateUsersList") {
         const { users } = content.data;
-
         users.sort((a, b) => {
           if (a.isActive === b.isActive) {
             return a.name < b.name ? -1 : 1;
-          } else {
-            return a.isActive ? -1 : 1;
           }
+          return a.isActive ? -1 : 1;
         });
-
         setUsers(users);
-      },
-      () => {}
-    );
-  }, [lastMessage]);
+      }
+    }
+  }, [lastJsonMessage]);
 
   return (
     <div className="bg-gray-400 rounded w-25 ms-1 d-flex flex-column h-570">

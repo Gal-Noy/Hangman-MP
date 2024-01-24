@@ -1,39 +1,57 @@
 import React, { useState, useEffect } from "react";
 import { useWebSocketContext } from "../../WebSocketContext";
+import { setRoom } from "../../store/clientStateSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const RoomBox = ({ room }) => {
   return (
     <div className="rounded bg-gray-400 m-1 d-flex align-items-center p-2">
-      <div className="ms-2 mb-1 fs-5">{room.name}</div>
+      <div className="ms-2 mb-1 fs-5">Name: {room.name}</div>
+      <div className="ms-2 mb-1 fs-5">Status: {room.status}</div>
+      <div className="ms-2 mb-1 fs-5">Players: {room.players}</div>
     </div>
   );
 };
 
 function RoomsList() {
-  const { lastMessage, handleReceivedMessage, sendJsonMessage } = useWebSocketContext();
+  const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const [rooms, setRooms] = useState([]);
-
-  useEffect(() => {
-    handleReceivedMessage(
-      lastMessage,
-      "updateRoomsList",
-      (content) => {
-        const { rooms } = content.data;
-
-        setRooms(rooms);
-      },
-      () => {}
-    );
-  }, [lastMessage]);
+  const dispatch = useDispatch();
+  const inRoom = useSelector((state) => state.clientState.clientState) !== "lobby";
 
   useEffect(() => {
     sendJsonMessage({
       type: "room",
       content: {
         action: "list",
+        data: {},
       },
     });
   }, []);
+
+  useEffect(() => {
+    if (lastJsonMessage && !inRoom) {
+      const { type, content } = lastJsonMessage;
+      const { success, data } = content;
+      switch (type) {
+        case "updateRoomsList":
+          const { rooms } = data;
+          setRooms(rooms);
+          break;
+        case "createRoomResponse":
+          if (success) {
+            joinCreatedRoom(data.room);
+          }
+          break;
+        case "joinRoomResponse":
+          const { room } = data;
+          dispatch(setRoom(room));
+          break;
+        default:
+          break;
+      }
+    }
+  }, [lastJsonMessage]);
 
   const createNewRoom = () => {
     sendJsonMessage({
@@ -45,6 +63,20 @@ function RoomsList() {
     });
   };
 
+  const joinCreatedRoom = (room) => {
+    dispatch(setRoom(room));
+  };
+
+  const joinExistingRoom = (roomId) => () => {
+    sendJsonMessage({
+      type: "room",
+      content: {
+        action: "join",
+        data: { roomId },
+      },
+    });
+  };
+
   return (
     <div className="bg-gray-400 rounded w-50 ms-1 d-flex flex-column h-570">
       <div className="rooms-list-header rounded bg-light mt-2 mx-2">
@@ -52,7 +84,7 @@ function RoomsList() {
       </div>
       <div className="rooms-list rounded bg-light m-2 flex-fill d-flex flex-column overflow-auto">
         {rooms.map((room) => (
-          <div key={room.id} className="p-1">
+          <div key={room.id} className="p-1" type="button" id="join-room" onClick={joinExistingRoom(room.id)}>
             <RoomBox room={room} />
           </div>
         ))}

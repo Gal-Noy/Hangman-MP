@@ -10,9 +10,11 @@ const clientStateSlice = createSlice({
   reducers: {
     setLobby: (state) => {
       state.clientState = "lobby";
+      state.roomData = null;
     },
-    setRoom: (state) => {
+    setRoom: (state, action) => {
       state.clientState = "room";
+      state.roomData = action.payload;
     },
     setGame: (state) => {
       state.clientState = "game";

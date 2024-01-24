@@ -6,6 +6,8 @@ const rooms = {};
 const roomsManager = (content, ws) => {
   const { action, data } = content;
 
+  console.log("INCOMING ROOM MANAGER", action, data, ws.session.user.name);
+
   const handler = {
     list: sendRoomsList,
     create: createRoom,
@@ -22,10 +24,9 @@ const roomsManager = (content, ws) => {
 const createRoom = (data, ws) => {
   try {
     const { name } = data;
-    const players = [{ user: ws.session.user, ws }];
+    const players = [{ user: ws.session.user, ws }]; // Join the creator to the room
     const room = new Room(name, players);
     rooms[room.id] = room;
-    console.log(rooms);
 
     ws.send(
       // Response to creator client
@@ -42,11 +43,11 @@ const createRoom = (data, ws) => {
 };
 
 const joinRoom = (data, ws) => {
-  const { roomId, player } = data;
-  player.ws = ws;
+  const { roomId } = data;
+  const player = { user: ws.session.user, ws };
   const room = rooms[roomId];
 
-  if (room.joinRoom(player, ws)) {
+  if (room.joinRoom(player)) {
     ws.send(
       // Response to joiner client
       JSON.stringify({
@@ -124,8 +125,7 @@ export const getAllRooms = () => {
 // for a single client
 export const sendRoomsList = (data, ws) => {
   try {
-    console.log(rooms);
-    const roomsList = Object.values(rooms).map((room) => room.getRoomData());
+    const roomsList = Object.values(rooms).map((room) => room.getRoomDataForList());
     if (roomsList.length > 0) {
       ws.send(
         JSON.stringify({

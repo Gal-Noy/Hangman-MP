@@ -8,19 +8,4 @@ const WebSocketProvider = ({ children, value }) => (
 
 const useWebSocketContext = () => useContext(WebSocketContext);
 
-const handleReceivedMessage = (message, typeName, handleContent, handleWrongType) => {
-  try {
-    if (message) {
-      const { type, content } = JSON.parse(message.data);
-      if (type === typeName) {
-        handleContent(content);
-      } else {
-        handleWrongType();
-      }
-    }
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-export { WebSocketProvider, useWebSocketContext, handleReceivedMessage };
+export { WebSocketProvider, useWebSocketContext };

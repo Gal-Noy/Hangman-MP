@@ -5,7 +5,7 @@ import ChatFeed from "./ChatFeed";
 import InputBar from "./InputBar";
 
 function Chat() {
-  const { lastMessage, handleReceivedMessage } = useWebSocketContext();
+  const { lastJsonMessage } = useWebSocketContext();
   const [messages, setMessages] = useState([]);
   const [newMessageStatus, setNewMessageStatus] = useState("pending"); // "pending", "success", "error"
   const [isPendingFeed, setIsPendingFeed] = useState(true);
@@ -38,18 +38,16 @@ function Chat() {
 
   // Update messages when a new message is received
   useEffect(() => {
-    handleReceivedMessage(
-      lastMessage,
-      "broadcastNewMessage",
-      (content) => {
+    if (lastJsonMessage) {
+      const { type, content } = lastJsonMessage;
+      if (type === "broadcastNewMessage") {
         const message = content.data;
         message.status = "success";
         const newMessages = [...messages, message];
         setMessages(newMessages);
-      },
-      () => {}
-    );
-  }, [lastMessage]);
+      }
+    }
+  }, [lastJsonMessage]);
 
   return (
     <div className="bg-gray-400 rounded d-flex flex-column w-50 h-90">
