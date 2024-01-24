@@ -1,5 +1,5 @@
 import { isValidSession } from "../middleware/authMiddleware.js";
-import { broadcastUsersList } from "./notifyAll.js";
+import { broadcastLobbyUsersList } from "./notifyAll.js";
 import { sendRoomsList } from "./roomsManager.js";
 import { User } from "../models/userModel.js";
 
@@ -24,7 +24,7 @@ const handleLogin = (data, ws) => {
 
     ws.session = { user, token };
 
-    broadcastUsersList();
+    broadcastLobbyUsersList();
     sendRoomsList({}, ws);
   } catch (error) {
     console.log("Login failed.", error);
@@ -35,7 +35,7 @@ const handleLogout = (data, ws) => {
   try {
     ws.session = null;
 
-    broadcastUsersList();
+    broadcastLobbyUsersList();
   } catch (error) {
     console.log("Logout failed.", error);
   }
@@ -55,7 +55,8 @@ const handleReAuth = async (data, ws) => {
       ws.session = null;
 
       await User.findByIdAndUpdate(user._id, { isActive: false });
-      broadcastUsersList();
+      
+      broadcastLobbyUsersList();
 
       ws.send(
         JSON.stringify({

@@ -1,5 +1,5 @@
 import React from "react";
-import UsersList from "../components/Lobby/UsersList";
+import LobbyUsersList from "../components/Lobby/LobbyUsersList";
 import RoomsList from "../components/Lobby/RoomsList";
 // import Chat from "../components/Chat/Chat";
 
@@ -8,7 +8,7 @@ function Lobby() {
     <div className=" mb-1 w-75 d-flex flex-row">
       {/* <Chat /> */}
       <RoomsList />
-      <UsersList />
+      <LobbyUsersList />
     </div>
   );
 }

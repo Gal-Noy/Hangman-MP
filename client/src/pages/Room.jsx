@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import UsersList from "../components/Lobby/UsersList";
+import UsersList from "../components/Lobby/LobbyUsersList";
 import PlayersList from "../components/Room/PlayersList";
 import { useWebSocketContext } from "../WebSocketContext";
 

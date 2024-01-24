@@ -2,16 +2,19 @@ import { User } from "../models/userModel.js";
 import { clients } from "./socketListener.js";
 import { getAllRooms } from "./roomsManager.js";
 
-const broadcastUsersList = async () => {
+const broadcastLobbyUsersList = async () => {
   try {
+    const roomsList = getAllRooms();
+
     Object.values(clients).forEach(async (clientWs) => {
       if (clientWs.session && clientWs.session.user) {
         const currentUser = clientWs.session.user;
-        const users = await User.find({ _id: { $ne: currentUser._id } });
+        const users = await User.find({ _id: { $ne: currentUser._id } }).exec();
+        // users.filter((user) => !roomsList.some((room) => room.players.some((player) => player.user._id === user._id)));
         clientWs.send(
           JSON.stringify({
-            type: "updateUsersList",
-            content: { success: true, message: "Users list.", data: { users } },
+            type: "updateLobbyUsersList",
+            content: { success: true, message: "Lobby users list.", data: { users } },
           })
         );
       }
@@ -39,4 +42,4 @@ const broadcastRoomsListToLobby = async () => {
   }
 };
 
-export { broadcastUsersList, broadcastRoomsListToLobby };
+export { broadcastLobbyUsersList, broadcastRoomsListToLobby };
