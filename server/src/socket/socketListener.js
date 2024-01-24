@@ -1,6 +1,7 @@
 import expressWs from "express-ws";
 import authHandler from "./authHandler.js";
 import roomsManager from "./roomsManager.js";
+import usersManager from "./usersManager.js";
 import { v4 } from "uuid";
 
 export const clients = {};
@@ -21,6 +22,7 @@ const handleSocket = (app) => {
         const handler = {
           auth: authHandler,
           room: roomsManager,
+          users: usersManager,
         }[type];
 
         if (handler) {

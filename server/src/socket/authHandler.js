@@ -1,5 +1,5 @@
 import { isValidSession } from "../middleware/authMiddleware.js";
-import { broadcastLobbyUsersList } from "./notifyAll.js";
+import { broadcastLobbyUsersList } from "./usersManager.js";
 import { sendRoomsList } from "./roomsManager.js";
 import { User } from "../models/userModel.js";
 
@@ -55,7 +55,7 @@ const handleReAuth = async (data, ws) => {
       ws.session = null;
 
       await User.findByIdAndUpdate(user._id, { isActive: false });
-      
+
       broadcastLobbyUsersList();
 
       ws.send(

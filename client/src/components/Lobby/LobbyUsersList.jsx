@@ -13,14 +13,23 @@ const UserBox = ({ user }) => {
 };
 
 function LobbyUsersList() {
-  const { lastJsonMessage } = useWebSocketContext();
+  const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const [users, setUsers] = useState([]);
   // const [isPending, setIsPending] = useState(true);
   // const [error, setError] = useState(null);
 
   useEffect(() => {
+    sendJsonMessage({
+      type: "users",
+      content: {
+        action: "list",
+        data: {},
+      },
+    });
+  }, []);
+
+  useEffect(() => {
     if (lastJsonMessage) {
-      console.log(lastJsonMessage);
       const { type, content } = lastJsonMessage;
       if (type === "updateLobbyUsersList") {
         const { users } = content.data;

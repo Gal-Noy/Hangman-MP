@@ -1,5 +1,6 @@
 import Room from "./Room.js";
-import { broadcastRoomsListToLobby } from "./notifyAll.js";
+import { clients } from "./socketListener.js";
+import { broadcastLobbyUsersList } from "./usersManager.js";
 
 const rooms = {};
 
@@ -40,7 +41,10 @@ const createRoom = (data, ws) => {
     );
 
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
-    broadcastRoomsListToLobby(); // Broadcast to clients in the lobby
+
+    // Broadcast to clients in the lobby
+    broadcastRoomsListToLobby();
+    broadcastLobbyUsersList();
   } catch (error) {
     console.log("Create room failed.", error);
   }
@@ -63,7 +67,10 @@ const joinRoom = (data, ws) => {
     );
 
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
-    broadcastRoomsListToLobby(); // Broadcast to clients in the lobby
+
+    // Broadcast to clients in the lobby
+    broadcastRoomsListToLobby();
+    broadcastLobbyUsersList();
   } else {
     console.log("Join room failed.", error);
     ws.send(
@@ -94,7 +101,10 @@ const leaveRoom = (data, ws) => {
     }
 
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
-    broadcastRoomsListToLobby(); // Broadcast to clients in the lobby
+
+    // Broadcast to clients in the lobby
+    broadcastRoomsListToLobby();
+    broadcastLobbyUsersList();
   } else {
     console.log("Leave room failed.", error);
     ws.send(
@@ -139,7 +149,7 @@ export const getAllRooms = () => {
   return Object.values(rooms).map((room) => room.getRoomDataForList());
 };
 
-// for a single client
+// For a single client
 export const sendRoomsList = (data, ws) => {
   try {
     const roomsList = Object.values(rooms).map((room) => room.getRoomDataForList());
@@ -147,7 +157,7 @@ export const sendRoomsList = (data, ws) => {
       ws.send(
         JSON.stringify({
           type: "updateRoomsList",
-          content: { success: true, message: "Send rooms list.", data: { rooms: roomsList } },
+          content: { success: true, message: "Rooms list (single client).", data: { rooms: roomsList } },
         })
       );
     }
@@ -156,4 +166,22 @@ export const sendRoomsList = (data, ws) => {
   }
 };
 
+// For all clients
+const broadcastRoomsListToLobby = async () => {
+  try {
+    Object.values(clients).forEach(async (clientWs) => {
+      if (clientWs.session && clientWs.session.user && !clientWs.session.room) {
+        const roomsList = getAllRooms();
+        clientWs.send(
+          JSON.stringify({
+            type: "updateRoomsList",
+            content: { success: true, message: "Rooms list (all clients in the lobby).", data: { rooms: roomsList } },
+          })
+        );
+      }
+    });
+  } catch (error) {
+    console.log("Update rooms list failed.", error);
+  }
+};
 export default roomsManager;

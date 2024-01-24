@@ -27,7 +27,7 @@ class Room {
     return {
       id: this.id,
       name: this.name,
-      players: this.players.length,
+      players: this.players.map((player) => ({ id: player.user._id, name: player.user.name, status: player.status })),
       status: this.status,
     };
   }
