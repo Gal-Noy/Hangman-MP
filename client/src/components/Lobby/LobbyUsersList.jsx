@@ -19,15 +19,13 @@ function LobbyUsersList() {
   // const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (users.length === 0) {
-      sendJsonMessage({
-        type: "users",
-        content: {
-          action: "list",
-          data: {},
-        },
-      });
-    }
+    sendJsonMessage({
+      type: "users",
+      content: {
+        action: "list",
+        data: {},
+      },
+    });
   }, []);
 
   useEffect(() => {

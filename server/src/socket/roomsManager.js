@@ -8,7 +8,7 @@ const rooms = {};
 const roomsManager = (content, ws) => {
   const { action, data } = content;
 
-  console.log("INCOMING ROOM MANAGER", action, data, ws.session.user.name);
+  console.log("INCOMING ROOM MANAGER", action, data, ws.session?.user.name);
 
   const handler = {
     list: sendRoomsList,
@@ -88,7 +88,7 @@ const joinRoom = async (data, ws) => {
   }
 };
 
-const leaveRoom = async (data, ws) => {
+export const leaveRoom = async (data, ws) => {
   const { roomId } = data;
   const user = ws.session.user;
   const player = { user };
@@ -113,7 +113,9 @@ const leaveRoom = async (data, ws) => {
 
     // Broadcast to clients in the lobby
     broadcastRoomsListToLobby(ws);
-    broadcastLobbyUsersList(ws);
+    if (!data.logout) {
+      broadcastLobbyUsersList(ws);
+    }
   } else {
     console.log("Leave room failed.", error);
     ws.send(
