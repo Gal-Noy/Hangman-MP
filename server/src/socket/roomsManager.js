@@ -15,6 +15,7 @@ const roomsManager = (content, ws) => {
     create: createRoom,
     join: joinRoom,
     leave: leaveRoom,
+    invite: invitePlayer,
     ready: toggleReadyPlayer,
     unready: toggleReadyPlayer,
   }[action];
@@ -128,11 +129,39 @@ export const leaveRoom = async (data, ws) => {
       broadcastLobbyUsersList(ws);
     }
   } else {
-    console.log("Leave room failed.", error);
+    console.log("Leave room failed.");
     ws.send(
       JSON.stringify({
         type: "leaveRoomResponse",
         content: { success: false, message: "Leave room failed.", data: null },
+      })
+    );
+  }
+};
+
+const invitePlayer = (data, ws) => {
+  const { invitedPlayerId, roomId, password } = data;
+  const room = rooms[roomId];
+
+  const invitedPlayerWs = Object.values(clients).find((client) => client.session.user._id === invitedPlayerId);
+  
+  if (invitedPlayerWs) {
+    invitedPlayerWs.send(
+      JSON.stringify({
+        type: "inviteToRoom",
+        content: {
+          success: true,
+          message: "Invite player.",
+          data: { inviter: ws.session.user.name, room: room.getRoomData(), password },
+        },
+      })
+    );
+  } else {
+    console.log("Invite player failed.");
+    ws.send(
+      JSON.stringify({
+        type: "invitePlayerResponse",
+        content: { success: false, message: "Invite player failed.", data: null },
       })
     );
   }

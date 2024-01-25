@@ -5,14 +5,17 @@ import Login from "./pages/AuthPage/Login";
 import Signup from "./pages/AuthPage/Signup";
 import useWebSocket from "react-use-websocket";
 import { WebSocketProvider } from "./WebSocketContext";
+import { useDispatch } from "react-redux";
+import { setLobby } from "./store/clientStateSlice";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("auth_token") && !!localStorage.getItem("user"));
-
+  const dispatch = useDispatch();
   const { sendJsonMessage, lastJsonMessage } = useWebSocket(import.meta.env.VITE_WS_URL, {
     onOpen: () => {
       console.log("WebSocket connection opened");
       if (isLoggedIn) {
+        // dispatch(setLobby());
         sendJsonMessage({
           type: "auth",
           content: {

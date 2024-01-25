@@ -22,6 +22,7 @@ class Room {
 
     this.players = players.map((player) => ({ user: player.user, ws: player.ws, isAdmin: false, status: "idle" }));
     this.players[0].isAdmin = true;
+    this.admin = this.players[0].user._id;
 
     this.numberOfPlayers = numberOfPlayers;
     if (password) {
@@ -43,6 +44,8 @@ class Room {
       status: this.status,
       numberOfPlayers: this.numberOfPlayers,
       isPrivate: !!this.password,
+      password: this.password,
+      admin: this.admin,
     };
   }
 
@@ -84,6 +87,7 @@ class Room {
 
       if (isAdmin && this.players.length > 0) {
         this.players[0].isAdmin = true;
+        this.admin = this.players[0].user._id;
       }
 
       this.updateRoomInfoPlayers();

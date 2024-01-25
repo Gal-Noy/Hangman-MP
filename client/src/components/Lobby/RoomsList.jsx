@@ -10,6 +10,7 @@ function RoomsList() {
   const inRoom = useSelector((state) => state.clientState.clientState) !== "lobby";
   const [showCreateRoomForm, setShowCreateRoomForm] = useState(false);
   const [error, setError] = useState(null);
+  const [invitation, setInvitation] = useState(null);
 
   const RoomBox = ({ room, error, joinExistingRoom }) => {
     const [showInputPassword, setShowInputPassword] = useState(false);
@@ -178,7 +179,7 @@ function RoomsList() {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeId = setTimeout(() => {
       setError(null);
     }, 2000);
   }, [error]);
@@ -207,6 +208,10 @@ function RoomsList() {
             setError({ type: "join", roomId: room.id, message });
           }
           break;
+        case "inviteToRoom":
+          const { inviter, room: invitedRoom, password } = data;
+          setInvitation({ inviter, invitedRoom, password });
+          break;
         default:
           break;
       }
@@ -227,7 +232,6 @@ function RoomsList() {
       },
     });
   };
-
   const joinCreatedRoom = (room) => {
     dispatch(setRoom(room));
   };
@@ -261,6 +265,28 @@ function RoomsList() {
         <p className="text-center pt-2 fs-4 fw-bold text-dark">Rooms</p>
       </div>
       <div className="rooms-list rounded bg-light m-2 flex-fill d-flex flex-column overflow-auto">
+        {invitation && (
+          <div className="rounded bg-success m-2 d-flex align-items-center p-2 text-white">
+            <div className="ms-2 mb-1 fs-5">
+              <strong>{invitation.inviter}</strong> invited you to join <strong>{invitation.invitedRoom.name}</strong>!
+            </div>
+            <div
+              className="ms-3 mb-1 fs-5"
+              type="button"
+              id="invite-user-to-room"
+              onClick={() => {
+                const { invitedRoom, password } = invitation;
+                joinExistingRoom(invitedRoom, password);
+                setInvitation(null);
+              }}
+            >
+              ✔️
+            </div>
+            <div className="ms-3 mb-1 fs-5" type="button" id="invite-user-to-room" onClick={() => setInvitation(null)}>
+              ❌
+            </div>
+          </div>
+        )}
         {rooms.map((room) => (
           <div key={room.id} className="p-1">
             <RoomBox room={room} error={error} joinExistingRoom={joinExistingRoom} />

@@ -30,7 +30,7 @@ function Login({ onLogin }) {
           const user = JSON.stringify(res.data.user);
           localStorage.setItem("auth_token", token);
           localStorage.setItem("user", user);
-          dispatch(setLobby())
+          dispatch(setLobby());
 
           // Send login data to websocket server
           sendJsonMessage({
