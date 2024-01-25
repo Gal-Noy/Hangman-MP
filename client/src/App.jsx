@@ -12,18 +12,18 @@ function App() {
   const { sendJsonMessage, lastJsonMessage } = useWebSocket(import.meta.env.VITE_WS_URL, {
     onOpen: () => {
       console.log("WebSocket connection opened");
-      // if (isLoggedIn) {
-      //   sendJsonMessage({
-      //     type: "auth",
-      //     content: {
-      //       action: "reAuth",
-      //       data: {
-      //         token: localStorage.getItem("auth_token"),
-      //         user: localStorage.getItem("user"),
-      //       },
-      //     },
-      //   });
-      // }
+      if (isLoggedIn) {
+        sendJsonMessage({
+          type: "auth",
+          content: {
+            action: "reAuth",
+            data: {
+              token: localStorage.getItem("auth_token"),
+              user: localStorage.getItem("user"),
+            },
+          },
+        });
+      }
     },
     share: false,
     shouldReconnect: () => true,

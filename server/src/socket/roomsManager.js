@@ -27,6 +27,17 @@ const roomsManager = (content, ws) => {
 const createRoom = async (data, ws) => {
   try {
     const { name, numberOfPlayers, password } = data;
+
+    if (name === "") {
+      ws.send(
+        JSON.stringify({
+          type: "createRoomResponse",
+          content: { success: false, message: "Room name cannot be empty.", data: null },
+        })
+      );
+      return;
+    }
+
     const players = [{ user: ws.session.user, ws }]; // Join the creator to the room
 
     const room = new Room(name, players, numberOfPlayers, password);
@@ -54,7 +65,6 @@ const createRoom = async (data, ws) => {
 };
 
 const joinRoom = async (data, ws) => {
-  console.log("JOIN ROOM", data);
   const { roomId, password } = data;
   const user = ws.session.user;
   const player = { user, ws };
@@ -83,7 +93,7 @@ const joinRoom = async (data, ws) => {
     ws.send(
       JSON.stringify({
         type: "joinRoomResponse",
-        content: { success: false, message: "Join room failed.", data: null },
+        content: { success: false, message: error, data: { room: room.getRoomData() } },
       })
     );
   }
@@ -158,18 +168,22 @@ const toggleReadyPlayer = (data, ws) => {
 };
 
 export const getAllRooms = () => {
-  return Object.values(rooms).map((room) => room.getRoomDataForList());
+  return Object.values(rooms).map((room) => room.getRoomData());
 };
 
 // For a single client
 export const sendRoomsList = (data, ws) => {
   try {
-    const roomsList = Object.values(rooms).map((room) => room.getRoomDataForList());
+    const roomsList = Object.values(rooms).map((room) => room.getRoomData());
     if (roomsList.length > 0) {
       ws.send(
         JSON.stringify({
           type: "updateRoomsList",
-          content: { success: true, message: "Rooms list (single client).", data: { rooms: roomsList } },
+          content: {
+            success: true,
+            message: "Rooms list (single client).",
+            data: { rooms: roomsList },
+          },
         })
       );
     }

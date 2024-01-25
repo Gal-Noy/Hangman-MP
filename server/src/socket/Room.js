@@ -26,21 +26,14 @@ class Room {
   }
 
   // For rooms list
-  getRoomDataForList() {
+  getRoomData() {
     return {
       id: this.id,
       name: this.name,
       players: this.players.map((player) => ({ id: player.user._id, name: player.user.name, status: player.status })),
       status: this.status,
-    };
-  }
-
-  getRoomData() {
-    return {
-      id: this.id,
-      name: this.name,
-      players: this.players.map((player) => ({ name: player.user.name, status: player.status })),
-      status: this.status,
+      capacity: this.numberOfPlayers,
+      isPrivate: !!this.password,
     };
   }
 
@@ -57,6 +50,10 @@ class Room {
   }
 
   joinRoom(player, password) {
+    console.log(password)
+    if (this.status !== "waiting") {
+      return "Room is not waiting.";
+    }
     if (this.password && password && this.password !== password) {
       return "Wrong password.";
     }
@@ -102,6 +99,7 @@ class Room {
 
   startGame() {
     if (this.players.every((player) => player.status === "ready")) {
+      this.players.map((player) => (player.status = "playing"));
       this.status = "playing";
 
       this.updateRoomInfoPlayers();

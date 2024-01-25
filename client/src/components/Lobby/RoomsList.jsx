@@ -9,19 +9,74 @@ function RoomsList() {
   const dispatch = useDispatch();
   const inRoom = useSelector((state) => state.clientState.clientState) !== "lobby";
   const [showCreateRoomForm, setShowCreateRoomForm] = useState(false);
+  const [error, setError] = useState(null);
 
-  const RoomBox = ({ room }) => {
+  const RoomBox = ({ room, error, joinExistingRoom }) => {
+    const [showInputPassword, setShowInputPassword] = useState(false);
+    const [passwordForJoin, setPasswordForJoin] = useState("");
+
     return (
-      <div className="rounded bg-gray-400 m-1 d-flex align-items-center p-2">
-        <div className="ms-2 mb-1 fs-5">Name: {room.name}</div>
-        <div className="ms-2 mb-1 fs-5">Status: {room.status}</div>
-        <div className="ms-2 mb-1 fs-5">Players: {room.players.length}</div>
+      <div>
+        <div
+          className="rounded bg-gray-500 m-1 d-flex align-items-center p-2"
+          type="button"
+          id="join-room"
+          onClick={() => {
+            if (room.isPrivate) {
+              setShowInputPassword(true);
+            } else {
+              joinExistingRoom(room, null);
+            }
+          }}
+        >
+          <div className="ms-2 mb-1 fs-5">{room.name}</div>
+          <div className="ms-3 mb-1 fs-5">
+            👤{room.players.length}/{room.capacity}
+          </div>
+          <div className="ms-1 mb-1 fs-5">{room.status === "waiting" ? "🕑" : "🔴"}</div>
+          {room.isPrivate && !showInputPassword && <div className="ms-3 mb-1 fs-5">🔒</div>}
+          {showInputPassword && (
+            <div className="d-flex">
+              <div className="ms-3 mb-1 fs-5">🔐</div>
+              <div className="input-group ms-1">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Password"
+                  aria-label="Password"
+                  aria-describedby="basic-addon1"
+                  value={passwordForJoin}
+                  onChange={(e) => setPasswordForJoin(e.target.value)}
+                />
+                <button
+                  className="btn btn-primary"
+                  type="button"
+                  id="input-password-btn"
+                  onClick={() => {
+                    setError(null);
+                    joinExistingRoom(room, passwordForJoin);
+                  }}
+                >
+                  Join
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+        {error && error.type === "join" && error.roomId === room.id && (
+          <div className="alert alert-danger text-danger m-1">{error.message}</div>
+        )}
       </div>
     );
   };
 
   const CreateRoomBox = () => {
-    const [newRoomSettings, setNewRoomSettings] = useState({ name: "", numberOfPlayers: 1, password: "" });
+    const [newRoomSettings, setNewRoomSettings] = useState({
+      name: "",
+      numberOfPlayers: 1,
+      password: "",
+      isPrivate: false,
+    });
     const [isPrivate, setIsPrivate] = useState(!!newRoomSettings.password || false);
 
     return (
@@ -69,7 +124,10 @@ function RoomsList() {
               className="form-check-input mt-1"
               type="checkbox"
               id="flexSwitchCheckDefault"
-              onChange={() => setIsPrivate(!isPrivate)}
+              onChange={() => {
+                setIsPrivate(!isPrivate);
+                setNewRoomSettings({ ...newRoomSettings, isPrivate: !isPrivate });
+              }}
             />
             <label className="form-check-label mb-1" htmlFor="flexSwitchCheckDefault">
               Private
@@ -125,7 +183,7 @@ function RoomsList() {
   useEffect(() => {
     if (lastJsonMessage && !inRoom) {
       const { type, content } = lastJsonMessage;
-      const { success, data } = content;
+      const { success, message, data } = content;
       switch (type) {
         case "updateRoomsList":
           const { rooms } = data;
@@ -134,11 +192,25 @@ function RoomsList() {
         case "createRoomResponse":
           if (success) {
             joinCreatedRoom(data.room);
+          } else {
+            setError({ type: "create", message });
+
+            setTimeout(() => {
+              setError(null);
+            }, 3000);
           }
           break;
         case "joinRoomResponse":
           const { room } = data;
-          dispatch(setRoom(room));
+          if (success) {
+            dispatch(setRoom(room));
+          } else {
+            setError({ type: "join", roomId: room.id, message });
+
+            setTimeout(() => {
+              setError(null);
+            }, 3000);
+          }
           break;
         default:
           break;
@@ -147,6 +219,11 @@ function RoomsList() {
   }, [lastJsonMessage]);
 
   const createNewRoom = (newRoomSettings) => {
+    const { isPrivate, password } = newRoomSettings;
+    if (isPrivate && password.length < 4) {
+      setError({ type: "create", message: "Password must be at least 4 characters long" });
+      return;
+    }
     sendJsonMessage({
       type: "room",
       content: {
@@ -160,12 +237,25 @@ function RoomsList() {
     dispatch(setRoom(room));
   };
 
-  const joinExistingRoom = (roomId) => () => {
+  const joinExistingRoom = (room, password) => {
+    const { isPrivate, id, capacity } = room;
+    if (isPrivate && !password) {
+      setError({ type: "join", roomId: id, message: "Please enter the password to join this room" });
+      return;
+    }
+    if (isPrivate && password.length < 4) {
+      setError({ type: "join", roomId: id, message: "Password must be at least 4 characters long" });
+      return;
+    }
+    if (capacity === room.players.length) {
+      setError({ type: "join", roomId: id, message: "This room is full" });
+      return;
+    }
     sendJsonMessage({
       type: "room",
       content: {
         action: "join",
-        data: { roomId },
+        data: { roomId: id, password },
       },
     });
   };
@@ -177,13 +267,13 @@ function RoomsList() {
       </div>
       <div className="rooms-list rounded bg-light m-2 flex-fill d-flex flex-column overflow-auto">
         {rooms.map((room) => (
-          <div key={room.id} className="p-1" type="button" id="join-room" onClick={joinExistingRoom(room.id)}>
-            <RoomBox room={room} showCreateRoomForm={showCreateRoomForm} />
+          <div key={room.id} className="p-1">
+            <RoomBox room={room} error={error} joinExistingRoom={joinExistingRoom} />
           </div>
         ))}
         {!showCreateRoomForm && (
           <div
-            className="rounded bg-gray-500 m-2 d-flex align-items-center p-2 fs-5"
+            className="rounded bg-gray-400 m-2 d-flex align-items-center p-2 fs-5"
             type="button"
             id="create-room-btn"
             onClick={() => setShowCreateRoomForm(true)}
@@ -192,6 +282,7 @@ function RoomsList() {
           </div>
         )}
         {showCreateRoomForm && <CreateRoomBox />}
+        {error && error.type === "create" && <div className="alert alert-danger text-danger m-1">{error.message}</div>}
       </div>
     </div>
   );
