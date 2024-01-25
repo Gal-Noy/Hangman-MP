@@ -1,5 +1,5 @@
 import expressWs from "express-ws";
-import authHandler from "./authHandler.js";
+import authManager from "./authManager.js";
 import roomsManager from "./roomsManager.js";
 import usersManager from "./usersManager.js";
 import { v4 } from "uuid";
@@ -20,7 +20,7 @@ const handleSocket = (app) => {
         const { type, content } = message;
 
         const handler = {
-          auth: authHandler,
+          auth: authManager,
           room: roomsManager,
           users: usersManager,
         }[type];
@@ -34,6 +34,9 @@ const handleSocket = (app) => {
     });
 
     ws.on("close", () => {
+      if (ws.session?.user) {
+        authManager({ action: "logout" }, ws);
+      }
       console.log(`Client disconnected with id ${clientId}`);
       delete clients[clientId];
     });

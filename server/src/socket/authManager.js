@@ -4,7 +4,7 @@ import { sendRoomsList } from "./roomsManager.js";
 import { User } from "../models/userModel.js";
 import { leaveRoom } from "./roomsManager.js";
 
-const authHandler = (content, ws) => {
+const authManager = (content, ws) => {
   const { action, data } = content;
 
   const handler = {
@@ -72,4 +72,4 @@ const handleReAuth = async (data, ws) => {
   }
 };
 
-export default authHandler;
+export default authManager;
