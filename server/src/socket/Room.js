@@ -13,12 +13,16 @@ player: {
 */
 
 class Room {
-  constructor(name, players) {
+  constructor(name, players, numberOfPlayers, password) {
     this.id = v4();
     this.name = name;
     this.status = "waiting";
     this.game = new Game(this);
     this.players = players.map((player) => ({ user: player.user, ws: player.ws, status: "idle" }));
+    this.numberOfPlayers = numberOfPlayers;
+    if (password) {
+      this.password = password;
+    }
   }
 
   // For rooms list
@@ -52,15 +56,18 @@ class Room {
     });
   }
 
-  joinRoom(player) {
-    if (this.players.length < 4) {
-      this.players.push({ user: player.user, ws: player.ws, status: "idle" });
-
-      return true;
-    } else {
-      console.log("Room is full.");
-      return false;
+  joinRoom(player, password) {
+    if (this.password && password && this.password !== password) {
+      return "Wrong password.";
     }
+    if (this.players.length === this.numberOfPlayers) {
+      return "Room is full.";
+    }
+    if (this.players.some((p) => p.user._id === player.user._id)) {
+      return "Already in the room.";
+    }
+    this.players.push({ user: player.user, ws: player.ws, status: "idle" });
+    return "";
   }
 
   leaveRoom(player) {
