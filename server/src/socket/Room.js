@@ -1,6 +1,5 @@
 import { v4 } from "uuid";
 import Game from "./Game.js";
-import { set } from "mongoose";
 
 /*
 player: {
@@ -17,9 +16,9 @@ class Room {
   constructor(name, players) {
     this.id = v4();
     this.name = name;
-    this.players = players.map((player) => ({ user: player.user, ws: player.ws, status: "idle" }));
     this.status = "waiting";
     this.game = new Game(this);
+    this.players = players.map((player) => ({ user: player.user, ws: player.ws, status: "idle" }));
   }
 
   // For rooms list

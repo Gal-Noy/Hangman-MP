@@ -54,7 +54,7 @@ const handleReAuth = async (data, ws) => {
     } else {
       ws.session = null;
 
-      await User.findByIdAndUpdate(user._id, { isActive: false });
+      await User.findByIdAndUpdate(user._id, { isActive: false, inRoom: false, inGame: false });
 
       broadcastLobbyUsersList(ws);
 

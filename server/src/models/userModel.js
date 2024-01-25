@@ -19,6 +19,14 @@ const UserSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  inRoom: {
+    type: Boolean,
+    default: false,
+  },
+  inGame: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 export const User = mongoose.model("User", UserSchema);

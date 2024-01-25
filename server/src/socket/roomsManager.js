@@ -1,4 +1,5 @@
 import Room from "./Room.js";
+import { User } from "../models/userModel.js";
 import { clients } from "./socketListener.js";
 import { broadcastLobbyUsersList } from "./usersManager.js";
 
@@ -23,7 +24,7 @@ const roomsManager = (content, ws) => {
   }
 };
 
-const createRoom = (data, ws) => {
+const createRoom = async (data, ws) => {
   try {
     const { name } = data;
     const players = [{ user: ws.session.user, ws }]; // Join the creator to the room
@@ -31,7 +32,9 @@ const createRoom = (data, ws) => {
     const room = new Room(name, players);
     rooms[room.id] = room;
 
+    await User.updateMany({ _id: { $in: players.map((player) => player.user._id) } }, { inRoom: true }).exec();
     ws.session.room = room;
+
     ws.send(
       // Response to creator client
       JSON.stringify({
@@ -43,21 +46,24 @@ const createRoom = (data, ws) => {
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
 
     // Broadcast to clients in the lobby
-    broadcastRoomsListToLobby();
+    broadcastRoomsListToLobby(ws);
     broadcastLobbyUsersList(ws);
   } catch (error) {
     console.log("Create room failed.", error);
   }
 };
 
-const joinRoom = (data, ws) => {
+const joinRoom = async (data, ws) => {
   const { roomId } = data;
-  const player = { user: ws.session.user, ws };
+  const user = ws.session.user;
+  const player = { user, ws };
 
   const room = rooms[roomId];
 
   if (room.joinRoom(player)) {
+    await User.findByIdAndUpdate(user._id, { inRoom: true }).exec();
     ws.session.room = room;
+
     ws.send(
       // Response to joiner client
       JSON.stringify({
@@ -69,7 +75,7 @@ const joinRoom = (data, ws) => {
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
 
     // Broadcast to clients in the lobby
-    broadcastRoomsListToLobby();
+    broadcastRoomsListToLobby(ws);
     broadcastLobbyUsersList(ws);
   } else {
     console.log("Join room failed.", error);
@@ -82,13 +88,16 @@ const joinRoom = (data, ws) => {
   }
 };
 
-const leaveRoom = (data, ws) => {
+const leaveRoom = async (data, ws) => {
   const { roomId } = data;
-  const player = { user: ws.session.user };
+  const user = ws.session.user;
+  const player = { user };
   const room = rooms[roomId];
 
   if (room.leaveRoom(player)) {
+    await User.findByIdAndUpdate(user._id, { inRoom: false }).exec();
     ws.session.room = null;
+
     ws.send(
       JSON.stringify({
         type: "leaveRoomResponse",
@@ -103,7 +112,7 @@ const leaveRoom = (data, ws) => {
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
 
     // Broadcast to clients in the lobby
-    broadcastRoomsListToLobby();
+    broadcastRoomsListToLobby(ws);
     broadcastLobbyUsersList(ws);
   } else {
     console.log("Leave room failed.", error);
@@ -167,10 +176,10 @@ export const sendRoomsList = (data, ws) => {
 };
 
 // For all clients
-const broadcastRoomsListToLobby = async () => {
+const broadcastRoomsListToLobby = async (exceptWs) => {
   try {
     Object.values(clients).forEach(async (clientWs) => {
-      if (clientWs.session && clientWs.session.user && !clientWs.session.room) {
+      if (clientWs.session && clientWs.session.user && !clientWs.session.room && clientWs !== exceptWs) {
         const roomsList = getAllRooms();
         clientWs.send(
           JSON.stringify({
