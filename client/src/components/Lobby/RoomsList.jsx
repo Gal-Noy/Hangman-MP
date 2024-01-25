@@ -178,6 +178,12 @@ function RoomsList() {
   }, []);
 
   useEffect(() => {
+    setTimeout(() => {
+      setError(null);
+    }, 2000);
+  }, [error]);
+
+  useEffect(() => {
     if (lastJsonMessage && !inRoom) {
       const { type, content } = lastJsonMessage;
       const { success, message, data } = content;
@@ -206,14 +212,6 @@ function RoomsList() {
       }
     }
   }, [lastJsonMessage]);
-
-  useEffect(() => {
-    if (error) {
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
-    }
-  }, [error]);
 
   const createNewRoom = (newRoomSettings) => {
     const { isPrivate, password } = newRoomSettings;

@@ -59,7 +59,6 @@ class Room {
   }
 
   joinRoom(player, password) {
-    console.log(password);
     if (this.status !== "waiting") {
       return "Room is during a game.";
     }
@@ -79,9 +78,11 @@ class Room {
   leaveRoom(player) {
     const playerIndex = this.players.findIndex((p) => p.user._id === player.user._id);
     if (playerIndex !== -1) {
+      const isAdmin = this.players[playerIndex].isAdmin;
+
       this.players.splice(playerIndex, 1);
 
-      if (player.isAdmin && this.players.length > 0) {
+      if (isAdmin && this.players.length > 0) {
         this.players[0].isAdmin = true;
       }
 
