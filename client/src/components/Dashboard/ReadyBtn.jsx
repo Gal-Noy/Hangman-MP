@@ -8,7 +8,7 @@ function ReadyBtn({ roomId }) {
 
   const toggleReady = () => {
     sendJsonMessage({
-      type: "room",
+      type: "rooms",
       content: {
         action: isPlayerReady ? "unready" : "ready",
         data: { roomId },
@@ -19,9 +19,8 @@ function ReadyBtn({ roomId }) {
 
   return (
     <button
-      className={"mt-3 me-2 btn " + (isPlayerReady ? "btn-success shadow" : "btn-outline-success")}
+      className={"mt-3 btn " + (isPlayerReady ? "btn-success shadow" : "btn-outline-success")}
       onClick={toggleReady}
-      style={{ marginLeft: "800px" }}
     >
       Ready
     </button>

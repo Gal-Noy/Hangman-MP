@@ -19,7 +19,7 @@ function LobbyUsersList() {
         return;
       }
       sendJsonMessage({
-        type: "room",
+        type: "rooms",
         content: {
           action: "invite",
           data: {
@@ -94,7 +94,7 @@ function LobbyUsersList() {
   }, [error]);
 
   return (
-    <div className="bg-gray-400 rounded w-25 ms-1 d-flex flex-column h-570">
+    <div className="bg-gray-400 rounded w-30 ms-1 d-flex flex-column h-570">
       <div className="users-list-header rounded bg-light mt-2 mx-2">
         <p className="text-center pt-2 fs-4 fw-bold text-dark">Lobby</p>
       </div>

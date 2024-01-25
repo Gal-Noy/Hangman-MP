@@ -9,7 +9,7 @@ function BackToLobbyBtn({ roomId }) {
 
   const leaveRoom = () => {
     sendJsonMessage({
-      type: "room",
+      type: "rooms",
       content: {
         action: "leave",
         data: { roomId },

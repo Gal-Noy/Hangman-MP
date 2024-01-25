@@ -21,7 +21,7 @@ function RoomsList() {
 
   useEffect(() => {
     sendJsonMessage({
-      type: "room",
+      type: "rooms",
       content: {
         action: "list",
         data: {},
@@ -53,7 +53,7 @@ function RoomsList() {
 
   const createNewRoom = () => {
     sendJsonMessage({
-      type: "room",
+      type: "rooms",
       content: {
         action: "create",
         data: { name: "test" },
@@ -67,7 +67,7 @@ function RoomsList() {
 
   const joinExistingRoom = (roomId) => () => {
     sendJsonMessage({
-      type: "room",
+      type: "rooms",
       content: {
         action: "join",
         data: { roomId },

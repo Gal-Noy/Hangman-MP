@@ -3,7 +3,7 @@ import { User } from "../models/userModel.js";
 import { clients } from "./socketListener.js";
 import { broadcastLobbyUsersList } from "./usersManager.js";
 
-const rooms = {};
+export const rooms = {};
 
 const roomsManager = (content, ws) => {
   const { action, data } = content;
@@ -168,19 +168,28 @@ const invitePlayer = (data, ws) => {
   }
 };
 
-const kickPlayer = (data, ws) => {
+const kickPlayer = async (data, ws) => {
   const { kickedPlayerId, roomId } = data;
   const room = rooms[roomId];
 
   const kickedPlayerWs = Object.values(clients).find((client) => client.session.user._id === kickedPlayerId);
 
   if (kickedPlayerWs && room.kickPlayer(ws.session.user, kickedPlayerId)) {
+    await User.findByIdAndUpdate(kickedPlayerId, { inRoom: false }).exec();
+    kickedPlayerWs.session.room = null;
+
     kickedPlayerWs.send(
       JSON.stringify({
         type: "kickFromRoom",
         content: { success: true, message: "Kick player.", data: { room: room.getRoomData() } },
       })
     );
+
+    room.updateRoomInfoPlayers(); // Broadcast to clients in the room
+
+    // Broadcast to clients in the lobby
+    broadcastRoomsListToLobby(ws);
+    broadcastLobbyUsersList(ws);
   } else {
     console.log("Kick player failed.");
     ws.send(

@@ -171,7 +171,7 @@ function RoomsList() {
 
   useEffect(() => {
     sendJsonMessage({
-      type: "room",
+      type: "rooms",
       content: {
         action: "list",
         data: {},
@@ -226,7 +226,7 @@ function RoomsList() {
       return;
     }
     sendJsonMessage({
-      type: "room",
+      type: "rooms",
       content: {
         action: "create",
         data: newRoomSettings,
@@ -252,7 +252,7 @@ function RoomsList() {
       return;
     }
     sendJsonMessage({
-      type: "room",
+      type: "rooms",
       content: {
         action: "join",
         data: { roomId: id, password },
@@ -261,7 +261,7 @@ function RoomsList() {
   };
 
   return (
-    <div className="bg-gray-400 rounded w-50 ms-1 d-flex flex-column h-570">
+    <div className="bg-gray-400 rounded w-40 d-flex flex-column h-570">
       <div className="rooms-list-header rounded bg-light mt-2 mx-2">
         <p className="text-center pt-2 fs-4 fw-bold text-dark">Rooms</p>
       </div>

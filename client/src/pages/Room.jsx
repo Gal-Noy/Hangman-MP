@@ -4,8 +4,7 @@ import PlayersList from "../components/Room/PlayersList";
 import { useWebSocketContext } from "../WebSocketContext";
 import { useDispatch, useSelector } from "react-redux";
 import { setRoom, setLobby, setKickedFromRoom } from "../store/clientStateSlice";
-
-// import Chat from "../components/Chat/Chat";
+import Chat from "../components/Chat/Chat";
 
 function Room() {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
@@ -34,7 +33,7 @@ function Room() {
 
   const kickPlayer = (playerId) => {
     sendJsonMessage({
-      type: "room",
+      type: "rooms",
       content: {
         action: "kick",
         data: {
@@ -47,9 +46,9 @@ function Room() {
 
   return (
     <div className=" mb-1 w-75 d-flex flex-row">
-      {/* <Chat /> */}
       <PlayersList players={players} isRoomAdmin={isRoomAdmin} kickPlayer={kickPlayer} />
       <UsersList />
+      <Chat />
     </div>
   );
 }

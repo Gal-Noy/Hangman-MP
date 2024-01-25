@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useWebSocketContext } from "../../WebSocketContext";
 import { GrAttachment } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
 
-function InputBar({ messages, setMessages, newMessageStatus, setNewMessageStatus }) {
+function InputBar({ roomId }) {
   const { sendJsonMessage } = useWebSocketContext();
   const [newMessageText, setNewMessageText] = useState("");
   const [attachment, setAttachment] = useState(null);
@@ -12,68 +11,52 @@ function InputBar({ messages, setMessages, newMessageStatus, setNewMessageStatus
   const [showAttachmentConfirmation, setShowAttachmentConfirmation] = useState(false);
   const [attachmentConfirmed, setAttachmentConfirmed] = useState(false);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (newMessageText === "" && !attachment) return;
 
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    let base64;
+    if (attachment) {
+      base64 = await convertToBase64(attachment);
+    }
+
     const newMessageObj = {
+      roomId: !roomId ? 0 : roomId,
       text: newMessageText,
-      sender: JSON.parse(localStorage.getItem("user")).name,
-      status: newMessageStatus,
-      attachment: attachment,
+      sender: {
+        id: user._id,
+        name: user.name,
+      },
+      attachment: !attachment ? null : base64.split(",")[1],
     };
 
-    try {
-      const newMessages = [...messages, newMessageObj];
-      setMessages(newMessages);
+    sendJsonMessage({
+      type: "chats",
+      content: {
+        action: "send",
+        data: newMessageObj,
+      },
+    });
 
-      setNewMessageText("");
-      setNewMessageStatus("pending");
-      setAttachment(null);
-
-      axios
-        .post(`${import.meta.env.VITE_SERVER_URL}/api/chats/${import.meta.env.VITE_CHAT_ID}/messages`, newMessageObj, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
-          },
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            setNewMessageStatus("success");
-            sendJsonMessage({
-              type: "chat",
-              content: {
-                action: "sendMessage",
-                data: newMessageObj,
-              },
-            });
-          } else {
-            setNewMessageStatus("error");
-            throw new Error("Could not send message.");
-          }
-        })
-        .catch((err) => {
-          console.error("Error sending message: ", err);
-          setNewMessageStatus("error");
-        });
-    } catch (err) {
-      console.log(err);
-    }
+    setNewMessageText("");
+    setAttachment(null);
   };
 
-  // const convertFileToBase64 = (file) => {
-  //   return new Promise((resolve, reject) => {
-  //     const fileReader = new FileReader();
-  //     fileReader.readAsDataURL(file);
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
 
-  //     fileReader.onload = () => {
-  //       resolve(fileReader.result);
-  //     };
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
 
-  //     fileReader.onerror = (err) => {
-  //       reject(err);
-  //     };
-  //   });
-  // };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
 
   const handleAttachmentChange = async (e) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -87,8 +70,6 @@ function InputBar({ messages, setMessages, newMessageStatus, setNewMessageStatus
           setAttachmentError(null);
         }, 3000);
       } else {
-        // const base64SelectedFile = await convertFileToBase64(selectedFile);
-        // setAttachment(base64SelectedFile);
         setAttachment(selectedFile);
         setAttachmentError(null);
         setAttachmentConfirmed(false);
@@ -104,55 +85,47 @@ function InputBar({ messages, setMessages, newMessageStatus, setNewMessageStatus
     return () => clearTimeout(timer);
   }, [attachmentError]);
 
-  const AttachmentConfirmation = () => {
+  const AttachmentConfirmation = ({}) => {
     return (
-      <div className="attachment-confirmation">
-        {showAttachmentConfirmation && attachment && (
-          <div className="confirmation-overlay position-absolute top-50 start-50 translate-middle h-auto rounded bg-secondary d-flex flex-column align-items-center">
-            <img
-              src={URL.createObjectURL(attachment)}
-              alt="Uploaded"
-              className="img-fluid mt-2"
-              style={{ maxWidth: "90%", maxHeight: "90%" }}
-            />
-            <div className="buttons my-3">
-              <button
-                className="btn btn-success mx-2"
-                onClick={() => {
-                  setAttachmentConfirmed(true);
-                  setShowAttachmentConfirmation(false);
-                }}
-              >
-                Confirm
-              </button>
-              <button className="btn btn-danger mx-2" onClick={() => setShowAttachmentConfirmation(false)}>
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
+      <div className="confirmation-overlay position-absolute top-50 start-50 translate-middle h-auto rounded bg-secondary d-flex flex-column align-items-center">
+        <img
+          src={URL.createObjectURL(attachment)}
+          alt="Uploaded"
+          className="img-fluid mt-2"
+          style={{ maxWidth: "90%", maxHeight: "90%" }}
+        />
+        <div className="buttons my-3">
+          <button
+            className="btn btn-success mx-2"
+            onClick={() => {
+              setAttachmentConfirmed(true);
+              setShowAttachmentConfirmation(false);
+            }}
+          >
+            Confirm
+          </button>
+          <button className="btn btn-danger mx-2" onClick={() => setShowAttachmentConfirmation(false)}>
+            Cancel
+          </button>
+        </div>
       </div>
     );
   };
 
   return (
     <div className="input-bar-component">
-      <AttachmentConfirmation
-        attachment={attachment}
-        showAttachmentConfirmation={showAttachmentConfirmation}
-        setShowAttachmentConfirmation={setShowAttachmentConfirmation}
-        setAttachmentConfirmed={setAttachmentConfirmed}
-      />
+      {showAttachmentConfirmation && attachment && <AttachmentConfirmation />}
       <div className="chat-input rounded m-2">
         {attachmentError && (
           <div
-            className="alert alert-danger position-absolute translate-middle-y start-45 z-3 mt-3 p-2 ms-2"
+            className="alert alert-danger position-absolute translate-middle-y start-60 z-3 mt-3 p-2 ms-2"
             role="alert"
           >
             {attachmentError}
           </div>
         )}
         <div className="input-group">
+          {/* Message input */}
           <input
             type="text"
             className="form-control"
