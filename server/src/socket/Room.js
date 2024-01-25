@@ -99,6 +99,26 @@ class Room {
     }
   }
 
+  kickPlayer(kickerUser, playerId) {
+    if (kickerUser._id !== this.admin) {
+      console.log("Not admin.");
+      return false;
+    }
+
+    const playerIndex = this.players.findIndex((p) => p.user._id === playerId);
+
+    if (playerIndex !== -1) {
+      this.players.splice(playerIndex, 1);
+
+      this.updateRoomInfoPlayers();
+
+      return true;
+    } else {
+      console.log("Player not found.");
+      return false;
+    }
+  }
+
   toggleReadyPlayer(player) {
     const playerIndex = this.players.findIndex((p) => p.user._id === player.user._id);
     if (playerIndex !== -1) {

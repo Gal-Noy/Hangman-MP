@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useWebSocketContext } from "../../WebSocketContext";
-import { setRoom } from "../../store/clientStateSlice";
+import { setKickedFromRoom, setRoom } from "../../store/clientStateSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 function RoomsList() {
@@ -8,6 +8,7 @@ function RoomsList() {
   const [rooms, setRooms] = useState([]);
   const dispatch = useDispatch();
   const inRoom = useSelector((state) => state.clientState.clientState) !== "lobby";
+  const kickedFromRoom = useSelector((state) => state.clientState.kickedFromRoom);
   const [showCreateRoomForm, setShowCreateRoomForm] = useState(false);
   const [error, setError] = useState(null);
   const [invitation, setInvitation] = useState(null);
@@ -179,9 +180,9 @@ function RoomsList() {
   }, []);
 
   useEffect(() => {
-    const timeId = setTimeout(() => {
+    setTimeout(() => {
       setError(null);
-    }, 2000);
+    }, 3000);
   }, [error]);
 
   useEffect(() => {
@@ -284,6 +285,21 @@ function RoomsList() {
             </div>
             <div className="ms-3 mb-1 fs-5" type="button" id="invite-user-to-room" onClick={() => setInvitation(null)}>
               ❌
+            </div>
+          </div>
+        )}
+        {kickedFromRoom !== "" && (
+          <div className="rounded bg-danger m-2 d-flex align-items-center p-2 text-white">
+            <div className="ms-2 mb-1 fs-5">
+              You have been kicked from <strong>{kickedFromRoom}</strong> by room's admin!
+            </div>
+            <div
+              className="ms-3 mb-1 fs-5"
+              type="button"
+              id="invite-user-to-room"
+              onClick={() => dispatch(setKickedFromRoom(""))}
+            >
+              ⨉
             </div>
           </div>
         )}

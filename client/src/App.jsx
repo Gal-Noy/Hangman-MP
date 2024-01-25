@@ -15,7 +15,7 @@ function App() {
     onOpen: () => {
       console.log("WebSocket connection opened");
       if (isLoggedIn) {
-        // dispatch(setLobby());
+        dispatch(setLobby());
         sendJsonMessage({
           type: "auth",
           content: {
@@ -31,6 +31,13 @@ function App() {
     share: false,
     shouldReconnect: () => true,
   });
+
+  useEffect(() => {
+    if (lastJsonMessage) {
+      const { type, content } = lastJsonMessage;
+      console.log(type, content);
+    }
+  }, [lastJsonMessage]);
 
   return (
     <WebSocketProvider value={{ sendJsonMessage, lastJsonMessage }}>

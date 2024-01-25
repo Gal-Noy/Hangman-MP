@@ -35,8 +35,7 @@ function RoomsList() {
       const { success, data } = content;
       switch (type) {
         case "updateRoomsList":
-          const { rooms } = data;
-          setRooms(rooms);
+          setRooms(data.rooms);
           break;
         case "createRoomResponse":
           if (success) {
@@ -44,8 +43,7 @@ function RoomsList() {
           }
           break;
         case "joinRoomResponse":
-          const { room } = data;
-          dispatch(setRoom(room));
+          dispatch(setRoom(data.room));
           break;
         default:
           break;

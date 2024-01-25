@@ -16,6 +16,7 @@ const roomsManager = (content, ws) => {
     join: joinRoom,
     leave: leaveRoom,
     invite: invitePlayer,
+    kick: kickPlayer,
     ready: toggleReadyPlayer,
     unready: toggleReadyPlayer,
   }[action];
@@ -144,7 +145,7 @@ const invitePlayer = (data, ws) => {
   const room = rooms[roomId];
 
   const invitedPlayerWs = Object.values(clients).find((client) => client.session.user._id === invitedPlayerId);
-  
+
   if (invitedPlayerWs) {
     invitedPlayerWs.send(
       JSON.stringify({
@@ -162,6 +163,30 @@ const invitePlayer = (data, ws) => {
       JSON.stringify({
         type: "invitePlayerResponse",
         content: { success: false, message: "Invite player failed.", data: null },
+      })
+    );
+  }
+};
+
+const kickPlayer = (data, ws) => {
+  const { kickedPlayerId, roomId } = data;
+  const room = rooms[roomId];
+
+  const kickedPlayerWs = Object.values(clients).find((client) => client.session.user._id === kickedPlayerId);
+
+  if (kickedPlayerWs && room.kickPlayer(ws.session.user, kickedPlayerId)) {
+    kickedPlayerWs.send(
+      JSON.stringify({
+        type: "kickFromRoom",
+        content: { success: true, message: "Kick player.", data: { room: room.getRoomData() } },
+      })
+    );
+  } else {
+    console.log("Kick player failed.");
+    ws.send(
+      JSON.stringify({
+        type: "kickPlayerResponse",
+        content: { success: false, message: "Kick player failed.", data: null },
       })
     );
   }
