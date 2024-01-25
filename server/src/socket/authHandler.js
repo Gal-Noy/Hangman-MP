@@ -24,7 +24,7 @@ const handleLogin = (data, ws) => {
 
     ws.session = { user, token };
 
-    broadcastLobbyUsersList();
+    broadcastLobbyUsersList(ws);
     sendRoomsList({}, ws);
   } catch (error) {
     console.log("Login failed.", error);
@@ -35,7 +35,7 @@ const handleLogout = (data, ws) => {
   try {
     ws.session = null;
 
-    broadcastLobbyUsersList();
+    broadcastLobbyUsersList(ws);
   } catch (error) {
     console.log("Logout failed.", error);
   }
@@ -56,7 +56,7 @@ const handleReAuth = async (data, ws) => {
 
       await User.findByIdAndUpdate(user._id, { isActive: false });
 
-      broadcastLobbyUsersList();
+      broadcastLobbyUsersList(ws);
 
       ws.send(
         JSON.stringify({

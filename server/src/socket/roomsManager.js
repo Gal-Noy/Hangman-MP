@@ -44,7 +44,7 @@ const createRoom = (data, ws) => {
 
     // Broadcast to clients in the lobby
     broadcastRoomsListToLobby();
-    broadcastLobbyUsersList();
+    broadcastLobbyUsersList(ws);
   } catch (error) {
     console.log("Create room failed.", error);
   }
@@ -70,7 +70,7 @@ const joinRoom = (data, ws) => {
 
     // Broadcast to clients in the lobby
     broadcastRoomsListToLobby();
-    broadcastLobbyUsersList();
+    broadcastLobbyUsersList(ws);
   } else {
     console.log("Join room failed.", error);
     ws.send(
@@ -104,7 +104,7 @@ const leaveRoom = (data, ws) => {
 
     // Broadcast to clients in the lobby
     broadcastRoomsListToLobby();
-    broadcastLobbyUsersList();
+    broadcastLobbyUsersList(ws);
   } else {
     console.log("Leave room failed.", error);
     ws.send(

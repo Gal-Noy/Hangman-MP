@@ -5,8 +5,6 @@ import { getAllRooms } from "./roomsManager.js";
 const usersManager = (content, ws) => {
   const { action, data } = content;
 
-  console.log("INCOMING USERS MANAGER", action, data, ws.session.user.name);
-
   const handler = {
     list: sendLobbyUsersList,
   }[action];
@@ -22,8 +20,17 @@ const sendLobbyUsersList = async (data, ws) => {
     const roomsList = getAllRooms();
 
     if (ws.session && ws.session.user) {
-      const currentUser = ws.session.user;
-      const users = await User.find({ $and: [{ _id: { $ne: currentUser._id } }, { isActive: true }] }).exec();
+      const users = Object.values(clients)
+        .filter(
+          (client) =>
+            client.session &&
+            client.session.user &&
+            client.session.user._id !== ws.session.user._id && 
+            !client.session.room
+        )
+        .map((client) => client.session.user);
+      // const currentUser = ws.session.user;
+      // const users = await User.find({ $and: [{ _id: { $ne: currentUser._id } }, { isActive: true }] }).exec();
       // users.filter((user) => !roomsList.some((room) => room.players.some((player) => player.id === user._id)));
       ws.send(
         JSON.stringify({
@@ -38,15 +45,25 @@ const sendLobbyUsersList = async (data, ws) => {
 };
 
 // For all clients
-export const broadcastLobbyUsersList = async () => {
+export const broadcastLobbyUsersList = async (exceptWs) => {
   try {
     const roomsList = getAllRooms();
 
     Object.values(clients).forEach(async (clientWs) => {
-      if (clientWs.session && clientWs.session.user) {
-        const currentUser = clientWs.session.user;
-        const users = await User.find({ $and: [{ _id: { $ne: currentUser._id } }, { isActive: true }] }).exec();
+      if (clientWs.session && clientWs.session.user && clientWs !== exceptWs) {
+        const users = Object.values(clients)
+          .filter(
+            (client) =>
+              client.session &&
+              client.session.user &&
+              client.session.user._id !== clientWs.session.user._id &&
+              !client.session.room
+          )
+          .map((client) => client.session.user);
+        // const currentUser = clientWs.session.user;
+        // const users = await User.find({ $and: [{ _id: { $ne: currentUser._id } }, { isActive: true }] }).exec();
         // users.filter((user) => !roomsList.some((room) => room.players.some((player) => player.id === user._id)));
+
         clientWs.send(
           JSON.stringify({
             type: "updateLobbyUsersList",
