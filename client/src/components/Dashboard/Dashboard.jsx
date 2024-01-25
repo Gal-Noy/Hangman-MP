@@ -24,7 +24,7 @@ function Dashboard({ onLogout }) {
           )}
         </div>
       )}
-      <div className="d-flex flex-row justify-content-between">
+      <div className="d-flex flex-row ">
         <LogoutBtn onLogout={onLogout} />
         {clientState === "room" && <ReadyBtn roomId={roomData.id} />}
         {clientState !== "lobby" && <BackToLobbyBtn roomId={roomData.id} />}

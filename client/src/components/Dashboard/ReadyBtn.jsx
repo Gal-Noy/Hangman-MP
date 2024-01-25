@@ -19,8 +19,9 @@ function ReadyBtn({ roomId }) {
 
   return (
     <button
-      className={"mt-3 btn " + (isPlayerReady ? "btn-success shadow" : "btn-outline-success")}
+      className={"mt-3 me-2 btn " + (isPlayerReady ? "btn-success shadow" : "btn-outline-success")}
       onClick={toggleReady}
+      style={{ marginLeft: "800px" }}
     >
       Ready
     </button>
