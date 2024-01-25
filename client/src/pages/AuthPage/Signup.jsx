@@ -1,23 +1,33 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 function Signup() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [signupData, setSignupData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
   const [signupSuccess, setSignupSuccess] = useState(false);
+  const [passwordsMatch, setPasswordsMatch] = useState(signupData.password === signupData.confirmPassword);
+
+  useEffect(() => {
+    setPasswordsMatch(signupData.password === signupData.confirmPassword);
+  }, [signupData.confirmPassword, signupData.password]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!name || !email || !password) {
+    const { name, email, password, confirmPassword } = signupData;
+
+    if (!name || !email || !password || !confirmPassword) {
       alert("Please fill in all fields");
       return;
     }
 
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
     axios
-      .post(`${import.meta.env.VITE_SERVER_URL}/api/auth/register`, { name, email, password })
+      .post(`${import.meta.env.VITE_SERVER_URL}/api/auth/register`, { name, email, password, confirmPassword })
       .then((res) => {
         setSignupSuccess(true);
       })
@@ -54,7 +64,7 @@ function Signup() {
                 className="form-control rounded-0"
                 id="name"
                 placeholder="Enter name"
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setSignupData({ ...signupData, name: e.target.value })}
               />
             </div>
             <div className="mb-3">
@@ -67,7 +77,7 @@ function Signup() {
                 className="form-control rounded-0"
                 id="email"
                 placeholder="Enter email"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
               />
             </div>
             <div className="mb-3">
@@ -80,7 +90,24 @@ function Signup() {
                 className="form-control rounded-0"
                 id="password"
                 placeholder="Password"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="confirmPassword" className="form-label">
+                {passwordsMatch ? (
+                  <strong>Confirm Password</strong>
+                ) : (
+                  <strong className="text-danger">Confirm Password</strong>
+                )}
+              </label>
+              <input
+                type="password"
+                name="confirmPassword"
+                className="form-control rounded-0"
+                id="confirmPassword"
+                placeholder="Confirm Password"
+                onChange={(e) => setSignupData({ ...signupData, confirmPassword: e.target.value })}
               />
             </div>
             <button type="submit" className="btn btn-success w-100 rounded-0">

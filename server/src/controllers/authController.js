@@ -5,11 +5,11 @@ import jwt from "jsonwebtoken";
 const authController = {
   registerUser: async (req, res) => {
     try {
-      if (!req.body.name || !req.body.email || !req.body.password) {
+      if (!req.body.name || !req.body.email || !req.body.password || !req.body.confirmPassword) {
         return res.status(400).json({ msg: "Please enter all fields" });
       }
 
-      const { name, email, password } = req.body;
+      const { name, email, password, confirmPassword } = req.body;
 
       const existingUser = await User.findOne({
         $or: [{ email: req.body.email.toLowerCase() }, { name: req.body.name.toLowerCase() }],
@@ -21,6 +21,10 @@ const authController = {
 
       if (password.length < 6) {
         return res.status(400).json({ msg: "Password must be at least 6 characters long." });
+      }
+
+      if (password !== confirmPassword) {
+        return res.status(400).json({ msg: "Passwords do not match." });
       }
 
       const encryptedPassword = await bcrypt.hash(password, 10); // Hash the password

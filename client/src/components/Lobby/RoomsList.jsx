@@ -31,7 +31,7 @@ function RoomsList() {
         >
           <div className="ms-2 mb-1 fs-5">{room.name}</div>
           <div className="ms-3 mb-1 fs-5">
-            👤{room.players.length}/{room.capacity}
+            👤{room.players.length}/{room.numberOfPlayers}
           </div>
           <div className="ms-1 mb-1 fs-5">{room.status === "waiting" ? "🕑" : "🔴"}</div>
           {room.isPrivate && !showInputPassword && <div className="ms-3 mb-1 fs-5">🔒</div>}
@@ -150,10 +150,7 @@ function RoomsList() {
             className="btn btn-primary mt-2 w-70"
             type="button"
             id="create-room-btn"
-            onClick={() => {
-              createNewRoom(newRoomSettings);
-              setShowCreateRoomForm(false);
-            }}
+            onClick={() => createNewRoom(newRoomSettings)}
           >
             Create
           </button>
@@ -194,10 +191,6 @@ function RoomsList() {
             joinCreatedRoom(data.room);
           } else {
             setError({ type: "create", message });
-
-            setTimeout(() => {
-              setError(null);
-            }, 3000);
           }
           break;
         case "joinRoomResponse":
@@ -206,10 +199,6 @@ function RoomsList() {
             dispatch(setRoom(room));
           } else {
             setError({ type: "join", roomId: room.id, message });
-
-            setTimeout(() => {
-              setError(null);
-            }, 3000);
           }
           break;
         default:
@@ -217,6 +206,14 @@ function RoomsList() {
       }
     }
   }, [lastJsonMessage]);
+
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
+    }
+  }, [error]);
 
   const createNewRoom = (newRoomSettings) => {
     const { isPrivate, password } = newRoomSettings;
@@ -238,7 +235,7 @@ function RoomsList() {
   };
 
   const joinExistingRoom = (room, password) => {
-    const { isPrivate, id, capacity } = room;
+    const { isPrivate, id, numberOfPlayers } = room;
     if (isPrivate && !password) {
       setError({ type: "join", roomId: id, message: "Please enter the password to join this room" });
       return;
@@ -247,7 +244,7 @@ function RoomsList() {
       setError({ type: "join", roomId: id, message: "Password must be at least 4 characters long" });
       return;
     }
-    if (capacity === room.players.length) {
+    if (numberOfPlayers === room.players.length) {
       setError({ type: "join", roomId: id, message: "This room is full" });
       return;
     }

@@ -6,6 +6,7 @@ const PlayerBox = ({ player }) => {
     <div className="rounded bg-gray-400 m-1 d-flex align-items-center p-2">
       <div className="ms-2">{player.status === "ready" ? "✔️" : " "}</div>
       <div className="ms-2 mb-1 fs-5">{player.name}</div>
+      {player.isAdmin && <div className="ms-2 mb-1 fs-5">👑</div>}
     </div>
   );
 };

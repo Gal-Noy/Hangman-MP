@@ -9,6 +9,7 @@ player: {
   },
   ws: WebSocket,
   status: "idle" | "ready" | "playing" | "finished",
+  isAdmin: boolean,
 }
 */
 
@@ -18,7 +19,10 @@ class Room {
     this.name = name;
     this.status = "waiting";
     this.game = new Game(this);
-    this.players = players.map((player) => ({ user: player.user, ws: player.ws, status: "idle" }));
+
+    this.players = players.map((player) => ({ user: player.user, ws: player.ws, isAdmin: false, status: "idle" }));
+    this.players[0].isAdmin = true;
+
     this.numberOfPlayers = numberOfPlayers;
     if (password) {
       this.password = password;
@@ -30,9 +34,14 @@ class Room {
     return {
       id: this.id,
       name: this.name,
-      players: this.players.map((player) => ({ id: player.user._id, name: player.user.name, status: player.status })),
+      players: this.players.map((player) => ({
+        id: player.user._id,
+        name: player.user.name,
+        isAdmin: player.isAdmin,
+        status: player.status,
+      })),
       status: this.status,
-      capacity: this.numberOfPlayers,
+      numberOfPlayers: this.numberOfPlayers,
       isPrivate: !!this.password,
     };
   }
@@ -50,9 +59,9 @@ class Room {
   }
 
   joinRoom(player, password) {
-    console.log(password)
+    console.log(password);
     if (this.status !== "waiting") {
-      return "Room is not waiting.";
+      return "Room is during a game.";
     }
     if (this.password && password && this.password !== password) {
       return "Wrong password.";
@@ -71,6 +80,10 @@ class Room {
     const playerIndex = this.players.findIndex((p) => p.user._id === player.user._id);
     if (playerIndex !== -1) {
       this.players.splice(playerIndex, 1);
+
+      if (player.isAdmin && this.players.length > 0) {
+        this.players[0].isAdmin = true;
+      }
 
       this.updateRoomInfoPlayers();
 

@@ -12,10 +12,11 @@ function Dashboard({ onLogout }) {
     <div className="bg-white mb-1 p-3 rounded w-75">
       {user && (
         <div className="text-center">
-          <div>
-            Hello <strong>{user.name}</strong>, welcome to chat!
-          </div>
-          {clientState === "lobby" && <div>Lobby</div>}
+          {clientState === "lobby" && (
+            <div>
+              Hello <strong>{user.name}</strong>, welcome to Guess The Words!
+            </div>
+          )}
           {clientState === "room" && (
             <div>
               <strong>{roomData.name}</strong>
