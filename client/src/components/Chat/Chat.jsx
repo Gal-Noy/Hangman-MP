@@ -16,7 +16,6 @@ function Chat() {
       if (type === "receiveChatMessage") {
         const { data, success } = content;
         if (success) {
-          console.log(data)
           const newMessages = [...messages, data];
           setMessages(newMessages);
         } else {

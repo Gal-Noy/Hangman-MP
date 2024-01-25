@@ -17,7 +17,6 @@ const chatsManager = (content, ws) => {
 
 const sendMessage = async (data, ws) => {
   const { roomId, text, sender, attachment } = data;
-  console.log(attachment);
   const message = { text, sender, attachment };
 
   if (roomId === 0) {
