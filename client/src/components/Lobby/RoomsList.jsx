@@ -243,10 +243,6 @@ function RoomsList() {
       setError({ type: "join", roomId: id, message: "Please enter the password to join this room" });
       return;
     }
-    if (isPrivate && password.length < 4) {
-      setError({ type: "join", roomId: id, message: "Password must be at least 4 characters long" });
-      return;
-    }
     if (numberOfPlayers === room.players.length) {
       setError({ type: "join", roomId: id, message: "This room is full" });
       return;

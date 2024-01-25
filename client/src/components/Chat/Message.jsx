@@ -3,7 +3,7 @@ import { b64toBlob } from "../../utils/utils";
 
 function Message({ message }) {
   const { sender, text, attachment } = message;
-  const convertedAttachment = b64toBlob(attachment, "image/");
+  const convertedAttachment = attachment ? b64toBlob(attachment, "image/") : null;
   const [isZoomIn, setIsZoomIn] = useState(false);
   const isUserSender = sender.id === JSON.parse(localStorage.getItem("user"))._id;
   const zoomRef = useRef(null);
@@ -23,7 +23,10 @@ function Message({ message }) {
 
   const ZoomInAttachment = () => {
     return (
-      <div ref={zoomRef} className="confirmation-overlay position-absolute top-50 start-50 translate-middle h-auto rounded bg-secondary d-flex flex-column align-items-center">
+      <div
+        ref={zoomRef}
+        className="confirmation-overlay position-absolute top-50 start-50 translate-middle h-auto rounded bg-secondary d-flex flex-column align-items-center"
+      >
         <img
           src={URL.createObjectURL(convertedAttachment)}
           alt="Uploaded"

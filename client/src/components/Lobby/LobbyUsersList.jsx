@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useWebSocketContext } from "../../WebSocketContext";
 import { useSelector } from "react-redux";
+import { sortLobbyUsers } from "../../utils/utils";
 
 function LobbyUsersList() {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
@@ -9,6 +10,7 @@ function LobbyUsersList() {
 
   const UserBox = ({ user, error, setError }) => {
     const isOnline = user.isActive;
+    const isMe = JSON.parse(localStorage.getItem("user"))._id === user._id;
     const roomData = useSelector((state) => state.clientState.roomData);
     const isAdmin = JSON.parse(localStorage.getItem("user"))._id === roomData?.admin;
     const [isUserInvited, setIsUserInvited] = useState(false);
@@ -34,7 +36,7 @@ function LobbyUsersList() {
 
     return (
       <div>
-        <div className="rounded bg-gray-400 m-1 d-flex align-items-center p-2">
+        <div className={"rounded m-1 d-flex align-items-center p-2 " + (!isMe ? "bg-gray-400" : "bg-primary")}>
           <div className="ms-2">{isOnline ? "🟢" : "🔴"}</div>
           <div className="ms-2 mb-1 fs-5">{user.name}</div>
           {isAdmin && !isUserInvited && (
@@ -73,12 +75,9 @@ function LobbyUsersList() {
       const { type, content } = lastJsonMessage;
       if (type === "updateLobbyUsersList") {
         const { users } = content.data;
-        users.sort((a, b) => {
-          if (a.isActive === b.isActive) {
-            return a.name < b.name ? -1 : 1;
-          }
-          return a.isActive ? -1 : 1;
-        });
+
+        sortLobbyUsers(users);
+
         setUsers(users);
       }
     }

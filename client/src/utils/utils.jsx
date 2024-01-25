@@ -1,3 +1,12 @@
+const sortLobbyUsers = (users) =>
+  users.sort((a, b) => {
+    if (a._id === JSON.parse(localStorage.getItem("user"))._id) return -1;
+    if (a.isActive === b.isActive) {
+      return a.name < b.name ? -1 : 1;
+    }
+    return a.isActive ? -1 : 1;
+  });
+
 const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
   const byteCharacters = atob(b64Data);
   const byteArrays = [];
@@ -18,4 +27,4 @@ const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
   return blob;
 };
 
-export { b64toBlob };
+export { b64toBlob, sortLobbyUsers };
