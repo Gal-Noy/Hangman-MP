@@ -1,6 +1,5 @@
-import Player from "./Player.js";
-import Table from "./Table.js";
 import { GameSocketManager } from "../socket/GameSocketManager.js";
+import { getRandomWord } from "../utils/utils.js";
 
 export default class Game {
   constructor(room) {
@@ -12,111 +11,136 @@ export default class Game {
         return acc;
       }, {})
     );
+    this.room.players.forEach((player) => (player.ws.session.game = this));
 
+    this.currRound = 1;
+    this.totalRounds = 5;
+    this.currentWord = null;
+    this.hiddenWord = "";
+    this.usedLetters = [];
+    this.remainingWrongAttempts = 0;
+    this.score = 0;
     this.terminate = false;
-    this.table = new Table();
 
-    this.players = room.players
-      .map((player) => new Player(player.user, player.ws, this, this.table))
-      .sort(() => Math.random() - 0.5);
-
-    this.players.forEach((player) => (player.ws.session.game = this));
-
-    this.playersScores = {};
-
-    this.currTurnIndex = null;
-    this.turnTimer = null;
+    this.timer = 0;
+    this.timerInterval = null;
+    this.timerDuration = 60;
   }
 
   runGame() {
-    // Shuffle the deck
-    this.table.shuffleDeck();
+    this.nextRound();
+  }
 
-    // Deal the cards, 4 cards per player
-    this.dealCards();
-
-    // Show each player 2 bottom cards
-    this.revealStartingCards();
-
-    // Set the first player
-    this.currTurnIndex = 0;
-    this.players[this.currTurnIndex].isTurn = true;
-
-    // Start the turn timer
-    // this.startTurnTimer();
-
-    while (!this.terminate) {
-      this.nextTurn();
+  async nextRound() {
+    if (this.shouldEndGame()) {
+      this.endGame();
+      return;
     }
 
-    this.announceWinner();
+    await this.nextWord();
+    this.broadcastGameState();
+    this.startTimer();
 
-    this.endGame();
-  }
-
-  dealCards() {
-    this.players.forEach((player) => {
-      const cards = this.table.deck.splice(0, 4);
-      player.hand = cards.map((card) => ({ card, revealed: false }));
-      this.table.playersHands[player.user._id] = player.hand;
-
-      // Broadcast to the player
+    // Wait for players actions (guesses)
+    this.gameSocketManager.waitForPlayersActions().then((data, playerId) => {
+      this.handlePlayerAction(data, playerId);
     });
   }
 
-  revealStartingCards() {
-    this.players.forEach((player) => {
-      player.hand[0].revealed = true;
-      player.hand[1].revealed = true;
-      this.table.playersHands[player.user._id] = player.hand;
-
-      // Broadcast to the player
-
-      setTimeout(() => {
-        player.hand[0].revealed = false;
-        player.hand[1].revealed = false;
-        this.table.playersHands[player.user._id] = player.hand;
-      }, 3000);
-
-      // Broadcast to the player
-    });
+  async nextWord() {
+    this.currentWord = await getRandomWord();
+    this.hiddenWord = "_".repeat(this.currentWord.word.length);
+    this.remainingWrongAttempts = this.currentWord.word.length + 2;
+    this.usedLetters = [];
   }
 
-  nextTurn() {
-    this.players[this.currTurnIndex].isTurn = false;
-    this.currTurnIndex = (this.currTurnIndex + 1) % this.players.length;
+  handlePlayerAction(data, playerId) {
+    const guessedLetter = data.letter.toLowerCase();
+    let response = "";
 
-    currPlayer = this.players[this.currTurnIndex];
-    currPlayer.isTurn = true;
-
-    // Start the turn timer
-
-    // Broadcast to players
-
-    // Wait for player's action
-    this.gameSocketManager.waitForPlayerAction(currPlayer.user._id).then((content) => {
-      // Stop the turn timer
-
-      // Process player's action
-      this.processPlayerAction(currPlayer, content);
-    });
-  }
-
-  processPlayerAction(player, content) {
-    const { action, card, target } = content;
-
-    switch (action) {
-      case "play":
-        this.playCard(player, card, target);
-        break;
-      case "discard":
-        this.discardCard(player, card);
-        break;
-      case "draw":
-        this.drawCard(player);
-        break;
-      default:
-        break;
+    if (this.usedLetters.includes(guessedLetter)) {
+      // The letter has already been used
+      response = "Letter has already been guessed";
+    } else {
+      this.usedLetters.push(guessedLetter);
+      if (this.currentWord.word.includes(guessedLetter)) {
+        // Update hiddenWord with guessed letter(s)
+        for (let i = 0; i < this.currentWord.word.length; i++) {
+          if (this.currentWord.word[i] === guessedLetter) {
+            this.hiddenWord = this.hiddenWord.substring(0, i) + guessedLetter + this.hiddenWord.substring(i + 1);
+          }
+        }
+        response = "Correct guess";
+      } else {
+        this.remainingWrongAttempts--;
+        response = "Incorrect guess";
+      }
     }
+
+    // Send response to the client
+    this.sendResponseToClientGuess(response, playerId);
+
+    // Check if the round should end after the player's guess
+    this.checkRoundEnd();
+  }
+
+  checkRoundEnd() {
+    if (this.hiddenWord === this.currentWord.word || this.remainingWrongAttempts === 0 || this.timer === 0) {
+      // Increase score if the word is guessed correctly
+      this.score += this.hiddenWord === this.currentWord.word ? 1 : 0;
+
+      this.currRound++;
+      this.stopTimer();
+
+      // Determine the reason for the round end
+      const endOfRoundMessage =
+        this.hiddenWord === this.currentWord.word
+          ? "Correct word!"
+          : this.remainingWrongAttempts === 0
+          ? "Out of attempts!"
+          : "Time's up!";
+
+      this.gameSocketManager.broadcastEndOfRoundMessage(endOfRoundMessage);
+      this.nextRound();
+    }
+  }
+
+  broadcastGameState() {
+    const gameState = {
+      definition: this.currentWord.definition,
+      hiddenWord: this.hiddenWord,
+      usedLetters: this.usedLetters,
+      remainingWrongAttempts: this.remainingWrongAttempts,
+      score: this.score,
+      round: this.currRound,
+    };
+    console.log(gameState);
+
+    this.gameSocketManager.broadcastGameState(gameState);
+  }
+
+  startTimer() {
+    this.timer = this.timerDuration;
+    this.timerInterval = setInterval(() => {
+      this.timer--;
+      this.gameSocketManager.broadcastTimer();
+      if (this.timer === 0) {
+        this.stopTimer();
+        this.checkRoundEnd();
+      }
+    }, 1000);
+  }
+
+  stopTimer() {
+    clearInterval(this.timerInterval);
+  }
+
+  shouldEndGame() {
+    return this.currRound > this.totalRounds || this.terminate;
+  }
+
+  endGame() {
+    const endOfGameMessage = `Game Over! Your final score is ${this.score}.`;
+    this.gameSocketManager.broadcastEndGame(endOfGameMessage);
   }
 }

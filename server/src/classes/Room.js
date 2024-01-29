@@ -141,8 +141,6 @@ export default class Room {
       this.players.map((player) => (player.status = "playing"));
       this.status = "playing";
 
-      this.updateRoomInfoPlayers();
-
       this.game = new Game(this);
       this.game.runGame();
 
