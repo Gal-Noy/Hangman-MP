@@ -53,7 +53,7 @@ export default class Game {
   async nextWord() {
     this.currentWord = await getRandomWord();
     this.hiddenWord = "_".repeat(this.currentWord.word.length);
-    this.remainingWrongAttempts = 3;
+    this.remainingWrongAttempts = 5;
     this.keypadLetters = await getKeypadLetters(this.currentWord.word);
     this.usedLetters = [];
   }

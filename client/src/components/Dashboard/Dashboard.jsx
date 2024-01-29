@@ -2,12 +2,22 @@ import LogoutBtn from "./LogoutBtn";
 import BackToLobbyBtn from "./BackToLobbyBtn";
 import ReadyBtn from "./ReadyBtn";
 import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { useWebSocketContext } from "../../WebSocketContext";
 
 function Dashboard({ onLogout }) {
   const clientState = useSelector((state) => state.clientState.clientState);
   const roomData = useSelector((state) => state.clientState.roomData);
   const gameState = useSelector((state) => state.clientState.gameState);
   const user = JSON.parse(localStorage.getItem("user"));
+  const { lastJsonMessage } = useWebSocketContext();
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    if (lastJsonMessage && lastJsonMessage.type === "timerUpdate") {
+      setTimer(lastJsonMessage.content.data);
+    }
+  }, [lastJsonMessage]);
 
   return (
     <div className="bg-white mb-1 p-3 rounded w-75">
@@ -30,9 +40,9 @@ function Dashboard({ onLogout }) {
                 {gameState.remainingWrongAttempts}
               </div>
               <div className="round-timer">
-                {gameState.timer > -1 && (
+                {timer > -1 && (
                   <div>
-                    <strong>Time Remaining: {gameState.timer}</strong>
+                    <strong>Time Remaining: {timer}</strong>
                   </div>
                 )}
               </div>

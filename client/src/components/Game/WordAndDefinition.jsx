@@ -2,7 +2,7 @@ function WordAndDefinition(props) {
   const { definition, hiddenWord } = props;
 
   return (
-    <div className="rounded bg-light m-2 h-50 w-60 overflow-auto">
+    <div className="rounded bg-light m-2 h-50 overflow-auto">
       <div className="definition-header rounded bg-light mt-2 mx-2">
         <p className="text-center pt-2 fs-3 fw-bold text-dark">{definition}</p>
         <div className="text-center pt-2 fw-bold text-dark">
