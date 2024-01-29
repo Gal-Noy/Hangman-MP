@@ -1,4 +1,4 @@
-import Room from "./Room.js";
+import Room from "../classes/Room.js";
 import { User } from "../models/userModel.js";
 import { clients } from "./socketListener.js";
 import { broadcastLobbyUsersList } from "./usersManager.js";
@@ -102,10 +102,9 @@ const joinRoom = async (data, ws) => {
 };
 
 export const leaveRoom = async (data, ws) => {
-  const { roomId } = data;
+  const room = ws.session.room;
   const user = ws.session.user;
   const player = { user };
-  const room = rooms[roomId];
 
   if (room.leaveRoom(player)) {
     await User.findByIdAndUpdate(user._id, { inRoom: false }).exec();
@@ -119,7 +118,7 @@ export const leaveRoom = async (data, ws) => {
     );
 
     if (room.players.length === 0) {
-      delete rooms[roomId];
+      delete rooms[room.id];
     }
 
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
@@ -141,8 +140,8 @@ export const leaveRoom = async (data, ws) => {
 };
 
 const invitePlayer = (data, ws) => {
-  const { invitedPlayerId, roomId, password } = data;
-  const room = rooms[roomId];
+  const { invitedPlayerId, password } = data;
+  const room = ws.session.room;
 
   const invitedPlayerWs = Object.values(clients).find((client) => client.session.user._id === invitedPlayerId);
 
@@ -169,8 +168,8 @@ const invitePlayer = (data, ws) => {
 };
 
 const kickPlayer = async (data, ws) => {
-  const { kickedPlayerId, roomId } = data;
-  const room = rooms[roomId];
+  const { kickedPlayerId } = data;
+  const room = ws.session.room;
 
   const kickedPlayerWs = Object.values(clients).find((client) => client.session.user._id === kickedPlayerId);
 
@@ -202,9 +201,8 @@ const kickPlayer = async (data, ws) => {
 };
 
 const toggleReadyPlayer = (data, ws) => {
-  const { roomId } = data;
   const player = { user: ws.session.user };
-  const room = rooms[roomId];
+  const room = ws.session.room;
 
   if (room.toggleReadyPlayer(player)) {
     ws.send(

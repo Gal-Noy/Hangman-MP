@@ -38,7 +38,6 @@ function Room() {
         action: "kick",
         data: {
           kickedPlayerId: playerId,
-          roomId: roomData.id,
         },
       },
     });

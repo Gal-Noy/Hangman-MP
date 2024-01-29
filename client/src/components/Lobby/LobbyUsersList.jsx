@@ -26,7 +26,6 @@ function LobbyUsersList() {
           action: "invite",
           data: {
             invitedPlayerId: invitedUser._id,
-            roomId: roomData.id,
             password: roomData?.password,
           },
         },

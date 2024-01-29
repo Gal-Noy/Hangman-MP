@@ -3,7 +3,7 @@ import { useWebSocketContext } from "../../WebSocketContext";
 import { setLobby } from "../../store/clientStateSlice";
 import { useEffect } from "react";
 
-function BackToLobbyBtn({ roomId }) {
+function BackToLobbyBtn() {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const dispatch = useDispatch();
 
@@ -12,7 +12,7 @@ function BackToLobbyBtn({ roomId }) {
       type: "rooms",
       content: {
         action: "leave",
-        data: { roomId },
+        data: {},
       },
     });
   };

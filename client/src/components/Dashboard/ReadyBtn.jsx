@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { useWebSocketContext } from "../../WebSocketContext";
 import { useState } from "react";
 
-function ReadyBtn({ roomId }) {
+function ReadyBtn() {
   const { sendJsonMessage } = useWebSocketContext();
   const [isPlayerReady, setIsPlayerReady] = useState(false);
 
@@ -11,7 +11,7 @@ function ReadyBtn({ roomId }) {
       type: "rooms",
       content: {
         action: isPlayerReady ? "unready" : "ready",
-        data: { roomId },
+        data: {},
       },
     });
     setIsPlayerReady(!isPlayerReady);

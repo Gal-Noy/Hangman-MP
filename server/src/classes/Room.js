@@ -13,12 +13,13 @@ player: {
 }
 */
 
-class Room {
+export default class Room {
   constructor(name, players, numberOfPlayers, password) {
     this.id = v4();
     this.name = name;
     this.status = "waiting";
-    this.game = new Game(this);
+
+    this.game = null;
 
     this.players = players.map((player) => ({ user: player.user, ws: player.ws, isAdmin: false, status: "idle" }));
     this.players[0].isAdmin = true;
@@ -142,16 +143,8 @@ class Room {
 
       this.updateRoomInfoPlayers();
 
-      // Delete this line
-      this.players.forEach((player) => {
-        player.ws.send(
-          JSON.stringify({
-            type: "START GAME",
-            content: { success: true, message: "START GAME.", data: { room: this.getRoomData() } },
-          })
-        );
-      });
-      // this.game.startGame(this.players); TODO: Uncomment this line
+      this.game = new Game(this);
+      this.game.runGame();
 
       return true;
     } else {
@@ -160,5 +153,3 @@ class Room {
     }
   }
 }
-
-export default Room;

@@ -34,8 +34,8 @@ const handleLogin = (data, ws) => {
 
 const handleLogout = async (data, ws) => {
   try {
-    if (ws.session.room) {
-      await leaveRoom({ roomId: ws.session.room.id, logout: true }, ws);
+    if (ws.session?.room) {
+      await leaveRoom({ logout: true }, ws);
     } else {
       broadcastLobbyUsersList(ws);
     }
