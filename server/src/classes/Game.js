@@ -24,7 +24,11 @@ export default class Game {
 
     this.timer = 0;
     this.timerInterval = null;
-    this.timerDuration = 60;
+    this.timerDuration = 61;
+
+    this.cooldown = 0;
+    this.cooldownInterval = null;
+    this.cooldownDuration = 6;
   }
 
   runGame() {
@@ -39,6 +43,12 @@ export default class Game {
     }
 
     await this.nextWord();
+
+    this.sendInitialState();
+
+    this.startCooldown();
+    await this.waitForCooldown();
+
     this.sendGameState();
     this.startTimer();
 
@@ -63,6 +73,13 @@ export default class Game {
   handlePlayerAction(letter, playerId) {
     const guessedLetter = letter.toLowerCase();
     let response = "";
+
+    if (this.cooldown > 0) {
+      // Cooldown is still active
+      response = "Cooldown is still active";
+      this.gameSocketManager.sendResponseToClientGuess(response, playerId);
+      return;
+    }
 
     if (this.usedLetters.includes(guessedLetter)) {
       // The letter has already been used
@@ -110,6 +127,19 @@ export default class Game {
     return false;
   }
 
+  sendInitialState() {
+    const initialState = {
+      players: this.room.players.map((player) => ({
+        name: player.user.name,
+      })),
+      remainingWrongAttempts: this.remainingWrongAttempts,
+      score: this.score,
+      round: this.currRound,
+    };
+
+    this.gameSocketManager.broadcastGameState(initialState);
+  }
+
   sendGameState() {
     const gameState = {
       players: this.room.players.map((player) => ({
@@ -123,9 +153,25 @@ export default class Game {
       score: this.score,
       round: this.currRound,
     };
-    console.log(gameState);
 
     this.gameSocketManager.broadcastGameState(gameState);
+  }
+
+  startCooldown() {
+    this.cooldown = this.cooldownDuration;
+    this.cooldownInterval = setInterval(() => {
+      this.cooldown--;
+      this.gameSocketManager.broadcastCooldown();
+      if (this.cooldown === 0) {
+        clearInterval(this.cooldownInterval);
+      }
+    }, 1000);
+  }
+
+  async waitForCooldown() {
+    while (this.cooldown > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
 
   startTimer() {

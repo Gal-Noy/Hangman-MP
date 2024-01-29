@@ -18,6 +18,20 @@ export class GameSocketManager {
     });
   }
 
+  broadcastCooldown() {
+    // Send cooldown to all players ws
+    Object.values(this.playersIdToWs).forEach((ws) => {
+      ws.send(
+        JSON.stringify({
+          type: "cooldownUpdate",
+          content: {
+            data: this.game.cooldown,
+          },
+        })
+      );
+    });
+  }
+
   broadcastGameState(gameState) {
     Object.values(this.playersIdToWs).forEach((ws) => {
       ws.send(

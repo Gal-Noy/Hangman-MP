@@ -166,6 +166,6 @@ export default class Room {
     this.players.forEach((player) => (player.ws.session.game = null));
 
     this.updateRoomInfoPlayers(); // Broadcast to clients in the room
-    broadcastRoomsListToLobby(this.room.players.map((player) => player.ws)); // Broadcast to clients in the lobby
+    broadcastRoomsListToLobby(this.players.map((player) => player.ws)); // Broadcast to clients in the lobby
   }
 }

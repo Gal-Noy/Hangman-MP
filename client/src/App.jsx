@@ -35,7 +35,9 @@ function App() {
   useEffect(() => {
     if (lastJsonMessage) {
       const { type, content } = lastJsonMessage;
-      if (type !== "timerUpdate") console.log(type, content);
+      // if (type !== "timerUpdate") {
+      console.log(type, content);
+      // };
     }
   }, [lastJsonMessage]);
 
