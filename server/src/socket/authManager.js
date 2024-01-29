@@ -25,7 +25,7 @@ const handleLogin = (data, ws) => {
 
     ws.session = { user, token };
 
-    broadcastLobbyUsersList(ws);
+    broadcastLobbyUsersList([ws]);
     sendRoomsList({}, ws);
   } catch (error) {
     console.log("Login failed.", error);
@@ -37,7 +37,7 @@ const handleLogout = async (data, ws) => {
     if (ws.session?.room) {
       await leaveRoom({ logout: true }, ws);
     } else {
-      broadcastLobbyUsersList(ws);
+      broadcastLobbyUsersList([ws]);
     }
     ws.session = null;
   } catch (error) {
@@ -57,7 +57,7 @@ const handleReAuth = async (data, ws) => {
       };
     } else {
       // Logout routine
-      await User.findByIdAndUpdate(user._id, { isActive: false, inRoom: false, inGame: false });
+      await User.findByIdAndUpdate(user._id, { isActive: false, inRoom: false });
       handleLogout(data, ws);
 
       ws.send(

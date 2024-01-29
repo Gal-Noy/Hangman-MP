@@ -71,10 +71,14 @@ export class GameSocketManager {
     Object.values(this.playersIdToWs).forEach((ws) => {
       ws.send(
         JSON.stringify({
-          type: "endOfGame",
+          type: "gameOver",
           content: { data: endOfGameMessage },
         })
       );
     });
+  }
+
+  removePlayer(playerId) {
+    delete this.playersIdToWs[playerId];
   }
 }

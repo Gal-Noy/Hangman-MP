@@ -1,5 +1,6 @@
 import { v4 } from "uuid";
 import Game from "./Game.js";
+import { broadcastRoomsListToLobby } from "../socket/roomsManager.js";
 
 /*
 player: {
@@ -91,8 +92,6 @@ export default class Room {
         this.admin = this.players[0].user._id;
       }
 
-      this.updateRoomInfoPlayers();
-
       return true;
     } else {
       console.log("Player not found.");
@@ -110,8 +109,6 @@ export default class Room {
 
     if (playerIndex !== -1) {
       this.players.splice(playerIndex, 1);
-
-      this.updateRoomInfoPlayers();
 
       return true;
     } else {
@@ -142,6 +139,17 @@ export default class Room {
       this.status = "playing";
 
       this.game = new Game(this);
+      this.players.forEach((player) => {
+        const playerWs = player.ws;
+        playerWs.session.game = this.game;
+        playerWs.send(
+          JSON.stringify({
+            type: "startGame",
+            content: { success: true, message: "Start game.", data: {} },
+          })
+        );
+      });
+
       this.game.runGame();
 
       return true;
@@ -149,5 +157,15 @@ export default class Room {
       console.log("Not all players are ready.");
       return false;
     }
+  }
+
+  endGame() {
+    this.status = "waiting";
+    this.game = null;
+    this.players.map((player) => (player.status = "idle"));
+    this.players.forEach((player) => (player.ws.session.game = null));
+
+    this.updateRoomInfoPlayers(); // Broadcast to clients in the room
+    broadcastRoomsListToLobby(this.room.players.map((player) => player.ws)); // Broadcast to clients in the lobby
   }
 }

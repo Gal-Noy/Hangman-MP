@@ -12,10 +12,12 @@ const clientStateSlice = createSlice({
     setLobby: (state) => {
       state.clientState = "lobby";
       state.roomData = null;
+      state.gameState = null;
     },
     setRoom: (state, action) => {
       state.clientState = "room";
       state.roomData = action.payload;
+      state.gameState = null;
     },
     setGame: (state) => {
       state.clientState = "game";

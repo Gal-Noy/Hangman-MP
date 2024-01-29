@@ -59,8 +59,8 @@ const createRoom = async (data, ws) => {
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
 
     // Broadcast to clients in the lobby
-    broadcastRoomsListToLobby(ws);
-    broadcastLobbyUsersList(ws);
+    broadcastRoomsListToLobby([ws]);
+    broadcastLobbyUsersList([ws]);
   } catch (error) {
     console.log("Create room failed.", error);
   }
@@ -88,8 +88,8 @@ const joinRoom = async (data, ws) => {
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
 
     // Broadcast to clients in the lobby
-    broadcastRoomsListToLobby(ws);
-    broadcastLobbyUsersList(ws);
+    broadcastRoomsListToLobby([ws]);
+    broadcastLobbyUsersList([ws]);
   } else {
     console.log("Join room failed.", error);
     ws.send(
@@ -121,12 +121,16 @@ export const leaveRoom = async (data, ws) => {
       delete rooms[room.id];
     }
 
-    room.updateRoomInfoPlayers(); // Broadcast to clients in the room
+    if (!room.game) {
+      room.updateRoomInfoPlayers();
+    } else {
+      room.game.removePlayer(player);
+    }
 
     // Broadcast to clients in the lobby
-    broadcastRoomsListToLobby(ws);
+    broadcastRoomsListToLobby([ws]);
     if (!data.logout) {
-      broadcastLobbyUsersList(ws);
+      broadcastLobbyUsersList([ws]);
     }
   } else {
     console.log("Leave room failed.");
@@ -187,8 +191,8 @@ const kickPlayer = async (data, ws) => {
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
 
     // Broadcast to clients in the lobby
-    broadcastRoomsListToLobby(ws);
-    broadcastLobbyUsersList(ws);
+    broadcastRoomsListToLobby([ws]);
+    broadcastLobbyUsersList([ws]);
   } else {
     console.log("Kick player failed.");
     ws.send(
@@ -215,13 +219,9 @@ const toggleReadyPlayer = (data, ws) => {
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
 
     if (room.checkAllPlayersReady()) {
-      ws.send(
-        JSON.stringify({
-          type: "startGame",
-          content: { success: true, message: "Start game.", data: {} },
-        })
-      );
       room.startGame();
+      // broadcastRoomsListToLobby(this.room.players.map((player) => player.ws));
+      broadcastRoomsListToLobby();
     }
   } else {
     console.log("Toggle ready player failed.", error);
@@ -260,10 +260,15 @@ export const sendRoomsList = (data, ws) => {
 };
 
 // For all clients
-const broadcastRoomsListToLobby = async (exceptWs) => {
+export const broadcastRoomsListToLobby = async (exceptWs) => {
   try {
     Object.values(clients).forEach(async (clientWs) => {
-      if (clientWs.session && clientWs.session.user && !clientWs.session.room && clientWs !== exceptWs) {
+      if (
+        clientWs.session &&
+        clientWs.session.user &&
+        !clientWs.session.room &&
+        !(exceptWs && exceptWs.some((ws) => ws === clientWs))
+      ) {
         const roomsList = getAllRooms();
         clientWs.send(
           JSON.stringify({

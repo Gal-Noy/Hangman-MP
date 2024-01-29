@@ -74,8 +74,8 @@ function RoomsList() {
 
   const CreateRoomBox = () => {
     const [newRoomSettings, setNewRoomSettings] = useState({
-      name: `${JSON.parse(localStorage.getItem("user")).name}'s room`,
-      numberOfPlayers: 1,
+      name: `${JSON.parse(localStorage.getItem("user")).name}'s game`,
+      numberOfPlayers: 2,
       password: "",
       isPrivate: false,
     });

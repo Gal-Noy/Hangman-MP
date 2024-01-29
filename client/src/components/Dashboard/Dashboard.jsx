@@ -11,7 +11,7 @@ function Dashboard({ onLogout }) {
   const gameState = useSelector((state) => state.clientState.gameState);
   const user = JSON.parse(localStorage.getItem("user"));
   const { lastJsonMessage } = useWebSocketContext();
-  const [timer, setTimer] = useState(0);
+  const [timer, setTimer] = useState(60);
 
   useEffect(() => {
     if (lastJsonMessage && lastJsonMessage.type === "timerUpdate") {
@@ -35,17 +35,15 @@ function Dashboard({ onLogout }) {
           )}
           {clientState === "game" && gameState && (
             <div>
-              <div className="round-data">
+              <div className="game-data">
                 Round: {gameState.round} | Score: {gameState.score} | Remaining Wrong Attempts:{" "}
                 {gameState.remainingWrongAttempts}
               </div>
-              <div className="round-timer">
-                {timer > -1 && (
-                  <div>
-                    <strong>Time Remaining: {timer}</strong>
-                  </div>
-                )}
-              </div>
+              {timer >= 0 && (
+                <div>
+                  <strong>Time Remaining: {timer}</strong>
+                </div>
+              )}
             </div>
           )}
         </div>

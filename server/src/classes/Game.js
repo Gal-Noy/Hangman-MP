@@ -11,7 +11,6 @@ export default class Game {
         return acc;
       }, {})
     );
-    this.room.players.forEach((player) => (player.ws.session.game = this));
 
     this.currRound = 1;
     this.totalRounds = 5;
@@ -35,6 +34,7 @@ export default class Game {
   async nextRound() {
     if (this.shouldEndGame()) {
       this.endGame();
+      this.room.endGame();
       return;
     }
 
@@ -42,12 +42,14 @@ export default class Game {
     this.sendGameState();
     this.startTimer();
 
+    await this.waitForRoundEnd();
+  }
+
+  async waitForRoundEnd() {
     while (!this.checkRoundEnd()) {
       const { letter, playerId } = await this.gameSocketManager.waitForPlayersActions();
       this.handlePlayerAction(letter, playerId);
     }
-
-    this.nextRound();
   }
 
   async nextWord() {
@@ -103,7 +105,7 @@ export default class Game {
           : "Time's up!";
 
       this.gameSocketManager.broadcastEndOfRoundMessage(endOfRoundMessage);
-      return true;
+      this.nextRound();
     }
     return false;
   }
@@ -132,7 +134,6 @@ export default class Game {
       this.timer--;
       this.gameSocketManager.broadcastTimer();
       if (this.timer === 0) {
-        this.stopTimer();
         this.checkRoundEnd();
       }
     }, 1000);
@@ -149,5 +150,10 @@ export default class Game {
   endGame() {
     const endOfGameMessage = `Game Over! Your final score is ${this.score}.`;
     this.gameSocketManager.broadcastEndGame(endOfGameMessage);
+  }
+
+  removePlayer(player) {
+    this.gameSocketManager.removePlayer(player.user._id);
+    this.sendGameState();
   }
 }

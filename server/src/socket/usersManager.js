@@ -37,10 +37,10 @@ const sendLobbyUsersList = async (data, ws) => {
 export const broadcastLobbyUsersList = async (exceptWs) => {
   try {
     Object.values(clients).forEach(async (clientWs) => {
-      if (clientWs.session && clientWs.session.user && clientWs !== exceptWs) {
+      if (clientWs.session && clientWs.session.user && !(exceptWs && exceptWs.some((ws) => ws === clientWs))) {
         const currentUser = clientWs.session.user;
         const users = await User.find({
-          $and: [{ isActive: true }, { inRoom: false }, { inGame: false }],
+          $and: [{ isActive: true }, { inRoom: false }],
         }).exec();
         clientWs.send(
           JSON.stringify({

@@ -8,7 +8,6 @@ const getRandomWord = async () => {
 };
 
 const getKeypadLetters = async (currentWord) => {
-  console.log("currentWord", currentWord);
   const uniqueWordLetters = Array.from(new Set(currentWord));
   const additionalLettersNeeded = 14 - uniqueWordLetters.length;
   const additionalLetters = [];
@@ -18,7 +17,7 @@ const getKeypadLetters = async (currentWord) => {
       additionalLetters.push(randomLetter);
     }
   }
-  return uniqueWordLetters.concat(additionalLetters);
+  return uniqueWordLetters.concat(additionalLetters).sort(() => Math.random() - 0.5);
 };
 
 export { getRandomWord, getKeypadLetters };

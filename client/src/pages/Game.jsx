@@ -3,19 +3,21 @@ import GamePlayersList from "../components/Game/GamePlayersList";
 import GamePanel from "../components/Game/GamePanel";
 import { useWebSocketContext } from "../WebSocketContext";
 import { useDispatch, useSelector } from "react-redux";
-import { setGameState } from "../store/clientStateSlice";
+import { setGameState, setRoom } from "../store/clientStateSlice";
 
 function Game() {
   const { lastJsonMessage } = useWebSocketContext();
   const dispatch = useDispatch();
   const gameState = useSelector((state) => state.clientState.gameState);
+  const roomData = useSelector((state) => state.clientState.roomData);
 
   useEffect(() => {
     if (lastJsonMessage) {
-      if (lastJsonMessage.type === "gameStateUpdate") {
-        dispatch(setGameState(lastJsonMessage.content.data));
-      } else if (lastJsonMessage.type === "timerUpdate") {
-        dispatch(setGameState({ ...gameState, timer: lastJsonMessage.content.data }));
+      const { type, content } = lastJsonMessage;
+      if (type === "gameStateUpdate") {
+        dispatch(setGameState(content.data));
+      } else if (type === "gameOver") {
+        dispatch(setRoom(roomData));
       }
     }
   }, [lastJsonMessage]);
