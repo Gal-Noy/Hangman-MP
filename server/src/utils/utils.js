@@ -7,4 +7,18 @@ const getRandomWord = async () => {
   return word;
 };
 
-export { getRandomWord };
+const getKeypadLetters = async (currentWord) => {
+  console.log("currentWord", currentWord);
+  const uniqueWordLetters = Array.from(new Set(currentWord));
+  const additionalLettersNeeded = 12 - uniqueWordLetters.length;
+  const additionalLetters = [];
+  while (additionalLetters.length < additionalLettersNeeded) {
+    const randomLetter = String.fromCharCode(Math.floor(Math.random() * (122 - 97 + 1)) + 97);
+    if (!uniqueWordLetters.includes(randomLetter) && !additionalLetters.includes(randomLetter)) {
+      additionalLetters.push(randomLetter);
+    }
+  }
+  return uniqueWordLetters.concat(additionalLetters);
+};
+
+export { getRandomWord, getKeypadLetters };

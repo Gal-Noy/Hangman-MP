@@ -10,7 +10,7 @@ const PlayerBox = ({ player }) => {
 
 function PlayersList({ players }) {
   return (
-    <div className="bg-gray-400 rounded w-30 ms-1 d-flex flex-column h-570">
+    <div className="bg-gray-400 rounded w-30 d-flex flex-column h-400">
       <div className="players-list-header rounded bg-light mt-2 mx-2">
         <p className="text-center pt-2 fs-4 fw-bold text-dark">Players</p>
       </div>

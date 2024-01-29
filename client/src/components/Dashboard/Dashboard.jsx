@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 function Dashboard({ onLogout }) {
   const clientState = useSelector((state) => state.clientState.clientState);
   const roomData = useSelector((state) => state.clientState.roomData);
+  const gameState = useSelector((state) => state.clientState.gameState);
   const user = JSON.parse(localStorage.getItem("user"));
 
   return (
@@ -17,9 +18,24 @@ function Dashboard({ onLogout }) {
               Hello <strong>{user.name}</strong>, welcome to Guess The Words!
             </div>
           )}
-          {clientState === "room" && (
+          {clientState !== "lobby" && (
             <div>
               <strong>{roomData.name}</strong>
+            </div>
+          )}
+          {clientState === "game" && gameState && (
+            <div>
+              <div className="round-data">
+                Round: {gameState.round} | Score: {gameState.score} | Remaining Wrong Attempts:{" "}
+                {gameState.remainingWrongAttempts}
+              </div>
+              <div className="round-timer">
+                {gameState.timer > -1 && (
+                  <div>
+                    <strong>Time Remaining: {gameState.timer}</strong>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -27,7 +43,7 @@ function Dashboard({ onLogout }) {
       <div className="d-flex flex-row justify-content-between">
         <LogoutBtn onLogout={onLogout} />
         {clientState === "room" && <ReadyBtn />}
-        {clientState !== "lobby" && <BackToLobbyBtn  />}
+        {clientState !== "lobby" && <BackToLobbyBtn />}
       </div>
     </div>
   );

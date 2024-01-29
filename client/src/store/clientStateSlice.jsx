@@ -20,11 +20,14 @@ const clientStateSlice = createSlice({
     setGame: (state) => {
       state.clientState = "game";
     },
+    setGameState: (state, action) => {
+      state.gameState = action.payload;
+    },
     setKickedFromRoom: (state, action) => {
       state.kickedFromRoom = action.payload;
     },
   },
 });
 
-export const { setLobby, setRoom, setGame, setKickedFromRoom } = clientStateSlice.actions;
+export const { setLobby, setRoom, setGame, setKickedFromRoom, setGameState } = clientStateSlice.actions;
 export default clientStateSlice.reducer;

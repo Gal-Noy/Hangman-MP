@@ -215,6 +215,12 @@ const toggleReadyPlayer = (data, ws) => {
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
 
     if (room.checkAllPlayersReady()) {
+      ws.send(
+        JSON.stringify({
+          type: "startGame",
+          content: { success: true, message: "Start game.", data: {} },
+        })
+      );
       room.startGame();
     }
   } else {

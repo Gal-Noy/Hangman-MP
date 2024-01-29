@@ -1,5 +1,5 @@
 import { GameSocketManager } from "../socket/GameSocketManager.js";
-import { getRandomWord } from "../utils/utils.js";
+import { getRandomWord, getKeypadLetters } from "../utils/utils.js";
 
 export default class Game {
   constructor(room) {
@@ -17,6 +17,7 @@ export default class Game {
     this.totalRounds = 5;
     this.currentWord = null;
     this.hiddenWord = "";
+    this.keypadLetters = [];
     this.usedLetters = [];
     this.remainingWrongAttempts = 0;
     this.score = 0;
@@ -38,24 +39,27 @@ export default class Game {
     }
 
     await this.nextWord();
-    this.broadcastGameState();
+    this.sendGameState();
     this.startTimer();
 
-    // Wait for players actions (guesses)
-    this.gameSocketManager.waitForPlayersActions().then((data, playerId) => {
-      this.handlePlayerAction(data, playerId);
-    });
+    while (!this.checkRoundEnd()) {
+      const { letter, playerId } = await this.gameSocketManager.waitForPlayersActions();
+      this.handlePlayerAction(letter, playerId);
+    }
+
+    this.nextRound();
   }
 
   async nextWord() {
     this.currentWord = await getRandomWord();
     this.hiddenWord = "_".repeat(this.currentWord.word.length);
-    this.remainingWrongAttempts = this.currentWord.word.length + 2;
+    this.remainingWrongAttempts = 3;
+    this.keypadLetters = await getKeypadLetters(this.currentWord.word);
     this.usedLetters = [];
   }
 
-  handlePlayerAction(data, playerId) {
-    const guessedLetter = data.letter.toLowerCase();
+  handlePlayerAction(letter, playerId) {
+    const guessedLetter = letter.toLowerCase();
     let response = "";
 
     if (this.usedLetters.includes(guessedLetter)) {
@@ -78,10 +82,8 @@ export default class Game {
     }
 
     // Send response to the client
-    this.sendResponseToClientGuess(response, playerId);
-
-    // Check if the round should end after the player's guess
-    this.checkRoundEnd();
+    this.gameSocketManager.sendResponseToClientGuess(response, playerId);
+    this.sendGameState();
   }
 
   checkRoundEnd() {
@@ -101,14 +103,19 @@ export default class Game {
           : "Time's up!";
 
       this.gameSocketManager.broadcastEndOfRoundMessage(endOfRoundMessage);
-      this.nextRound();
+      return true;
     }
+    return false;
   }
 
-  broadcastGameState() {
+  sendGameState() {
     const gameState = {
+      players: this.room.players.map((player) => ({
+        name: player.user.name,
+      })),
       definition: this.currentWord.definition,
       hiddenWord: this.hiddenWord,
+      keypadLetters: this.keypadLetters,
       usedLetters: this.usedLetters,
       remainingWrongAttempts: this.remainingWrongAttempts,
       score: this.score,

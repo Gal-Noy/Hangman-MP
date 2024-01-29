@@ -10,7 +10,9 @@ export class GameSocketManager {
       ws.send(
         JSON.stringify({
           type: "timerUpdate",
-          content: this.game.timer,
+          content: {
+            data: this.game.timer,
+          },
         })
       );
     });
@@ -38,7 +40,7 @@ export class GameSocketManager {
           const message = isBinary ? data : JSON.parse(data);
           const { type, content } = message;
           if (type === "guessLetter") {
-            resolve(content.data, playerId);
+            resolve({ letter: content.data, playerId: ws.session.user._id });
           }
         });
       });
@@ -49,7 +51,7 @@ export class GameSocketManager {
     this.playersIdToWs[playerId].send(
       JSON.stringify({
         type: "guessResponse",
-        content: response,
+        content: { data: response },
       })
     );
   }
@@ -59,7 +61,7 @@ export class GameSocketManager {
       ws.send(
         JSON.stringify({
           type: "endOfRound",
-          content: endOfRoundMessage,
+          content: { data: endOfRoundMessage },
         })
       );
     });
@@ -70,7 +72,7 @@ export class GameSocketManager {
       ws.send(
         JSON.stringify({
           type: "endOfGame",
-          content: endOfGameMessage,
+          content: { data: endOfGameMessage },
         })
       );
     });
