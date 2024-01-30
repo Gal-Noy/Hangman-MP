@@ -64,8 +64,13 @@ function LogoutBtn({ onLogout }) {
   }, [lastJsonMessage]);
 
   return (
-    <button className="btn btn-danger mt-3" onClick={handleLogout}>
-      Logout
+    <button
+      type="button"
+      className="logout-button pheasant-demure-button outline light hover blink icon"
+      onClick={handleLogout}
+    >
+      <span className="label">Logout</span>
+      <span className="material-icons icon">chevron_right</span>
     </button>
   );
 }

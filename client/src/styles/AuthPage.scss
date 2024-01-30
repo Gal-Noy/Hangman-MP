@@ -31,7 +31,7 @@
   align-items: center;
 }
 
-input {
+.auth-block input {
   background-color: #dddddd;
   border: none;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -42,15 +42,15 @@ input {
   margin: 3% 0;
 }
 
-input:focus {
+.auth-block input:focus {
   outline: none;
 }
 
-input::placeholder {
+.auth-block input::placeholder {
   color: #636363;
 }
 
-input[type="password"].passwords-mismatch::placeholder {
+.auth-block input[type="password"].passwords-mismatch::placeholder {
   color: rgb(190, 3, 0);
 }
 

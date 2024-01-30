@@ -1,0 +1,61 @@
+.dashboard-container {
+  background: black;
+  width: 100%;
+  height: 20%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: row;
+  z-index: 1;
+}
+
+.dashboard-logo {
+  width: auto;
+  height: 80%;
+  margin: auto 0 auto 1%;
+}
+
+.dashboard-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-left: 2%;
+}
+
+.dashboard-menu-buttons {
+  width: auto;
+  height: 60px;
+  align-self: center;
+  margin: 3% 0 0 2%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.dashboard-menu-button {
+  height: 60%;
+  width: 120px;
+  margin: 0 3%;
+  align-self: flex-end;
+}
+
+.dashboard-user-info {
+  color: white;
+  width: auto;
+  height: 80px;
+  align-self: center;
+  align-items: center;
+  margin: 3% 0 0 2%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-right: 3%;
+  margin-bottom: 3%;
+}
+
+.dashboard-user-info-name {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 8%;
+}

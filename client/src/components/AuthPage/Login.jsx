@@ -54,7 +54,7 @@ function Login(props) {
 
           setSubmitResponseMessage({ success: true, msg: res.data.msg });
           onLogin();
-          navigate("/home");
+          navigate("/");
         } else {
           throw new Error("Could not login");
         }

@@ -1,16 +1,19 @@
 import LogoutBtn from "./LogoutBtn";
 import BackToLobbyBtn from "./BackToLobbyBtn";
 import ReadyBtn from "./ReadyBtn";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { useWebSocketContext } from "../../WebSocketContext";
+import "../../styles/Dashboard.scss";
+import Logo from "../../assets/logo.png";
+import { setLobbyChat, setLobbyRoomsList } from "../../store/clientStateSlice";
 
 function Dashboard({ onLogout }) {
-  const clientState = useSelector((state) => state.clientState.clientState);
-  const roomData = useSelector((state) => state.clientState.roomData);
-  const gameState = useSelector((state) => state.clientState.gameState);
+  const { clientState, lobbyState, roomData, gameState } = useSelector((state) => state.clientState);
+  const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("user"));
   const { lastJsonMessage } = useWebSocketContext();
+  console.log(lobbyState);
   const [timer, setTimer] = useState(60);
   const [cooldown, setCooldown] = useState(5);
   const [alert, setAlert] = useState("");
@@ -38,49 +41,42 @@ function Dashboard({ onLogout }) {
     }
   }, [alert]);
 
+  const setLobbyState = (clickedState) => {
+    clickedState === "roomsList" ? dispatch(setLobbyRoomsList()) : dispatch(setLobbyChat());
+  };
+
   return (
-    <div className="bg-white mb-2 p-3 rounded w-75">
-      {user && (
-        <div className="text-center">
-          {clientState === "lobby" && (
-            <div className="mb-3">
-              Hello <strong>{user.name}</strong>, welcome to Guess The Words!
-            </div>
-          )}
-          {clientState !== "lobby" && (
-            <div className="mb-3">
-              <strong>{roomData.name}</strong>
-            </div>
-          )}
-          {clientState === "game" && gameState && (
-            <div>
-              <div className="mb-3 game-data">
-                Round: {gameState.round} | Score: {gameState.score} | Remaining Wrong Attempts:{" "}
-                {gameState.remainingWrongAttempts}
-              </div>
-              {timer > 0 && cooldown < 0 && (
-                <div className="mb-3">
-                  <strong>Time Remaining: {timer}</strong>
-                </div>
-              )}
-              {cooldown > 0 && timer < 0 && (
-                <div className="mb-3">
-                  <strong>Get Ready: {cooldown}</strong>
-                </div>
-              )}
-              {alert && (
-                <div className="alert alert-warning w-50 mx-auto" role="alert">
-                  {alert}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-      <div className="d-flex justify-content-between">
+    <div className="dashboard-container">
+      <img src={Logo} alt="logo" className="dashboard-logo" />
+      <div className="dashboard-content">
+        {clientState === "lobby" && (
+          <div className="dashboard-menu-buttons">
+            <button
+              type="button"
+              className={`dashboard-menu-button pheasant-demure-button outline light hover blink ${
+                lobbyState === "roomsList" ? "active" : ""
+              }`}
+              id="lobby-roomsList-button"
+              onClick={() => setLobbyState("roomsList")}
+            >
+              <span className="label">Rooms</span>
+            </button>
+            <button
+              type="button"
+              className={`dashboard-menu-button pheasant-demure-button outline light hover blink ${
+                lobbyState === "chat" ? "active" : ""
+              }`}
+              id="lobby-chat-button"
+              onClick={() => setLobbyState("chat")}
+            >
+              <span className="label">Chat</span>
+            </button>
+          </div>
+        )}
+      </div>
+      <div className="dashboard-user-info">
+        <span className="dashboard-user-info-name">{user.name.toUpperCase()}</span>
         <LogoutBtn onLogout={onLogout} />
-        {clientState === "room" && <ReadyBtn />}
-        {clientState !== "lobby" && <BackToLobbyBtn />}
       </div>
     </div>
   );

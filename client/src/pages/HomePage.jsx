@@ -6,10 +6,10 @@ import Game from "./Game";
 import { useWebSocketContext } from "../WebSocketContext";
 import { useEffect } from "react";
 import { setGame } from "../store/clientStateSlice";
+import "../styles/HomePage.scss";
 
 function HomePage({ onLogout }) {
-  const clientState = useSelector((state) => state.clientState.clientState);
-  const roomData = useSelector((state) => state.clientState.roomData);
+  const { clientState, roomData, lobbyState } = useSelector((state) => state.clientState);
   const { lastJsonMessage } = useWebSocketContext();
   const dispatch = useDispatch();
 
@@ -22,11 +22,15 @@ function HomePage({ onLogout }) {
   }, [lastJsonMessage]);
 
   return (
-    <div className="bg-secondary vh-100 d-flex flex-column justify-content-center align-items-center">
-      <Dashboard onLogout={onLogout} />
-      {clientState === "lobby" && <Lobby />}
+    <div>
+      <div className="hangman-div">
+        <Dashboard onLogout={onLogout} />
+        <div className="main-game-container">{clientState === "lobby" && <Lobby lobbyState={lobbyState} />}</div>
+      </div>
+
+      {/* 
       {clientState === "room" && <Room />}
-      {clientState === "game" && <Game players={roomData.players} />}
+      {clientState === "game" && <Game players={roomData.players} />} */}
     </div>
   );
 }

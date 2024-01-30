@@ -2,13 +2,15 @@ import React from "react";
 import LobbyUsersList from "../components/Lobby/LobbyUsersList";
 import RoomsList from "../components/Lobby/RoomsList";
 import Chat from "../components/Chat/Chat";
+import "../styles/Lobby.scss";
 
-function Lobby() {
+function Lobby({lobbyState}) {
+
   return (
-    <div className=" mb-1 w-75 d-flex flex-row">
-      <RoomsList />
+    <div className="lobby-container">
+      {/* {lobbyState === "roomsList" && <RoomsList />}
+      {lobbyState === "chat" && <Chat />} */}
       <LobbyUsersList />
-      <Chat />
     </div>
   );
 }

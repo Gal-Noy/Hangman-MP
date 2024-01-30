@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-// import "bootstrap/dist/js/bootstrap.bundle.min.js";
 // import "./scss/custom.scss";
 import "./styles/App.scss";
+import "./styles/pheasant-demure-buttons.css";
 import App from "./App.jsx";
 import store from "./store/store.jsx";
 import { Provider } from "react-redux";

@@ -2,6 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   clientState: "lobby",
+  lobbyState: "roomsList",
+  roomData: null,
+  gameState: null,
   kickedFromRoom: "",
 };
 
@@ -11,8 +14,15 @@ const clientStateSlice = createSlice({
   reducers: {
     setLobby: (state) => {
       state.clientState = "lobby";
+      state.lobbyState = "roomsList";
       state.roomData = null;
       state.gameState = null;
+    },
+    setLobbyChat: (state) => {
+      state.lobbyState = "chat";
+    },
+    setLobbyRoomsList: (state) => {
+      state.lobbyState = "roomsList";
     },
     setRoom: (state, action) => {
       state.clientState = "room";
@@ -31,5 +41,6 @@ const clientStateSlice = createSlice({
   },
 });
 
-export const { setLobby, setRoom, setGame, setKickedFromRoom, setGameState } = clientStateSlice.actions;
+export const { setLobby, setLobbyChat, setLobbyRoomsList, setRoom, setGame, setKickedFromRoom, setGameState } =
+  clientStateSlice.actions;
 export default clientStateSlice.reducer;

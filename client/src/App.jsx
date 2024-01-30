@@ -46,15 +46,14 @@ function App() {
       <Router>
         <Routes>
           <Route
-            path="/home"
+            path="/"
             element={isLoggedIn ? <HomePage onLogout={() => setIsLoggedIn(false)} /> : <Navigate to="/login" replace />}
           />
-          <Route path="/" element={<Navigate to={isLoggedIn ? "/home" : "/login"} replace />} />
           <Route
             path="/login"
-            element={isLoggedIn ? <Navigate to="/home" replace /> : <AuthPage formType={"login"} onLogin={() => setIsLoggedIn(true)} />}
+            element={isLoggedIn ? <Navigate to="/" replace /> : <AuthPage formType={"login"} onLogin={() => setIsLoggedIn(true)} />}
           />
-          <Route path="/register" element={isLoggedIn ? <Navigate to="/home" replace /> : <AuthPage formType={"signup"}/>} />
+          <Route path="/register" element={isLoggedIn ? <Navigate to="/" replace /> : <AuthPage formType={"signup"}/>} />
         </Routes>
       </Router>
     </WebSocketProvider>
