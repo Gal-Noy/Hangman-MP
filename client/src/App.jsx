@@ -51,9 +51,18 @@ function App() {
           />
           <Route
             path="/login"
-            element={isLoggedIn ? <Navigate to="/" replace /> : <AuthPage formType={"login"} onLogin={() => setIsLoggedIn(true)} />}
+            element={
+              isLoggedIn ? (
+                <Navigate to="/" replace />
+              ) : (
+                <AuthPage formType={"login"} onLogin={() => setIsLoggedIn(true)} />
+              )
+            }
           />
-          <Route path="/register" element={isLoggedIn ? <Navigate to="/" replace /> : <AuthPage formType={"signup"}/>} />
+          <Route
+            path="/register"
+            element={isLoggedIn ? <Navigate to="/" replace /> : <AuthPage formType={"signup"} />}
+          />
         </Routes>
       </Router>
     </WebSocketProvider>

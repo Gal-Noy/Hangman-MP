@@ -1,9 +1,16 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import defaultAvatar from "../../assets/default-avatar.jpg";
 import axios from "axios";
 
 function Signup({ setSubmitResponseMessage }) {
-  const [signupData, setSignupData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
+  const [signupData, setSignupData] = useState({
+    avatar: null,
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(signupData.password === signupData.confirmPassword);
   const [isPending, setIsPending] = useState(false);
@@ -70,6 +77,32 @@ function Signup({ setSubmitResponseMessage }) {
       ) : (
         <div>
           <form className="signup-form" onSubmit={handleSubmit}>
+            <div className="signup-avatar">
+              <input
+                type="file"
+                name="avatar"
+                accept="image/*"
+                id="add-avatar-input-signup"
+                onChange={(e) => setSignupData({ ...signupData, avatar: e.target.files[0] })}
+              />
+              {signupData.avatar && (
+                <div
+                  className="cancel-button-signup-avatar"
+                  onClick={() => setSignupData({ ...signupData, avatar: null })}
+                >
+                  <span class="material-symbols-outlined">cancel</span>
+                </div>
+              )}
+              <img
+                className="signup-avatar-img"
+                src={signupData.avatar ? URL.createObjectURL(signupData.avatar) : defaultAvatar}
+                alt=""
+                onClick={() => document.getElementById("add-avatar-input-signup").click()}
+              />
+              <span className="signup-add-avatar-text" htmlFor="add-avatar-input-signup">
+                Add an avatar
+              </span>
+            </div>
             <input
               type="text"
               name="name"

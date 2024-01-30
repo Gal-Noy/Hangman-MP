@@ -5,12 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { useWebSocketContext } from "../../WebSocketContext";
 import { useDispatch } from "react-redux";
 import { setLobby } from "../../store/clientStateSlice";
+import defaultAvatar from "../../assets/default-avatar.jpg";
 
 function Login(props) {
   const { onLogin, setSubmitResponseMessage } = props;
   const { sendJsonMessage } = useWebSocketContext();
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [isPending, setIsPending] = useState(false);
+  const userAvatar = !localStorage.getItem("user") ? defaultAvatar : JSON.parse(localStorage.getItem("user")).avatar;
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -68,7 +70,8 @@ function Login(props) {
   };
 
   return (
-    <div>
+    <div className="login-component">
+      <img className="login-avatar" src={userAvatar} alt="User Avatar" />
       <form className="login-form" onSubmit={handleSubmit}>
         <input
           type="email"

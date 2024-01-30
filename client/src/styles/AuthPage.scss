@@ -5,7 +5,7 @@
   background: linear-gradient(to right, black 0%, black 50%, white 50%, white 100%);
   position: fixed;
   width: 40%;
-  height: 400px;
+  height: 500px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: row;
@@ -23,12 +23,77 @@
   margin-top: -30%;
 }
 
-.auth-form-div {
-  width: 40%;
-  margin: 10% auto 5% auto;
+.login-component {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-avatar {
+  border-radius: 50%;
+  width: 8vw;
+  margin: -30% 0 10% 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.signup-form {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.signup-avatar {
+  width: 60%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3%;
+  margin-top: -20%;
+}
+
+.signup-avatar-img {
+  border-radius: 50%;
+  width: 6vw;
+  height: 6vw;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  margin-bottom: 5%;
+}
+
+.signup-avatar-img:hover {
+  cursor: pointer;
+}
+
+.cancel-button-signup-avatar {
+  position: fixed;
+  top: 11%;
+  right: 17%;
+  background-color: transparent;
+  border: none;
+  color: rgb(95, 95, 95);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.signup-add-avatar-text {
+  font-size: 12px;
+  color: #636363;
+  margin-bottom: 5%;
+}
+
+.auth-form-div {
+  width: 40%;
+  margin: 20% auto 5% auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .auth-block input {
@@ -36,7 +101,7 @@
   border: none;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   width: 95%;
-  height: 6vh;
+  height: 5vh;
   font-size: 15px;
   padding-left: 10px;
   margin: 3% 0;
@@ -52,6 +117,10 @@
 
 .auth-block input[type="password"].passwords-mismatch::placeholder {
   color: rgb(190, 3, 0);
+}
+
+.auth-block input[type="file"] {
+  display: none;
 }
 
 .auth-submit-button {
@@ -94,7 +163,8 @@ a:visited {
 .submit-response-msg {
   max-width: 16vw;
   position: absolute;
-  top: 7%;
+  top: 2%;
+  left: 62%;
   font-size: 15px;
   padding: 0.5vw;
   animation: fadeIn 1s;

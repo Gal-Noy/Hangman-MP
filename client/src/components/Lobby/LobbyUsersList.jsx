@@ -33,11 +33,12 @@ function LobbyUsersList() {
     };
 
     return (
-      <div className="lobby-user-box">
-        <div className="lobby-user-box-avatar">
+      <div></div>
+      // <div className="lobby-user-box">
+      //   <div className="lobby-user-box-avatar">
           
 
-      </div>
+      // </div>
       // <div>
       //   <div className={"rounded m-1 d-flex align-items-center p-2 " + (!isMe ? "bg-gray-400" : "bg-primary")}>
       //     <div className="ms-2 mb-1 fs-5">{user.name}</div>
