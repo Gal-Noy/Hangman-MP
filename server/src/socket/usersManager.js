@@ -17,9 +17,8 @@ const usersManager = (content, ws) => {
 const sendLobbyUsersList = async (data, ws) => {
   try {
     if (ws.session && ws.session.user) {
-      const currentUser = ws.session.user;
       const users = await User.find({
-        $and: [{ isActive: true }, { inRoom: false }, { inGame: false }],
+        $and: [{ isActive: true }, { inRoom: false }],
       }).exec();
       ws.send(
         JSON.stringify({
@@ -38,7 +37,6 @@ export const broadcastLobbyUsersList = async (exceptWs) => {
   try {
     Object.values(clients).forEach(async (clientWs) => {
       if (clientWs.session && clientWs.session.user && !(exceptWs && exceptWs.some((ws) => ws === clientWs))) {
-        const currentUser = clientWs.session.user;
         const users = await User.find({
           $and: [{ isActive: true }, { inRoom: false }],
         }).exec();

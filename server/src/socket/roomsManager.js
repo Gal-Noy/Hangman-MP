@@ -8,8 +8,6 @@ export const rooms = {};
 const roomsManager = (content, ws) => {
   const { action, data } = content;
 
-  console.log("INCOMING ROOM MANAGER", action, data, ws.session?.user.name);
-
   const handler = {
     list: sendRoomsList,
     create: createRoom,

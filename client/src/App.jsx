@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import Login from "./pages/AuthPage/Login";
-import Signup from "./pages/AuthPage/Signup";
+import AuthPage from "./pages/AuthPage";
 import useWebSocket from "react-use-websocket";
 import { WebSocketProvider } from "./WebSocketContext";
 import { useDispatch } from "react-redux";
@@ -32,12 +31,13 @@ function App() {
     shouldReconnect: () => true,
   });
 
+  // For debugging purposes
   useEffect(() => {
     if (lastJsonMessage) {
       const { type, content } = lastJsonMessage;
-      // if (type !== "timerUpdate") {
-      console.log(type, content);
-      // };
+      if (type !== "timerUpdate" || type !== "cooldownUpdate") {
+        console.log(type, content);
+      }
     }
   }, [lastJsonMessage]);
 
@@ -52,9 +52,9 @@ function App() {
           <Route path="/" element={<Navigate to={isLoggedIn ? "/home" : "/login"} replace />} />
           <Route
             path="/login"
-            element={isLoggedIn ? <Navigate to="/home" replace /> : <Login onLogin={() => setIsLoggedIn(true)} />}
+            element={isLoggedIn ? <Navigate to="/home" replace /> : <AuthPage formType={"login"} onLogin={() => setIsLoggedIn(true)} />}
           />
-          <Route path="/register" element={isLoggedIn ? <Navigate to="/home" replace /> : <Signup />} />
+          <Route path="/register" element={isLoggedIn ? <Navigate to="/home" replace /> : <AuthPage formType={"signup"}/>} />
         </Routes>
       </Router>
     </WebSocketProvider>

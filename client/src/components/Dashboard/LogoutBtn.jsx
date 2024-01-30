@@ -19,7 +19,6 @@ function LogoutBtn({ onLogout }) {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
           },
-          withCredentials: true,
         }
       )
       .then((res) => {

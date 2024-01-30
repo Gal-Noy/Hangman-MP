@@ -1,0 +1,146 @@
+.auth-block {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(to right, black 0%, black 50%, white 50%, white 100%);
+  position: fixed;
+  width: 40%;
+  height: 400px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: row;
+}
+
+.auth-side-logo {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#hangman-logo {
+  width: 20vw;
+  margin-top: -30%;
+}
+
+.auth-form-div {
+  width: 40%;
+  margin: 10% auto 5% auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input {
+  background-color: #dddddd;
+  border: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  width: 95%;
+  height: 6vh;
+  font-size: 15px;
+  padding-left: 10px;
+  margin: 3% 0;
+}
+
+input:focus {
+  outline: none;
+}
+
+input::placeholder {
+  color: #636363;
+}
+
+input[type="password"].passwords-mismatch::placeholder {
+  color: rgb(190, 3, 0);
+}
+
+.auth-submit-button {
+  color: white;
+  background-color: black;
+  border: none;
+  width: 100%;
+  height: 6vh;
+  font-size: 15px;
+  margin-top: 3%;
+  margin-bottom: 3%;
+}
+
+.auth-submit-button:hover {
+  cursor: pointer;
+  background-color: #333333;
+}
+
+.auth-submit-button:focus {
+  outline: none;
+}
+
+.auth-submit-button:active {
+  background-color: #333333;
+}
+
+.auth-form-footer {
+  width: 100%;
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0;
+}
+
+a:visited {
+  text-decoration: none;
+  color: rgb(173, 70, 69);
+}
+.submit-response-msg {
+  max-width: 16vw;
+  position: absolute;
+  top: 7%;
+  font-size: 15px;
+  padding: 0.5vw;
+  animation: fadeIn 1s;
+  opacity: 1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.submit-response-msg.success {
+  border-color: rgb(188, 255, 188);
+}
+
+.submit-response-msg.error {
+  background-color: rgb(255, 213, 213);
+}
+
+.lds-dual-ring {
+  margin-left: auto;
+  margin-right: auto;
+  width: 15px;
+  height: 15px;
+}
+
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
