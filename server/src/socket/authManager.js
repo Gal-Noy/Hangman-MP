@@ -1,5 +1,5 @@
 import { isValidSession } from "../middleware/authMiddleware.js";
-import { broadcastLobbyUsersList } from "./usersManager.js";
+import { broadcastUsersList } from "./usersManager.js";
 import { sendRoomsList } from "./roomsManager.js";
 import { User } from "../models/userModel.js";
 import { leaveRoom } from "./roomsManager.js";
@@ -25,7 +25,7 @@ const handleLogin = (data, ws) => {
 
     ws.session = { user, token };
 
-    broadcastLobbyUsersList([ws]);
+    broadcastUsersList([ws]);
     sendRoomsList({}, ws);
   } catch (error) {
     console.log("Login failed.", error);
@@ -37,7 +37,7 @@ const handleLogout = async (data, ws) => {
     if (ws.session?.room) {
       await leaveRoom({ logout: true }, ws);
     } else {
-      broadcastLobbyUsersList([ws]);
+      broadcastUsersList([ws]);
     }
     ws.session = null;
   } catch (error) {
@@ -57,7 +57,7 @@ const handleReAuth = async (data, ws) => {
       };
     } else {
       // Logout routine
-      await User.findByIdAndUpdate(user._id, { isActive: false, inRoom: false });
+      await User.findByIdAndUpdate(user._id, { isActive: false, inRoom: false, inGame: false });
       handleLogout(data, ws);
 
       ws.send(

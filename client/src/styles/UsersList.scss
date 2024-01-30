@@ -1,0 +1,103 @@
+.users-list-container {
+  width: 25%;
+  height: 100%;
+  background-color: #c9c9c9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.users-list-search-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 5%;
+}
+
+.users-list-search-bar input {
+  background-color: #dddddd;
+  border: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  width: 95%;
+  height: 6vh;
+  font-size: 15px;
+  padding-left: 30px;
+  margin: 3% 0;
+}
+
+.users-list-search-bar input:focus {
+  outline: none;
+}
+
+.users-list-search-bar .material-symbols-outlined {
+  color: #636363;
+  position: absolute;
+  left: 20px;
+}
+
+.users-list-search-bar input::placeholder {
+  color: #636363;
+}
+
+.users-list-search-bar input[type="password"].passwords-mismatch::placeholder {
+  color: rgb(190, 3, 0);
+}
+
+.users-list {
+  width: 90%;
+  height: 80%;
+  margin-top: 3%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-box {
+  width: 90%;
+  height: 12.5%;
+  background-color: #dddddd;
+  margin-top: 3%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5%;
+}
+
+.user-box-avatar {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin-left: 5%;
+}
+
+.user-box-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-weight: bold;
+}
+
+.user-box-name {
+  font-size: 15px;
+  margin-bottom: -7%;
+}
+
+.user-box-ingame-status {
+  font-size: 10px;
+  color: rgb(0, 101, 163);
+}
+
+.user-box-inroom-status {
+  font-size: 10px;
+  color: rgb(144, 0, 0);
+}
+
+.user-box-isactive-status {
+  font-size: 10px;
+  color: rgb(0, 156, 62);
+}
+
+.user-box-isoffline-status {
+  font-size: 10px;
+  color: rgb(55, 55, 55);
+}

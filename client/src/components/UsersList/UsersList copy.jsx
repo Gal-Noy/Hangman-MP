@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useWebSocketContext } from "../../WebSocketContext";
 import { useSelector } from "react-redux";
-import { sortLobbyUsers } from "../../utils/utils";
+import { sortUsersList } from "../../utils/utils";
 
-function LobbyUsersList() {
+function UsersList() {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
@@ -72,10 +72,10 @@ function LobbyUsersList() {
   useEffect(() => {
     if (lastJsonMessage) {
       const { type, content } = lastJsonMessage;
-      if (type === "updateLobbyUsersList") {
+      if (type === "updateUsersList") {
         const { users } = content.data;
 
-        sortLobbyUsers(users);
+        sortUsersList(users);
 
         setUsers(users);
       }
@@ -107,4 +107,4 @@ function LobbyUsersList() {
   );
 }
 
-export default LobbyUsersList;
+export default UsersList;

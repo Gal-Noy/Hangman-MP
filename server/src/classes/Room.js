@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import Game from "./Game.js";
 import { broadcastRoomsListToLobby } from "../socket/roomsManager.js";
+import { User } from "../models/userModel.js";
 
 /*
 player: {
@@ -133,10 +134,11 @@ export default class Room {
     return this.players.every((player) => player.status === "ready");
   }
 
-  startGame() {
+  async startGame() {
     if (this.players.every((player) => player.status === "ready")) {
       this.players.map((player) => (player.status = "playing"));
       this.status = "playing";
+      await User.updateMany({ _id: { $in: this.players.map((player) => player.user._id) } }, { inGame: false }).exec();
 
       this.game = new Game(this);
       this.players.forEach((player) => {
@@ -159,11 +161,12 @@ export default class Room {
     }
   }
 
-  endGame() {
+  async endGame() {
     this.status = "waiting";
     this.game = null;
     this.players.map((player) => (player.status = "idle"));
     this.players.forEach((player) => (player.ws.session.game = null));
+    await User.updateMany({ _id: { $in: this.players.map((player) => player.user._id) } }, { inGame: false }).exec();
 
     this.updateRoomInfoPlayers(); // Broadcast to clients in the room
     broadcastRoomsListToLobby(this.players.map((player) => player.ws)); // Broadcast to clients in the lobby

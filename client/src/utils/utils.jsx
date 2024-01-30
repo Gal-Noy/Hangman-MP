@@ -1,10 +1,22 @@
-const sortLobbyUsers = (users) =>
-  users.sort((a, b) => {
-    if (a._id === JSON.parse(localStorage.getItem("user"))._id) return -1;
-    if (a.isActive === b.isActive) {
-      return a.name < b.name ? -1 : 1;
+const sortUsersList = (users) =>
+  users.sort((a, b) => {        
+    // Sort by active status
+    if (a.isActive !== b.isActive) {
+      return a.isActive ? -1 : 1;
     }
-    return a.isActive ? -1 : 1;
+    
+    // Sort by in room status
+    if (a.inRoom !== b.inRoom) {
+      return a.inRoom ? -1 : 1;
+    }
+    
+    // Sort by in game status
+    if (a.inGame !== b.inGame) {
+      return a.inGame ? -1 : 1;
+    }
+    
+    // Sort by name
+    return a.name.localeCompare(b.name);
   });
 
 const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
@@ -27,4 +39,4 @@ const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
   return blob;
 };
 
-export { b64toBlob, sortLobbyUsers };
+export { b64toBlob, sortUsersList };

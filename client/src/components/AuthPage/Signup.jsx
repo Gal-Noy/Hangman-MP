@@ -49,12 +49,13 @@ function Signup({ setSubmitResponseMessage }) {
         { mode: "no-cors" }
       )
       .then((res) => {
-        if (res.status === 200) {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
           setSubmitResponseMessage({ success: true, msg: res.data.msg });
           setIsPending(false);
           setSignupSuccess(true);
         } else {
-          throw new Error("Could not register");
+          throw new Error(res.data.msg);
         }
       })
       .then(() => setIsPending(false))
@@ -90,7 +91,7 @@ function Signup({ setSubmitResponseMessage }) {
                   className="cancel-button-signup-avatar"
                   onClick={() => setSignupData({ ...signupData, avatar: null })}
                 >
-                  <span class="material-symbols-outlined">cancel</span>
+                  <span className="material-symbols-outlined">cancel</span>
                 </div>
               )}
               <img
@@ -129,7 +130,7 @@ function Signup({ setSubmitResponseMessage }) {
               onChange={(e) => setSignupData({ ...signupData, confirmPassword: e.target.value })}
             />
             <button type="submit" className="auth-submit-button">
-              {isPending ? <div class="lds-dual-ring"></div> : "Sign up"}
+              {isPending ? <div className="lds-dual-ring"></div> : "Sign up"}
             </button>
           </form>
           <p className="auth-form-footer">

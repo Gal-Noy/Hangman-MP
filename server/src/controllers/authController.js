@@ -79,7 +79,7 @@ const authController = {
     try {
       const userId = req.user.user_id;
 
-      await User.findByIdAndUpdate(userId, { isActive: false, inRoom: false });
+      await User.findByIdAndUpdate(userId, { isActive: false, inRoom: false, inGame: false});
 
       return res.status(200).json({ msg: "User logged out successfully." });
     } catch (err) {

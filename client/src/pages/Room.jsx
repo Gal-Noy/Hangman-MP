@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import UsersList from "../components/Lobby/LobbyUsersList";
+import UsersList from "../components/UsersList/UsersList";
 import PlayersList from "../components/Room/PlayersList";
 import { useWebSocketContext } from "../WebSocketContext";
 import { useDispatch, useSelector } from "react-redux";

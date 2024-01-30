@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useWebSocketContext } from "../../WebSocketContext";
 import { useSelector } from "react-redux";
-import { sortLobbyUsers } from "../../utils/utils";
+import { sortUsersList } from "../../utils/utils";
+import defaultAvatar from "../../assets/default-avatar.jpg";
+import "../../styles/UsersList.scss";
 
-function LobbyUsersList() {
+function UsersList() {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
@@ -13,6 +15,7 @@ function LobbyUsersList() {
     const { roomData } = useSelector((state) => state.clientState);
     const isAdmin = JSON.parse(localStorage.getItem("user"))._id === roomData?.admin;
     const [isUserInvited, setIsUserInvited] = useState(false);
+    const userAvatar = !user.avatar ? defaultAvatar : user.avatar;
 
     const inviteUserToRoom = (invitedUser) => {
       if (roomData.numberOfPlayers === roomData.players.length) {
@@ -33,15 +36,31 @@ function LobbyUsersList() {
     };
 
     return (
-      <div></div>
-      // <div className="lobby-user-box">
-      //   <div className="lobby-user-box-avatar">
-          
+      <div className="user-box">
+        <img className="user-box-avatar" src={userAvatar} alt="user-avatar" />
+        <div className="user-box-details">
+          <div className="user-box-name">{user.name.toUpperCase()}</div>
+          <div className="user-box-status">
+            {user.inGame && <span className="user-box-ingame-status">IN-GAME</span>}
+            {user.inRoom && !user.inGame && <span className="user-box-inroom-status">IN-ROOM</span>}
+            {user.isActive && !user.inRoom && !user.inGame && <span className="user-box-isactive-status">ONLINE</span>}
+            {!user.isActive && !user.inRoom && !user.inGame && (
+              <span className="user-box-isoffline-status">OFFLINE</span>
+            )}
+          </div>
+          {isAdmin && !isUserInvited && (
+            <div
+              className="user-box-invite-button"
+              type="button"
+              id="invite-user-to-room"
+              onClick={() => inviteUserToRoom(user)}
+            >
+              INVITE
+            </div>
+          )}
+        </div>
+      </div>
 
-      // </div>
-      // <div>
-      //   <div className={"rounded m-1 d-flex align-items-center p-2 " + (!isMe ? "bg-gray-400" : "bg-primary")}>
-      //     <div className="ms-2 mb-1 fs-5">{user.name}</div>
       //     {isAdmin && !isUserInvited && (
       //       <div
       //         className="ms-2 mb-1 fs-5 align-self-end"
@@ -76,10 +95,10 @@ function LobbyUsersList() {
   useEffect(() => {
     if (lastJsonMessage) {
       const { type, content } = lastJsonMessage;
-      if (type === "updateLobbyUsersList") {
+      if (type === "updateUsersList") {
         const { users } = content.data;
 
-        sortLobbyUsers(users);
+        sortUsersList(users);
 
         setUsers(users);
       }
@@ -96,12 +115,12 @@ function LobbyUsersList() {
   }, [error]);
 
   return (
-    <div className="lobby-users-list-container">
-      <div className="lobby-users-list-search-bar">
-        <span class="material-symbols-outlined">search</span>
+    <div className="users-list-container">
+      <div className="users-list-search-bar">
+        <span className="material-symbols-outlined">search</span>
         <input type="text" placeholder="Search" />
       </div>
-      <div className="lobby-users-list">
+      <div className="users-list">
         {users.map((user) => (
           <UserBox key={user._id} user={user} error={error} setError={setError} />
         ))}
@@ -110,4 +129,4 @@ function LobbyUsersList() {
   );
 }
 
-export default LobbyUsersList;
+export default UsersList;

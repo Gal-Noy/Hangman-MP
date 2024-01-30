@@ -5,7 +5,7 @@ const usersManager = (content, ws) => {
   const { action, data } = content;
 
   const handler = {
-    list: sendLobbyUsersList,
+    list: sendUsersList,
   }[action];
 
   if (handler) {
@@ -14,16 +14,16 @@ const usersManager = (content, ws) => {
 };
 
 // For a single client
-const sendLobbyUsersList = async (data, ws) => {
+const sendUsersList = async (data, ws) => {
   try {
     if (ws.session && ws.session.user) {
-      const users = await User.find({
-        $and: [{ isActive: true }, { inRoom: false }],
-      }).exec();
+      const users = await User.find({ _id: { $ne: ws.session.user._id } }).exec();
+      users.map((user) => (user.password = null));
+
       ws.send(
         JSON.stringify({
-          type: "updateLobbyUsersList",
-          content: { success: true, message: "Lobby users list (single client).", data: { users } },
+          type: "updateUsersList",
+          content: { success: true, message: "Users list (single client).", data: { users } },
         })
       );
     }
@@ -33,17 +33,17 @@ const sendLobbyUsersList = async (data, ws) => {
 };
 
 // For all clients
-export const broadcastLobbyUsersList = async (exceptWs) => {
+export const broadcastUsersList = async (exceptWs) => {
   try {
     Object.values(clients).forEach(async (clientWs) => {
       if (clientWs.session && clientWs.session.user && !(exceptWs && exceptWs.some((ws) => ws === clientWs))) {
-        const users = await User.find({
-          $and: [{ isActive: true }, { inRoom: false }],
-        }).exec();
+        const users = await User.find({ _id: { $ne: ws.session.user._id } }).exec();
+        users.map((user) => (user.password = null));
+
         clientWs.send(
           JSON.stringify({
-            type: "updateLobbyUsersList",
-            content: { success: true, message: "Lobby users list (all clients).", data: { users } },
+            type: "updateUsersList",
+            content: { success: true, message: "Users list (all clients).", data: { users } },
           })
         );
       }

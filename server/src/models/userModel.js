@@ -15,11 +15,19 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  avatar: {
+    data: Buffer,
+    contentType: String,
+  },
   isActive: {
     type: Boolean,
     default: false,
   },
   inRoom: {
+    type: Boolean,
+    default: false,
+  },
+  inGame: {
     type: Boolean,
     default: false,
   },

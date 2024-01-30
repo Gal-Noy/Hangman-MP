@@ -52,16 +52,12 @@ function App() {
           <Route
             path="/login"
             element={
-              isLoggedIn ? (
-                <Navigate to="/" replace />
-              ) : (
-                <AuthPage formType={"login"} onLogin={() => setIsLoggedIn(true)} />
-              )
+              <AuthPage formType={"login"} onLogin={() => setIsLoggedIn(true)} onLogout={() => setIsLoggedIn(false)} />
             }
           />
           <Route
             path="/register"
-            element={isLoggedIn ? <Navigate to="/" replace /> : <AuthPage formType={"signup"} />}
+            element={isLoggedIn ? <Navigate to="/login" replace /> : <AuthPage formType={"signup"} />}
           />
         </Routes>
       </Router>

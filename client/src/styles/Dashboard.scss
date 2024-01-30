@@ -36,11 +36,11 @@
 .dashboard-menu-button {
   height: 60%;
   width: 120px;
-  margin: 0 3%;
+  margin: 0 3% -3%;
   align-self: flex-end;
 }
 
-.dashboard-user-info {
+.dashboard-user-section {
   color: white;
   width: auto;
   height: 80px;
@@ -54,8 +54,22 @@
   margin-bottom: 3%;
 }
 
+.dashboard-user-info {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.dashboard-user-info-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-bottom: 3%;
+}
+
 .dashboard-user-info-name {
-  font-size: 1.5em;
+  font-size: 1.2em;
   font-weight: bold;
-  margin-bottom: 8%;
+  margin: 10% 0 10% 10%;
 }

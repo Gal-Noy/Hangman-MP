@@ -5,7 +5,8 @@ import { useWebSocketContext } from "../../WebSocketContext";
 import { useDispatch } from "react-redux";
 import { setLobby } from "../../store/clientStateSlice";
 
-function LogoutBtn({ onLogout }) {
+function LogoutBtn(props) {
+  const {onLogout, isDashboard} = props;
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -66,7 +67,7 @@ function LogoutBtn({ onLogout }) {
   return (
     <button
       type="button"
-      className="logout-button pheasant-demure-button outline light hover blink icon"
+      className={`logout-button pheasant-demure-button hover icon ${isDashboard ? "outline light blink" : "solid dark"}`}
       onClick={handleLogout}
     >
       <span className="label">Logout</span>

@@ -1,7 +1,7 @@
 import Room from "../classes/Room.js";
 import { User } from "../models/userModel.js";
 import { clients } from "./socketListener.js";
-import { broadcastLobbyUsersList } from "./usersManager.js";
+import { broadcastUsersList } from "./usersManager.js";
 
 export const rooms = {};
 
@@ -58,7 +58,7 @@ const createRoom = async (data, ws) => {
 
     // Broadcast to clients in the lobby
     broadcastRoomsListToLobby([ws]);
-    broadcastLobbyUsersList([ws]);
+    broadcastUsersList([ws]);
   } catch (error) {
     console.log("Create room failed.", error);
   }
@@ -87,7 +87,7 @@ const joinRoom = async (data, ws) => {
 
     // Broadcast to clients in the lobby
     broadcastRoomsListToLobby([ws]);
-    broadcastLobbyUsersList([ws]);
+    broadcastUsersList([ws]);
   } else {
     console.log("Join room failed.", error);
     ws.send(
@@ -105,7 +105,7 @@ export const leaveRoom = async (data, ws) => {
   const player = { user };
 
   if (room.leaveRoom(player)) {
-    await User.findByIdAndUpdate(user._id, { inRoom: false }).exec();
+    await User.findByIdAndUpdate(user._id, { inRoom: false, inGame: false }).exec();
     ws.session.room = null;
 
     ws.send(
@@ -128,7 +128,7 @@ export const leaveRoom = async (data, ws) => {
     // Broadcast to clients in the lobby
     broadcastRoomsListToLobby([ws]);
     if (!data.logout) {
-      broadcastLobbyUsersList([ws]);
+      broadcastUsersList([ws]);
     }
   } else {
     console.log("Leave room failed.");
@@ -176,7 +176,7 @@ const kickPlayer = async (data, ws) => {
   const kickedPlayerWs = Object.values(clients).find((client) => client.session.user._id === kickedPlayerId);
 
   if (kickedPlayerWs && room.kickPlayer(ws.session.user, kickedPlayerId)) {
-    await User.findByIdAndUpdate(kickedPlayerId, { inRoom: false }).exec();
+    await User.findByIdAndUpdate(kickedPlayerId, { inRoom: false, inGame: false }).exec();
     kickedPlayerWs.session.room = null;
 
     kickedPlayerWs.send(
@@ -190,7 +190,7 @@ const kickPlayer = async (data, ws) => {
 
     // Broadcast to clients in the lobby
     broadcastRoomsListToLobby([ws]);
-    broadcastLobbyUsersList([ws]);
+    broadcastUsersList([ws]);
   } else {
     console.log("Kick player failed.");
     ws.send(
@@ -218,8 +218,8 @@ const toggleReadyPlayer = (data, ws) => {
 
     if (room.checkAllPlayersReady()) {
       room.startGame();
-      // broadcastRoomsListToLobby(this.room.players.map((player) => player.ws));
-      broadcastRoomsListToLobby();
+      broadcastRoomsListToLobby(room.players.map((player) => player.ws));
+      broadcastUsersList(room.players.map((player) => player.ws));
     }
   } else {
     console.log("Toggle ready player failed.", error);

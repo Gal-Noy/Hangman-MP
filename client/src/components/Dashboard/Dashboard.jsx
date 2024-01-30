@@ -6,12 +6,14 @@ import { useState, useEffect } from "react";
 import { useWebSocketContext } from "../../WebSocketContext";
 import "../../styles/Dashboard.scss";
 import Logo from "../../assets/logo.png";
+import defaultAvatar from "../../assets/default-avatar.jpg";
 import { setLobbyChat, setLobbyRoomsList } from "../../store/clientStateSlice";
 
 function Dashboard({ onLogout }) {
   const { clientState, lobbyState, roomData, gameState } = useSelector((state) => state.clientState);
   const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("user"));
+  const userAvatar = !user.avatar ? defaultAvatar : user.avatar;
   const { lastJsonMessage } = useWebSocketContext();
   console.log(lobbyState);
   const [timer, setTimer] = useState(60);
@@ -74,9 +76,12 @@ function Dashboard({ onLogout }) {
           </div>
         )}
       </div>
-      <div className="dashboard-user-info">
-        <span className="dashboard-user-info-name">{user.name.toUpperCase()}</span>
-        <LogoutBtn onLogout={onLogout} />
+      <div className="dashboard-user-section">
+        <div className="dashboard-user-info">
+          <img src={userAvatar} alt="avatar" className="dashboard-user-info-avatar" />
+          <span className="dashboard-user-info-name">{user.name.toUpperCase()}</span>
+        </div>
+        <LogoutBtn onLogout={onLogout} isDashboard={true} />
       </div>
     </div>
   );
