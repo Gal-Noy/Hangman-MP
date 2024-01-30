@@ -16,7 +16,6 @@ function Dashboard({ onLogout }) {
   const user = JSON.parse(localStorage.getItem("user"));
   const userAvatar = !user?.avatar ? null : b64toBlob(user.avatar, "image/");
   const { lastJsonMessage } = useWebSocketContext();
-  console.log(lobbyState);
   const [timer, setTimer] = useState(60);
   const [cooldown, setCooldown] = useState(5);
   const [alert, setAlert] = useState("");
