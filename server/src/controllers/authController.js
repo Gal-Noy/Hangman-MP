@@ -10,7 +10,6 @@ const authController = {
       }
 
       const { name, email, password, confirmPassword, avatar } = req.body;
-      const avatarBuffer = avatar ? Buffer.from(avatar, "base64") : null;
 
       const existingUser = await User.findOne({
         $or: [{ email: req.body.email.toLowerCase() }, { name: req.body.name.toLowerCase() }],
@@ -34,7 +33,7 @@ const authController = {
         name,
         email: email.toLowerCase(),
         password: encryptedPassword,
-        avatar: avatarBuffer,
+        avatar,
       };
 
       const user = await User.create(newUser);

@@ -37,7 +37,7 @@ export const broadcastUsersList = async (exceptWs) => {
   try {
     Object.values(clients).forEach(async (clientWs) => {
       if (clientWs.session && clientWs.session.user && !(exceptWs && exceptWs.some((ws) => ws === clientWs))) {
-        const users = await User.find({ _id: { $ne: ws.session.user._id } }).exec();
+        const users = await User.find({ _id: { $ne: clientWs.session.user._id } }).exec();
         users.map((user) => (user.password = null));
 
         clientWs.send(

@@ -15,9 +15,9 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  avatar: {
-    data: Buffer,
-    contentType: String,
+  avatar: { // base64 string
+    type: String,
+    default: "",
   },
   isActive: {
     type: Boolean,

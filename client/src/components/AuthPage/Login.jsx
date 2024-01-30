@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { setLobby } from "../../store/clientStateSlice";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import LogoutBtn from "../Dashboard/LogoutBtn";
+import { b64toBlob } from "../../utils/utils";
 
 function Login(props) {
   const { onLogin, onLogout, setSubmitResponseMessage } = props;
@@ -16,7 +17,7 @@ function Login(props) {
   const user = localStorage.getItem("user");
   const isLoggedIn = !!localStorage.getItem("auth_token") && !!user;
   const [showLoginForm, setShowLoginForm] = useState(!isLoggedIn);
-  const userAvatar = !user?.avatar ? defaultAvatar : JSON.parse(user).avatar;
+  const userAvatar = !user || !JSON.parse(user).avatar ? null : b64toBlob(JSON.parse(user).avatar, "image/");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -80,7 +81,11 @@ function Login(props) {
 
   return (
     <div className="login-component">
-      <img className="login-avatar" src={userAvatar} alt="User Avatar" />
+      <img
+        className="login-avatar"
+        src={!userAvatar ? defaultAvatar : URL.createObjectURL(userAvatar)}
+        alt="User Avatar"
+      />
       {!showLoginForm && (
         <div className="already-logged-in-div">
           <Link to="/" onClick={handleContinueWithUser}>

@@ -3,6 +3,7 @@ import { useWebSocketContext } from "../../WebSocketContext";
 import { useSelector } from "react-redux";
 import { sortUsersList } from "../../utils/utils";
 import defaultAvatar from "../../assets/default-avatar.jpg";
+import { b64toBlob } from "../../utils/utils";
 import "../../styles/UsersList.scss";
 
 function UsersList() {
@@ -15,7 +16,7 @@ function UsersList() {
     const { roomData } = useSelector((state) => state.clientState);
     const isAdmin = JSON.parse(localStorage.getItem("user"))._id === roomData?.admin;
     const [isUserInvited, setIsUserInvited] = useState(false);
-    const userAvatar = !user.avatar ? defaultAvatar : user.avatar;
+    const userAvatar = !user?.avatar ? null : b64toBlob(user.avatar, "image/");
 
     const inviteUserToRoom = (invitedUser) => {
       if (roomData.numberOfPlayers === roomData.players.length) {
@@ -37,7 +38,7 @@ function UsersList() {
 
     return (
       <div className="user-box">
-        <img className="user-box-avatar" src={userAvatar} alt="user-avatar" />
+        <img className="user-box-avatar" src={!userAvatar ? defaultAvatar : URL.createObjectURL(userAvatar)} alt="user-avatar" />
         <div className="user-box-details">
           <div className="user-box-name">{user.name.toUpperCase()}</div>
           <div className="user-box-status">
