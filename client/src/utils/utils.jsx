@@ -19,6 +19,21 @@ const sortUsersList = (users) =>
     return a.name.localeCompare(b.name);
   });
 
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
 const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
   const byteCharacters = atob(b64Data);
   const byteArrays = [];
@@ -39,4 +54,4 @@ const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
   return blob;
 };
 
-export { b64toBlob, sortUsersList };
+export { convertToBase64, b64toBlob, sortUsersList };

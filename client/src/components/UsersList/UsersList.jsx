@@ -58,27 +58,10 @@ function UsersList() {
               INVITE
             </div>
           )}
+          {isAdmin && isUserInvited && <div className="user-box-invite-button">INVITED</div>}
         </div>
+        {error && error.user._id === user._id && <div className="user-box-error-message">{error.message}</div>}
       </div>
-
-      //     {isAdmin && !isUserInvited && (
-      //       <div
-      //         className="ms-2 mb-1 fs-5 align-self-end"
-      //         type="button"
-      //         id="invite-user-to-room"
-      //         onClick={() => inviteUserToRoom(user)}
-      //       >
-      //         ➕
-      //       </div>
-      //     )}
-      //     {isAdmin && isUserInvited && <div className="ms-2 mb-1 fs-5 align-self-end">✔️</div>}
-      //   </div>
-      //   {error && error.user._id === user._id && (
-      //     <div className="alert alert-danger m-1" role="alert">
-      //       {error.message}
-      //     </div>
-      //   )}
-      // </div>
     );
   };
 

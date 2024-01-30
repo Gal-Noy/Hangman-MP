@@ -2,14 +2,15 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import axios from "axios";
+import { convertToBase64 } from "../../utils/utils";
 
 function Signup({ setSubmitResponseMessage }) {
   const [signupData, setSignupData] = useState({
-    avatar: null,
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
+    avatar: null,
   });
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(signupData.password === signupData.confirmPassword);
@@ -24,7 +25,7 @@ function Signup({ setSubmitResponseMessage }) {
     setSignupSuccess(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsPending(true);
 
@@ -42,15 +43,28 @@ function Signup({ setSubmitResponseMessage }) {
       return;
     }
 
+    const avatar = signupData.avatar;
+
+    if (avatar && !avatar.type.startsWith("image/")) {
+      setSubmitResponseMessage({ success: false, msg: "Please select a valid image file." });
+      setIsPending(false);
+      return;
+    }
+
+    let base64;
+    if (avatar) {
+      base64 = await convertToBase64(avatar);
+    }
+
     axios
       .post(
         `${import.meta.env.VITE_SERVER_URL}/api/auth/register`,
-        { name, email, password, confirmPassword },
+        { name, email, password, confirmPassword, avatar: base64?.split(",")[1] },
         { mode: "no-cors" }
       )
       .then((res) => {
-        console.log(res);
         if (res.status === 200 || res.status === 201) {
+          console.log(res.data);
           setSubmitResponseMessage({ success: true, msg: res.data.msg });
           setIsPending(false);
           setSignupSuccess(true);

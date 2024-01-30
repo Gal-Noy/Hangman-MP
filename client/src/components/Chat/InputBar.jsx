@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useWebSocketContext } from "../../WebSocketContext";
 import { GrAttachment } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
+import { convertToBase64 } from "../../utils/utils";
 
 function InputBar({ roomId }) {
   const { sendJsonMessage } = useWebSocketContext();
@@ -41,21 +42,6 @@ function InputBar({ roomId }) {
 
     setNewMessageText("");
     setAttachment(null);
-  };
-
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
   };
 
   const handleAttachmentChange = async (e) => {

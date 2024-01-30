@@ -9,7 +9,8 @@ const authController = {
         return res.status(400).json({ msg: "Please enter all fields" });
       }
 
-      const { name, email, password, confirmPassword } = req.body;
+      const { name, email, password, confirmPassword, avatar } = req.body;
+      const avatarBuffer = avatar ? Buffer.from(avatar, "base64") : null;
 
       const existingUser = await User.findOne({
         $or: [{ email: req.body.email.toLowerCase() }, { name: req.body.name.toLowerCase() }],
@@ -33,6 +34,7 @@ const authController = {
         name,
         email: email.toLowerCase(),
         password: encryptedPassword,
+        avatar: avatarBuffer,
       };
 
       const user = await User.create(newUser);
@@ -79,7 +81,7 @@ const authController = {
     try {
       const userId = req.user.user_id;
 
-      await User.findByIdAndUpdate(userId, { isActive: false, inRoom: false, inGame: false});
+      await User.findByIdAndUpdate(userId, { isActive: false, inRoom: false, inGame: false });
 
       return res.status(200).json({ msg: "User logged out successfully." });
     } catch (err) {
