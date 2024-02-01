@@ -14,12 +14,10 @@ function ChatFeed({ messages }) {
   }, [messages]);
 
   return (
-    <div className="chat-feed rounded bg-light m-2 h-100 overflow-auto">
-      <div className="chat-messages d-flex flex-column align-items-end">
+    <div className="chat-feed">
         {messages.map((message, index) => (
           <Message key={index} message={message} />
         ))}
-      </div>
     </div>
   );
 }

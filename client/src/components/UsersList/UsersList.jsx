@@ -6,6 +6,8 @@ import defaultAvatar from "../../assets/default-avatar.jpg";
 import { b64toBlob } from "../../utils/utils";
 import "../../styles/UsersList.scss";
 
+// TODO: add user invitation to room
+
 function UsersList() {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const [users, setUsers] = useState([]);
@@ -108,6 +110,9 @@ function UsersList() {
     <div className="users-list-container">
       <div className="users-list-search-bar">
         <span className="material-symbols-outlined">search</span>
+        {
+          // TODO: add search functionality
+        }
         <input type="text" placeholder="Search" />
       </div>
       <div className="users-list">

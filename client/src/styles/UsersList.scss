@@ -5,7 +5,7 @@
   flex-direction: column;
   align-items: center;
   border-left: 2px solid #dddddd;
-
+  // max-height: 92%;
 }
 
 .users-list-search-bar {
@@ -52,6 +52,7 @@
   flex-direction: column;
   align-items: center;
   overflow-y: scroll;
+  scrollbar-width: thin;
 }
 
 .user-box {

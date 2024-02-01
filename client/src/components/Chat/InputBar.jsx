@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useWebSocketContext } from "../../WebSocketContext";
-import { GrAttachment } from "react-icons/gr";
-import { FcCancel } from "react-icons/fc";
 import { convertToBase64 } from "../../utils/utils";
 
 function InputBar({ roomId }) {
@@ -51,10 +49,6 @@ function InputBar({ roomId }) {
       if (!selectedFile.type.startsWith("image/")) {
         setAttachment(null);
         setAttachmentError("Please select a valid image file.");
-
-        setTimeout(() => {
-          setAttachmentError(null);
-        }, 3000);
       } else {
         setAttachment(selectedFile);
         setAttachmentError(null);
@@ -64,25 +58,13 @@ function InputBar({ roomId }) {
     }
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAttachmentError(null);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, [attachmentError]);
-
-  const AttachmentConfirmation = ({}) => {
+  const AttachmentConfirmation = () => {
     return (
-      <div className="confirmation-overlay position-absolute top-50 start-50 translate-middle h-auto rounded bg-secondary d-flex flex-column align-items-center">
-        <img
-          src={URL.createObjectURL(attachment)}
-          alt="Uploaded"
-          className="img-fluid mt-2"
-          style={{ maxWidth: "90%", maxHeight: "90%" }}
-        />
-        <div className="buttons my-3">
+      <div className="attachment-confirmation-container">
+        <img className="attachment-confirmation-img" src={URL.createObjectURL(attachment)} alt="Attachment preview" />
+        <div className="attachment-confirmation-buttons">
           <button
-            className="btn btn-success mx-2"
+            className="attachment-confirmation-btn"
             onClick={() => {
               setAttachmentConfirmed(true);
               setShowAttachmentConfirmation(false);
@@ -90,7 +72,7 @@ function InputBar({ roomId }) {
           >
             Confirm
           </button>
-          <button className="btn btn-danger mx-2" onClick={() => setShowAttachmentConfirmation(false)}>
+          <button className="attachment-confirmation-btn" onClick={() => setShowAttachmentConfirmation(false)}>
             Cancel
           </button>
         </div>
@@ -98,59 +80,66 @@ function InputBar({ roomId }) {
     );
   };
 
+  useEffect(() => {
+    if (attachmentError) {
+      setAttachmentError(null);
+    }
+  }, []);
+
   return (
-    <div className="input-bar-component">
+    <div className="input-bar-container">
       {showAttachmentConfirmation && attachment && <AttachmentConfirmation />}
-      <div className="chat-input rounded m-2">
+      <div className="input-bar">
         {attachmentError && (
-          <div
-            className="alert alert-danger position-absolute translate-middle-y start-60 z-3 mt-3 p-2 ms-2"
-            role="alert"
-          >
+          <div className="input-bar-attachment-error" role="alert">
             {attachmentError}
           </div>
         )}
-        <div className="input-group">
-          {/* Message input */}
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Enter your message..."
-            value={newMessageText}
-            onChange={(e) => setNewMessageText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSendMessage();
-              }
-            }}
-          />
-          {/* File input - hidden */}
-          <input
-            type="file"
-            id="add-attch-input"
-            className="d-none"
-            onChange={handleAttachmentChange}
-            inputprops={{ accept: "image/*" }}
-          />
-          {/* Attachment button */}
+        <input
+          className="input-bar-message-input"
+          type="text"
+          placeholder="Enter your message..."
+          value={newMessageText}
+          onChange={(e) => {
+            if (attachmentError) {
+              setAttachmentError(null);
+            }
+            setNewMessageText(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSendMessage();
+            }
+          }}
+        />
+        <input
+          className="input-bar-attachment-input"
+          id="add-attachment-input"
+          type="file"
+          onChange={handleAttachmentChange}
+          inputprops={{ accept: "image/*" }}
+        />
+        <div className="input-bar-attachment-button-container">
           {attachment && attachmentConfirmed && (
-            <div className="cancel-btn" type="button" id="cancel-attachment-btn" onClick={() => setAttachment(null)}>
-              <FcCancel />
-            </div>
+            <span
+              className="material-symbols-outlined"
+              id="cancel-attachment-button"
+              onClick={() => setAttachment(null)}
+            >
+              cancel
+            </span>
           )}
           <button
-            className={"btn me-1 rounded-start" + (attachment && attachmentConfirmed ? " btn-dark" : " btn-secondary")}
+            className={"input-bar-attachment-button" + (attachment && attachmentConfirmed ? " attached" : "")}
             type="button"
-            id="add-attch-btn"
-            onClick={() => document.getElementById("add-attch-input").click()}
+            onClick={() => document.getElementById("add-attachment-input").click()}
           >
-            <GrAttachment />
-          </button>
-          {/* Send button */}
-          <button className="btn btn-secondary rounded-end" type="button" id="send-msg-btn" onClick={handleSendMessage}>
-            Send
+            <span className="material-symbols-outlined">attach_file</span>
           </button>
         </div>
+        <button className="input-bar-send-button" type="button" onClick={handleSendMessage}>
+          <span className="material-symbols-outlined">send</span>
+        </button>
       </div>
     </div>
   );

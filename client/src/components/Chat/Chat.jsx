@@ -3,9 +3,10 @@ import { useWebSocketContext } from "../../WebSocketContext";
 import ChatFeed from "./ChatFeed";
 import InputBar from "./InputBar";
 import { useSelector } from "react-redux";
+import "../../styles/Chat.scss";
 
 function Chat() {
-  const roomData = useSelector((state) => state.clientState.roomData);
+  const { roomData } = useSelector((state) => state.clientState);
   const { lastJsonMessage } = useWebSocketContext();
   const [messages, setMessages] = useState([]);
 
@@ -26,11 +27,11 @@ function Chat() {
   }, [lastJsonMessage]);
 
   return (
-    <div className="bg-gray-400 rounded d-flex flex-column w-50 h-100 ms-1">
-      <div className="users-list-header rounded bg-light mt-2 mx-2">
-        <p className="text-center pt-2 fs-4 fw-bold text-dark">
-          {!roomData ? "Lobby Chat" : `${roomData.name} - chat`}
-        </p>
+    <div className="chat-container">
+      <div className="chat-header-container">
+        <span className="chat-header-text">
+          {!roomData ? "LOBBY CHAT" : `${roomData.name} - chat`}
+        </span>
       </div>
       <ChatFeed messages={messages} />
       <InputBar messages={messages} setMessages={setMessages} roomId={roomData?.id} />
