@@ -25,7 +25,7 @@ export default class Room {
 
     this.players = players.map((player) => ({ user: player.user, ws: player.ws, isAdmin: false, status: "idle" }));
     this.players[0].isAdmin = true;
-    this.admin = this.players[0].user._id;
+    this.admin = this.players[0];
 
     this.numberOfPlayers = numberOfPlayers;
     if (password) {
@@ -34,6 +34,12 @@ export default class Room {
 
     if (gameRules) {
       this.gameRules = gameRules;
+    } else {
+      this.gameRules = {
+        totalRounds: 5,
+        timerDuration: 60,
+        cooldownDuration: 3,
+      };
     }
   }
 
@@ -52,7 +58,8 @@ export default class Room {
       numberOfPlayers: this.numberOfPlayers,
       isPrivate: !!this.password,
       password: this.password,
-      admin: this.admin,
+      admin: this.admin.user.name,
+      gameRules: this.gameRules,
     };
   }
 
@@ -94,7 +101,7 @@ export default class Room {
 
       if (isAdmin && this.players.length > 0) {
         this.players[0].isAdmin = true;
-        this.admin = this.players[0].user._id;
+        this.admin = this.players[0];
       }
 
       return true;
@@ -105,7 +112,7 @@ export default class Room {
   }
 
   kickPlayer(kickerUser, playerId) {
-    if (kickerUser._id !== this.admin) {
+    if (kickerUser._id !== this.admin.user._id) {
       console.log("Not admin.");
       return false;
     }

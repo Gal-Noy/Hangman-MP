@@ -15,60 +15,61 @@ function RoomsList() {
   const [invitation, setInvitation] = useState(null);
 
   const RoomBox = ({ room, joinRoomError, joinExistingRoom }) => {
-    const [showInputPassword, setShowInputPassword] = useState(false);
     const [passwordForJoin, setPasswordForJoin] = useState("");
 
     return (
-      <div>
-        <div
-          className="rounded bg-gray-500 m-1 d-flex align-items-center p-2"
-          type="button"
-          id="join-room"
-          onClick={() => {
-            if (room.isPrivate) {
-              setShowInputPassword(true);
-            } else {
-              joinExistingRoom(room, null);
-            }
-          }}
-        >
-          <div className="ms-2 mb-1 fs-5">{room.name}</div>
-          <div className="ms-3 mb-1 fs-5">
-            👤{room.players.length}/{room.numberOfPlayers}
-          </div>
-          <div className="ms-1 mb-1 fs-5">{room.status === "waiting" ? "🕑" : "🔴"}</div>
-          {room.isPrivate && !showInputPassword && <div className="ms-3 mb-1 fs-5">🔒</div>}
-          {showInputPassword && (
-            <div className="d-flex">
-              <div className="ms-3 mb-1 fs-5">🔐</div>
-              <div className="input-group ms-1">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Password"
-                  aria-label="Password"
-                  aria-describedby="basic-addon1"
-                  value={passwordForJoin}
-                  onChange={(e) => setPasswordForJoin(e.target.value)}
-                />
-                <button
-                  className="btn btn-primary"
-                  type="button"
-                  id="input-password-btn"
-                  onClick={() => {
-                    setJoinRoomError("");
-                    joinExistingRoom(room, passwordForJoin);
-                  }}
-                >
-                  Join
-                </button>
-              </div>
+      <div className="room-box">
+        <div className="room-box-room-details">
+          <div className="room-box-name">{room.name}</div>
+          {room.status === "waiting" && (
+            <div className="room-box-status" id="room-status-waiting">
+              WAITING
             </div>
           )}
+          {room.status === "playing" && (
+            <div className="room-box-status" id="room-status-playing">
+              PLAYING
+            </div>
+          )}
+          <div className="room-box-players">
+            <span class="material-symbols-outlined">person</span>
+            {room.players.length}&nbsp;/&nbsp;{room.numberOfPlayers}
+          </div>
         </div>
-        {joinRoomError.roomId && joinRoomError.roomId === room.id && (
-          <div className="alert alert-danger text-danger m-1">{joinRoomError.message}</div>
-        )}
+
+        <div className="room-box-game-details">
+          <div className="room-box-game-details-rule">
+            <span>Total rounds:&nbsp;</span>
+            <span className="room-box-game-details-rule-value">{room.gameRules.totalRounds}</span>
+          </div>
+          <div className="room-box-game-details-rule">
+            <span>
+              Timer duration {"("}in seconds{")"}:&nbsp;
+            </span>
+            <span className="room-box-game-details-rule-value">{room.gameRules.timerDuration}</span>
+          </div>
+          <div className="room-box-game-details-rule">
+            <span>
+              Cooldown duration {"("}in seconds{")"}:&nbsp;
+            </span>
+            <span className="room-box-game-details-rule-value">{room.gameRules.cooldownDuration}</span>
+          </div>
+        </div>
+
+        <div className="room-box-join-details">
+          {room.isPrivate && (
+            <input
+              className="room-box-join-input-password"
+              type="text"
+              placeholder="Password"
+              value={passwordForJoin}
+              onChange={(e) => setPasswordForJoin(e.target.value)}
+            />
+          )}
+          <div className="room-box-join-btn" type="button" onClick={() => joinExistingRoom(room, "")}>
+            JOIN
+          </div>
+        </div>
       </div>
     );
   };
@@ -90,13 +91,13 @@ function RoomsList() {
       wrongAttempts: 5,
     });
 
-    const DropdownMenu = ({ contentId, values, setFunction }) => {
+    const DropdownMenu = ({ contentId, values, stateValue, setFunction }) => (
       <div className="create-room-box-dropdown">
         <button
           className="create-room-box-dropdown-btn"
-          onMouseEnter={() => document.getElementById({ contentId }).classList.remove("hide")}
+          onMouseEnter={() => document.getElementById({ contentId })?.classList.remove("hide")}
         >
-          {gameRules.totalRounds}
+          {stateValue}
         </button>
         <div className="create-room-box-dropdown-content" id={contentId}>
           {values.map((value) => (
@@ -106,16 +107,15 @@ function RoomsList() {
               type="button"
               onClick={() => {
                 setFunction(value);
-                document.getElementById({ contentId }).classList.add("hide");
+                document.getElementById({ contentId })?.classList.add("hide");
               }}
             >
               {value}
             </a>
           ))}
         </div>
-      </div>;
-    };
-
+      </div>
+    );
     return (
       <div className={`create-room-box${showCreateRoomForm ? " active" : ""}`}>
         {!showCreateRoomForm && (
@@ -138,6 +138,7 @@ function RoomsList() {
                 <DropdownMenu
                   contentId="create-room-box-number-of-players-dropdown"
                   values={[1, 2, 3, 4]}
+                  stateValue={newRoomSettings.numberOfPlayers}
                   setFunction={(number) => setNewRoomSettings({ ...newRoomSettings, numberOfPlayers: number })}
                 />
               </div>
@@ -181,6 +182,7 @@ function RoomsList() {
                     <DropdownMenu
                       contentId="create-room-box-game-rules-total-rounds-dropdown"
                       values={[1, 3, 5, 7, 10]}
+                      stateValue={gameRules.totalRounds}
                       setFunction={(number) => setGameRules({ ...gameRules, totalRounds: number })}
                     />
                   </div>
@@ -191,6 +193,7 @@ function RoomsList() {
                     <DropdownMenu
                       contentId="create-room-box-game-rules-timer-duration-dropdown"
                       values={[10, 20, 30, 40, 50, 60, 70, 80, 90]}
+                      stateValue={gameRules.timerDuration}
                       setFunction={(number) => setGameRules({ ...gameRules, timerDuration: number })}
                     />
                   </div>
@@ -201,11 +204,24 @@ function RoomsList() {
                     <DropdownMenu
                       contentId="create-room-box-game-rules-cooldown-duration-dropdown"
                       values={[1, 3, 5, 10]}
+                      stateValue={gameRules.cooldownDuration}
                       setFunction={(number) => setGameRules({ ...gameRules, cooldownDuration: number })}
                     />
                   </div>
                 </div>
               )}
+              <div className="create-room-box-buttons">
+                <div className="create-room-box-buttons-btn" type="button" onClick={() => setShowCreateRoomForm(false)}>
+                  CANCEL
+                </div>
+                <div
+                  className="create-room-box-buttons-btn"
+                  type="button"
+                  onClick={() => createNewRoom(newRoomSettings)}
+                >
+                  CREATE
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -297,12 +313,12 @@ function RoomsList() {
 
   return (
     <div className="rooms-list-container">
-      {/* <div className="rooms-list">
+      <CreateRoomBox />
+      <div className="rooms-list">
         {rooms.map((room) => (
           <RoomBox key={room.id} room={room} joinRoomError={joinRoomError} joinExistingRoom={joinExistingRoom} />
         ))}
-      </div> */}
-      <CreateRoomBox />
+      </div>
     </div>
   );
 }
