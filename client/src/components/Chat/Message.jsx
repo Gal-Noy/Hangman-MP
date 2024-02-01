@@ -23,48 +23,31 @@ function Message({ message }) {
 
   const ZoomInAttachment = () => {
     return (
-      <div
-        ref={zoomRef}
-        className="confirmation-overlay position-absolute top-50 start-50 translate-middle h-auto rounded bg-secondary d-flex flex-column align-items-center"
-      >
-        <img
-          src={URL.createObjectURL(convertedAttachment)}
-          alt="Uploaded"
-          className="img-fluid mt-2"
-          style={{ maxWidth: "90%", maxHeight: "90%" }}
-        />
-        <button className="btn btn-danger m-2" onClick={() => setIsZoomIn(false)}>
-          Cancel
-        </button>
+      <div ref={zoomRef} className="zoom-in-attachment-container">
+        <img src={URL.createObjectURL(convertedAttachment)} alt="Uploaded" className="zoom-in-attachment-img" />
       </div>
     );
   };
 
   return (
-    <div>
-      {isZoomIn && <ZoomInAttachment />}
-      <div
-        key={message._id}
-        className={`mx-3 mb-2 mt-2 text-white rounded d-flex ${
-          isUserSender ? "flex-row-reverse bg-primary" : "flex-row align-self-start bg-secondary"
-        }`}
-      >
-        <div className="m-1 fs-6">
+    <div className={`message-container${isUserSender ? " user-sender" : " contact-sender"}`} key={message._id}>
+      {!isUserSender && (
+        <div className="message-sender-name">
           <strong>{sender.name}</strong>
         </div>
-        <div className="message-content d-flex flex-column">
-          {convertedAttachment && (
-            <div className="mx-3 mt-1 mb-1 fs-6" type="button" onClick={() => setIsZoomIn(true)}>
-              <img
-                src={URL.createObjectURL(convertedAttachment)}
-                alt="Uploaded"
-                className="img-fluid"
-                style={{ maxWidth: "90%" }}
-              />
-            </div>
-          )}
-          {text && <div className="m-1 fs-6">{text}</div>}
-        </div>
+      )}
+      <div className="message-content">
+        {convertedAttachment && (
+          <div className="message-content-attachment" type="button" onClick={() => setIsZoomIn(true)}>
+            <img
+              src={URL.createObjectURL(convertedAttachment)}
+              alt="Attachment"
+              className="message-content-attachment-img"
+            />
+            {isZoomIn && <ZoomInAttachment />}
+          </div>
+        )}
+        {text && <div className="message-content-text">{text}</div>}
       </div>
     </div>
   );

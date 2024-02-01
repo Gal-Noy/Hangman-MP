@@ -22,6 +22,7 @@
 .chat-header-text {
   font-size: 1.5rem;
   color: #000000;
+  font-weight: bold;
 }
 
 .chat-feed {
@@ -29,7 +30,6 @@
   height: 75%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: start;
   overflow-y: scroll;
   scrollbar-width: thin;
@@ -88,7 +88,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
 }
 
 .input-bar-attachment-button-container #cancel-attachment-button {
@@ -100,8 +99,9 @@
   cursor: pointer;
   left: -15%;
   top: -25%;
+  background-color: white;
+  border-radius: 50%;
 }
-
 
 .input-bar-attachment-button:hover {
   background-color: #cccccc;
@@ -160,11 +160,12 @@
 }
 
 .attachment-confirmation-container {
-  max-width: 75%;
-  max-height: 75%;
   position: fixed;
-  top: 15%;
-  left: 12.5%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 75%;
+  height: 75%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -175,8 +176,8 @@
 }
 
 .attachment-confirmation-img {
-  max-width: 90%;
-  max-height: 90%;
+  max-height: 95%;
+  max-width: 95%;
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -186,7 +187,7 @@
 
 .attachment-confirmation-buttons {
   width: 40%;
-  height: 40px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -212,4 +213,72 @@
 
 .attachment-confirmation-btn:active {
   background-color: #aaaaaa;
+}
+
+.message-container {
+  max-width: 60%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  margin: 1% 2% 0 2%;
+  padding: 2%;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.message-sender-name {
+  font-weight: bold;
+  margin-bottom: 1%;
+  font-size: 0.8rem;
+}
+
+.message-container.user-sender {
+  width: 100%;
+  align-self: flex-end;
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.message-container.contact-sender {
+  width: 100%;
+  align-self: flex-start;
+  background-color: #fff8d2;
+  color: #000000;
+}
+
+.message-content-attachment-img {
+  width: 100%;
+  height: auto;
+  margin-top: 1%;
+  border-radius: 5px;
+}
+
+.message-content-attachment:hover {
+  cursor: pointer;
+}
+
+.zoom-in-attachment-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 75%;
+  height: 75%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #dddddd;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  z-index: 3;
+}
+
+.zoom-in-attachment-img {
+  max-height: 95%;
+  max-width: 95%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  margin: 2%;
+  border: #929292 solid 1px;
 }

@@ -69,7 +69,14 @@ function RoomsList() {
                 onChange={(e) => setPasswordForJoin(e.target.value)}
               />
             )}
-            <div className="room-box-join-btn" type="button" onClick={() => joinExistingRoom(room, "")}>
+            <div
+              className="room-box-join-btn"
+              type="button"
+              onClick={() => {
+                setJoinRoomError({ roomId: null, message: "" });
+                joinExistingRoom(room, passwordForJoin);
+              }}
+            >
               JOIN
             </div>
           </div>
