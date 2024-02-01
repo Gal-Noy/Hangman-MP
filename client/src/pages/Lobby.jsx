@@ -7,8 +7,8 @@ import "../styles/Lobby.scss";
 function Lobby({ lobbyState }) {
   return (
     <div className="lobby-container">
-      {/* {lobbyState === "roomsList" && <RoomsList />}
-      {lobbyState === "chat" && <Chat />} */}
+      {lobbyState === "roomsList" && <RoomsList />}
+      {lobbyState === "chat" && <Chat />}
       <UsersList />
     </div>
   );

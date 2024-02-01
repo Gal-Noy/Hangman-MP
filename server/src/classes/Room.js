@@ -16,7 +16,7 @@ player: {
 */
 
 export default class Room {
-  constructor(name, players, numberOfPlayers, password) {
+  constructor(name, players, numberOfPlayers, password, gameRules) {
     this.id = v4();
     this.name = name;
     this.status = "waiting";
@@ -30,6 +30,10 @@ export default class Room {
     this.numberOfPlayers = numberOfPlayers;
     if (password) {
       this.password = password;
+    }
+
+    if (gameRules) {
+      this.gameRules = gameRules;
     }
   }
 
@@ -140,7 +144,7 @@ export default class Room {
       this.status = "playing";
       await User.updateMany({ _id: { $in: this.players.map((player) => player.user._id) } }, { inGame: false }).exec();
 
-      this.game = new Game(this);
+      this.game = new Game(this, this.gameRules);
       this.players.forEach((player) => {
         const playerWs = player.ws;
         playerWs.session.game = this.game;

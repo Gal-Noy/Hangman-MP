@@ -12,7 +12,6 @@ function UsersList() {
   const [error, setError] = useState(null);
 
   const UserBox = ({ user, error, setError }) => {
-    const isMe = JSON.parse(localStorage.getItem("user"))._id === user._id;
     const { roomData } = useSelector((state) => state.clientState);
     const isAdmin = JSON.parse(localStorage.getItem("user"))._id === roomData?.admin;
     const [isUserInvited, setIsUserInvited] = useState(false);
@@ -38,7 +37,11 @@ function UsersList() {
 
     return (
       <div className="user-box">
-        <img className="user-box-avatar" src={!userAvatar ? defaultAvatar : URL.createObjectURL(userAvatar)} alt="user-avatar" />
+        <img
+          className="user-box-avatar"
+          src={!userAvatar ? defaultAvatar : URL.createObjectURL(userAvatar)}
+          alt="user-avatar"
+        />
         <div className="user-box-details">
           <div className="user-box-name">{user.name.toUpperCase()}</div>
           <div className="user-box-status">
@@ -49,6 +52,9 @@ function UsersList() {
               <span className="user-box-isoffline-status">OFFLINE</span>
             )}
           </div>
+          {
+            // TODO
+          }
           {isAdmin && !isUserInvited && (
             <div
               className="user-box-invite-button"
@@ -108,6 +114,13 @@ function UsersList() {
         {users.map((user) => (
           <UserBox key={user._id} user={user} error={error} setError={setError} />
         ))}
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
       </div>
     </div>
   );

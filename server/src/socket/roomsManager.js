@@ -26,7 +26,7 @@ const roomsManager = (content, ws) => {
 
 const createRoom = async (data, ws) => {
   try {
-    const { name, numberOfPlayers, password } = data;
+    const { name, numberOfPlayers, password, gameRules } = data;
 
     if (name === "") {
       ws.send(
@@ -40,7 +40,7 @@ const createRoom = async (data, ws) => {
 
     const players = [{ user: ws.session.user, ws }]; // Join the creator to the room
 
-    const room = new Room(name, players, numberOfPlayers, password);
+    const room = new Room(name, players, numberOfPlayers, password, gameRules);
     rooms[room.id] = room;
 
     await User.updateMany({ _id: { $in: players.map((player) => player.user._id) } }, { inRoom: true }).exec();

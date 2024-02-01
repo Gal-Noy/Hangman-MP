@@ -304,16 +304,7 @@ function RoomsList() {
             <RoomBox room={room} error={error} joinExistingRoom={joinExistingRoom} />
           </div>
         ))}
-        {!showCreateRoomForm && (
-          <div
-            className="rounded bg-gray-400 m-2 d-flex align-items-center p-2 fs-5"
-            type="button"
-            id="create-room-btn"
-            onClick={() => setShowCreateRoomForm(true)}
-          >
-            Create a new room
-          </div>
-        )}
+        
         {showCreateRoomForm && <CreateRoomBox />}
         {error && error.type === "create" && <div className="alert alert-danger text-danger m-1">{error.message}</div>}
       </div>

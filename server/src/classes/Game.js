@@ -2,7 +2,7 @@ import { GameSocketManager } from "../socket/GameSocketManager.js";
 import { getRandomWord, getKeypadLetters } from "../utils/utils.js";
 
 export default class Game {
-  constructor(room) {
+  constructor(room, gameRules) {
     this.room = room;
     this.gameSocketManager = new GameSocketManager(
       this,
@@ -12,23 +12,25 @@ export default class Game {
       }, {})
     );
 
+    const { totalRounds, timerDuration, cooldownDuration } = gameRules;
+
     this.currRound = 1;
-    this.totalRounds = 5;
+    this.totalRounds = !totalRounds ? 5 : totalRounds;
     this.currentWord = null;
     this.hiddenWord = "";
     this.keypadLetters = [];
     this.usedLetters = [];
-    this.remainingWrongAttempts = 0;
+    this.remainingWrongAttempts = 5;
     this.score = 0;
     this.terminate = false;
 
     this.timer = 0;
     this.timerInterval = null;
-    this.timerDuration = 61;
+    this.timerDuration = !timerDuration ? 61 : timerDuration + 1;
 
     this.cooldown = 0;
     this.cooldownInterval = null;
-    this.cooldownDuration = 6;
+    this.cooldownDuration = !cooldownDuration ? 4 : cooldownDuration + 1;
   }
 
   runGame() {
