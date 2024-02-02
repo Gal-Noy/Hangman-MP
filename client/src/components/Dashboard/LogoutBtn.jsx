@@ -67,9 +67,10 @@ function LogoutBtn(props) {
   return (
     <button
       type="button"
-      className={`logout-button pheasant-demure-button hover icon ${
+      className={`pheasant-demure-button hover icon ${
         isDashboard ? "outline light blink" : "solid dark"
       }`}
+      id="logout-button-dashboard"
       onClick={handleLogout}
     >
       <span className="label">Logout</span>

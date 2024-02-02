@@ -100,7 +100,6 @@ function RoomsList() {
       totalRounds: 5,
       timerDuration: 60,
       cooldownDuration: 3,
-      wrongAttempts: 5,
     });
 
     const DropdownMenu = ({ contentId, values, stateValue, setFunction }) => (

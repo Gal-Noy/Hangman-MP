@@ -75,6 +75,12 @@ function Dashboard({ onLogout }) {
             </button>
           </div>
         )}
+        {clientState === "room" && (
+          <div className="dashboard-menu-buttons">
+            <ReadyBtn />
+            <BackToLobbyBtn />
+          </div>
+        )}
       </div>
       <div className="dashboard-user-section">
         <div className="dashboard-user-info">

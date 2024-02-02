@@ -58,7 +58,10 @@ export default class Room {
       numberOfPlayers: this.numberOfPlayers,
       isPrivate: !!this.password,
       password: this.password,
-      admin: this.admin.user.name,
+      admin: {
+        id: this.admin.user._id,
+        name: this.admin.user.name,
+      },
       gameRules: this.gameRules,
     };
   }

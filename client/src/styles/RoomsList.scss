@@ -8,7 +8,7 @@
 }
 
 .rooms-list {
-  width: 95%;
+  width: 97%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -19,13 +19,12 @@
 }
 
 .room-box-container {
-  width: 40vw;
-  margin-left: 1%;
+  width: 98%;
 }
 
 .room-box {
   width: 100%;
-  height: 90px;
+  height: 13vh;
   background-color: #dddddd;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   margin: 1% 0;
@@ -139,12 +138,13 @@
 
 .create-room-box-container {
   margin-top: 1%;
-  width: 90%;
+  width: 95%;
   height: auto;
 }
 
 .create-room-box {
   height: 6vh;
+  width: 98%;
   background-color: #dddddd;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   display: flex;
@@ -197,6 +197,7 @@
 }
 
 #create-room-box-room-details {
+  margin-top: 1.5%;
   height: 90%;
   border-right: 1px solid #fafafa;
 }
@@ -331,6 +332,7 @@
 .create-room-box-modify-game {
   width: 55%;
   height: 20%;
+  margin-top: 1%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -348,11 +350,12 @@
 
 .create-room-box-game-rules {
   align-self: center;
-  width: 95%;
+  width: 96%;
   height: 50%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  font-size: 15px;
 }
 
 .create-room-box-game-rules-rule {

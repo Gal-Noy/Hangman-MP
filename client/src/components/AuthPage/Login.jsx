@@ -16,7 +16,7 @@ function Login(props) {
   const [isPending, setIsPending] = useState(false);
   const user = localStorage.getItem("user");
   const isLoggedIn = !!localStorage.getItem("auth_token") && !!user;
-  const [showLoginForm, setShowLoginForm] = useState(!isLoggedIn);
+  const showLoginForm = !isLoggedIn;
   const userAvatar = !user || !JSON.parse(user).avatar ? null : b64toBlob(JSON.parse(user).avatar, "image/");
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -78,7 +78,6 @@ function Login(props) {
         setSubmitResponseMessage({ success: false, msg: err.response.data.msg });
       });
   };
-
   return (
     <div className="login-component">
       <img
@@ -89,7 +88,7 @@ function Login(props) {
       {!showLoginForm && (
         <div className="already-logged-in-div">
           <Link to="/" onClick={handleContinueWithUser}>
-            {`Continue with ${JSON.parse(user).name.toUpperCase()}`}
+            {`Continue with ${JSON.parse(user)?.name.toUpperCase()}`}
           </Link>
           <LogoutBtn onLogout={onLogout} isDashboard={false} />
         </div>

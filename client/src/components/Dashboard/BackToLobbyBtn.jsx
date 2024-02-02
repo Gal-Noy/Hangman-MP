@@ -27,8 +27,13 @@ function BackToLobbyBtn() {
   }, [lastJsonMessage]);
 
   return (
-    <button className="btn btn-outline-danger mt-3 mx-1" onClick={leaveRoom}>
-      Back to Lobby
+    <button
+      type="button"
+      className="dashboard-menu-button pheasant-demure-button outline light hover blink"
+      id="inRoom-backToLobby-button"
+      onClick={leaveRoom}
+    >
+      <span className="label">Back to Lobby</span>
     </button>
   );
 }

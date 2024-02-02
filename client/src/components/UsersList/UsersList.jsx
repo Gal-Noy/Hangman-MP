@@ -15,7 +15,7 @@ function UsersList() {
 
   const UserBox = ({ user, error, setError }) => {
     const { roomData } = useSelector((state) => state.clientState);
-    const isAdmin = JSON.parse(localStorage.getItem("user"))._id === roomData?.admin;
+    const isAdmin = JSON.parse(localStorage.getItem("user"))._id === roomData?.admin.id;
     const [isUserInvited, setIsUserInvited] = useState(false);
     const userAvatar = !user?.avatar ? null : b64toBlob(user.avatar, "image/");
 

@@ -25,12 +25,13 @@ function HomePage({ onLogout }) {
     <div>
       <div className="hangman-div">
         <Dashboard onLogout={onLogout} />
-        <div className="main-game-container">{clientState === "lobby" && <Lobby lobbyState={lobbyState} />}</div>
+        <div className="main-game-container">
+          {clientState === "lobby" && <Lobby lobbyState={lobbyState} />}
+          {clientState === "room" && <Room />}
+        </div>
       </div>
 
-      {/* 
-      {clientState === "room" && <Room />}
-      {clientState === "game" && <Game players={roomData.players} />} */}
+      {/* {clientState === "game" && <Game players={roomData.players} />} */}
     </div>
   );
 }

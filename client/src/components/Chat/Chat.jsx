@@ -28,11 +28,11 @@ function Chat() {
 
   return (
     <div className="chat-container">
-      <div className="chat-header-container">
-        <span className="chat-header-text">
-          {!roomData ? "LOBBY CHAT" : `${roomData.name} - chat`}
-        </span>
-      </div>
+      {!roomData && (
+        <div className="chat-header-container">
+          <span className="chat-header-text">LOBBY CHAT</span>
+        </div>
+      )}
       <ChatFeed messages={messages} />
       <InputBar messages={messages} setMessages={setMessages} roomId={roomData?.id} />
     </div>

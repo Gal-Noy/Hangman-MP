@@ -19,10 +19,15 @@ function ReadyBtn() {
 
   return (
     <button
-      className={"mt-3 btn " + (isPlayerReady ? "btn-success shadow" : "btn-outline-success")}
+      type="button"
+      className={`dashboard-menu-button pheasant-demure-button outline light hover blink icon${
+        isPlayerReady ? " active" : " inactive"
+      }`}
+      id="inRoom-ready-button"
       onClick={toggleReady}
     >
-      Ready
+      <span className="label">Ready</span>
+      <span class="material-icons icon">chevron_right</span>
     </button>
   );
 }

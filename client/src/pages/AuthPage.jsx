@@ -6,7 +6,7 @@ import Logo from "../assets/logo.png";
 import "../styles/AuthPage.scss";
 
 function AuthPage(props) {
-  const { formType, onLogin } = props;
+  const { formType, onLogin, onLogout } = props;
   const [submitResponseMessage, setSubmitResponseMessage] = useState({ success: false, msg: "" });
 
   return (
@@ -25,7 +25,7 @@ function AuthPage(props) {
             </div>
           )}
           {formType === "login" ? (
-            <Login onLogin={onLogin} setSubmitResponseMessage={setSubmitResponseMessage} />
+            <Login onLogin={onLogin} onLogout={onLogout} setSubmitResponseMessage={setSubmitResponseMessage} />
           ) : (
             <Signup setSubmitResponseMessage={setSubmitResponseMessage} />
           )}
