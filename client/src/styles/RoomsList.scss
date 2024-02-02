@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-height: 92%;
+  
 }
 
 .rooms-list {
@@ -19,7 +19,8 @@
 }
 
 .room-box-container {
-  width: 100%;
+  width: 40vw;
+  margin-left: 1%;
 }
 
 .room-box {
@@ -138,12 +139,12 @@
 
 .create-room-box-container {
   margin-top: 1%;
-  width: 95%;
+  width: 90%;
   height: auto;
 }
 
 .create-room-box {
-  height: 50px;
+  height: 6vh;
   background-color: #dddddd;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   display: flex;

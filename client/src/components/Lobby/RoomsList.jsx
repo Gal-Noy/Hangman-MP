@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useWebSocketContext } from "../../WebSocketContext";
 import { setKickedFromRoom, setRoom } from "../../store/clientStateSlice";
 import { useDispatch, useSelector } from "react-redux";
