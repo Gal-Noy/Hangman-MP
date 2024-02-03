@@ -8,25 +8,23 @@
 }
 
 .room-content {
-  width: 73%;
+  width: 72.75%;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-
-  border: red solid;
 }
 
 .room-info {
-  width: 100%;
+  width: 99%;
   height: 15%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 
-  border: green solid;
+  border-bottom: 2px solid #dddddd;
 }
 
 .room-info-room-name {
@@ -41,26 +39,25 @@
 }
 
 .room-info-game-rule {
-    width: 30%;
-    height: 90%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-right: 2px solid #dddddd;
-    font-size: 1.2rem;
-    font-weight: bold;
+  width: 30%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .room-info-game-rule-title {
-    width: 100%;
-    height: 50%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    font-size: 1rem;
-    font-weight: 400;
+  width: 100%;
+  height: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 400;
 }
 
 .room-social {
@@ -70,6 +67,125 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
 
-  border: blue solid;
+.players-list-container {
+  width: 30%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+
+  border: yellow solid;
+}
+
+.players-list-counter {
+  width: 100%;
+  height: 20%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.players-list {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+}
+
+.player-box-container {
+  width: 95%;
+  height: 17%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2vh;
+  background-color: #eeeeee;
+
+  &.empty {
+    background-color: #dddddd;
+  }
+}
+
+.player-box {
+  width: 95%;
+  height: 90%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.player-box-player-info {
+  width: 85%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  gap: 5%;
+}
+
+.player-box-avatar-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.player-box-avatar-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.player-box-player-info-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  font-weight: bold;
+}
+
+.player-box-player-name {
+  font-size: 1.1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: end;
+}
+
+.player-box-player-status {
+  font-size: 0.8rem;
+}
+
+#player-box-player-status-ready {
+  color: rgb(0, 156, 62);
+}
+
+#player-box-player-status-idle {
+  color: rgb(146, 146, 146);
+}
+
+#player-box-player-status-playing {
+  color: rgb(0, 101, 163);
+}
+
+#player-box-kick-button {
+  position: absolute;
+  right: -5%;
+  top: -15%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: rgb(173, 70, 69);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
 }

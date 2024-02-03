@@ -1,37 +1,63 @@
+import { useSelector } from "react-redux";
+import { b64toBlob } from "../../utils/utils";
+import defaultAvatar from "../../assets/default-avatar.jpg";
+
 const PlayerBox = ({ player, isRoomAdmin, kickPlayer }) => {
+  const playerAvatar = !player?.avatar ? null : b64toBlob(player.avatar, "image/");
+
   return (
-    <div className="d-flex justify-content-center">
-      <div className="rounded bg-gray-400 m-1 d-flex p-2 w-100">
-        <div className="ms-2">{player.status === "ready" ? "✔️" : " "}</div>
-        <div className="ms-2 mb-1 fs-5">{player.name}</div>
-        {player.isAdmin && <div className="ms-2 mb-1 fs-5">👑</div>}
-      </div>
-      {isRoomAdmin && !player.isAdmin && (
-        <div className=" position-absolute" style={{ marginLeft: "200px", marginTop: "10px" }}>
-          <button
-            className="kick-from-room-btn btn btn-outline-danger fs-6"
-            onClick={() => kickPlayer(player.id)}
-          >
-            Kick
-          </button>
+    <div className="player-box-container">
+      <div className="player-box">
+        <div className="player-box-player-info">
+          <div className="player-box-avatar-container">
+            <img
+              src={!playerAvatar ? defaultAvatar : URL.createObjectURL(playerAvatar)}
+              alt="avatar"
+              className="player-box-avatar-img"
+            />
+          </div>
+          <div className="player-box-player-info-details">
+            <div className="player-box-player-name">{player.name.toUpperCase() + (player.isAdmin ? " 👑" : "")}</div>
+            <div className="player-box-player-status">
+              {player.status === "ready" ? (
+                <span id="player-box-player-status-ready">READY</span>
+              ) : player.status === "idle" ? (
+                <span id="player-box-player-status-idle">NOT READY</span>
+              ) : (
+                <span id="player-box-player-status-playing">PLAYING</span>
+              )}
+            </div>
+          </div>
         </div>
-      )}
+
+        {isRoomAdmin && !player.isAdmin && (
+          <span className="material-symbols-outlined" id="player-box-kick-button" onClick={() => kickPlayer(player.id)}>
+            cancel
+          </span>
+        )}
+      </div>
     </div>
   );
 };
 
+const EmptyPlayerBox = () => {
+  return <div className="player-box-container empty"></div>;
+};
+
 function PlayersList({ players, isRoomAdmin, kickPlayer }) {
+  const numberOfPlayers = useSelector((state) => state.clientState.roomData.numberOfPlayers);
+
   return (
-    <div className="bg-gray-400 rounded w-30 d-flex flex-column h-570">
-      <div className="players-list-header rounded bg-light mt-2 mx-2">
-        <p className="text-center pt-2 fs-4 fw-bold text-dark">Players</p>
-      </div>
-      <div className="players-list rounded bg-light m-2 flex-fill d-flex flex-column overflow-auto">
+    <div className="players-list-container">
+      <div className="players-list">
         {players.map((player, index) => (
-          <div key={index} className="p-1">
-            <PlayerBox player={player} isRoomAdmin={isRoomAdmin} kickPlayer={kickPlayer} />
-          </div>
+          <PlayerBox key={index} player={player} isRoomAdmin={isRoomAdmin} kickPlayer={kickPlayer} />
         ))}
+        {Array(numberOfPlayers - players.length)
+          .fill()
+          .map((_, index) => (
+            <EmptyPlayerBox key={index} />
+          ))}
       </div>
     </div>
   );

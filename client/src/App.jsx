@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import AuthPage from "./pages/AuthPage";
 import useWebSocket from "react-use-websocket";
@@ -31,15 +31,25 @@ function App() {
     shouldReconnect: () => true,
   });
 
-  // For debugging purposes
   useEffect(() => {
     if (lastJsonMessage) {
       const { type, content } = lastJsonMessage;
-      if (type !== "timerUpdate" || type !== "cooldownUpdate") {
+      if (type !== "timerUpdate" || type !== "cooldownUpdate") { // TODO: remove this line
         console.log(type, content);
+      }
+      if (type === "reAuthResponse") {
+        const { success, message } = content;
+        if (!success) {
+          localStorage.removeItem("auth_token");
+          localStorage.removeItem("user");
+          dispatch(setLobby());
+          alert(message);
+          setIsLoggedIn(false); // onLogout()
+        }
       }
     }
   }, [lastJsonMessage]);
+
 
   return (
     <WebSocketProvider value={{ sendJsonMessage, lastJsonMessage }}>

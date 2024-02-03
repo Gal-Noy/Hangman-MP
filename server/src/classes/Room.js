@@ -10,7 +10,7 @@ player: {
     name: string,
   },
   ws: WebSocket,
-  status: "idle" | "ready" | "playing" | "finished",
+  status: "idle" | "ready" | "playing",
   isAdmin: boolean,
 }
 */
@@ -53,6 +53,7 @@ export default class Room {
         name: player.user.name,
         isAdmin: player.isAdmin,
         status: player.status,
+        avatar: player.user.avatar,
       })),
       status: this.status,
       numberOfPlayers: this.numberOfPlayers,
@@ -152,7 +153,10 @@ export default class Room {
     if (this.players.every((player) => player.status === "ready")) {
       this.players.map((player) => (player.status = "playing"));
       this.status = "playing";
-      await User.updateMany({ _id: { $in: this.players.map((player) => player.user._id) } }, { inGame: false }).exec();
+
+      this.updateRoomInfoPlayers();
+
+      await User.updateMany({ _id: { $in: this.players.map((player) => player.user._id) } }, { inGame: true }).exec();
 
       this.game = new Game(this, this.gameRules);
       this.players.forEach((player) => {

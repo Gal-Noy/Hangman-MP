@@ -47,23 +47,6 @@ function LogoutBtn(props) {
       });
   };
 
-  useEffect(() => {
-    if (lastJsonMessage) {
-      const { type, content } = lastJsonMessage;
-      if (type === "reAuthResponse") {
-        const { success, message } = content;
-        if (!success) {
-          localStorage.removeItem("auth_token");
-          localStorage.removeItem("user");
-          dispatch(setLobby());
-          alert(message);
-          onLogout();
-          navigate("/login");
-        }
-      }
-    }
-  }, [lastJsonMessage]);
-
   return (
     <button
       type="button"

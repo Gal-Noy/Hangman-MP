@@ -53,21 +53,17 @@ function Room() {
             <span className="room-info-game-rule-title">Total Rounds</span> {roomData.gameRules.totalRounds}
           </div>
           <div className="room-info-game-rule">
-            <span className="room-info-game-rule-title">
-              Timer duration
-            </span>{" "}
-            {roomData.gameRules.timerDuration}{"s"}
+            <span className="room-info-game-rule-title">Timer duration</span> {roomData.gameRules.timerDuration}
+            {"s"}
           </div>
           <div className="room-info-game-rule">
-            <span className="room-info-game-rule-title">
-              Cooldown duration
-            </span>{" "}
-            {roomData.gameRules.cooldownDuration}{"s"}
+            <span className="room-info-game-rule-title">Cooldown duration</span> {roomData.gameRules.cooldownDuration}
+            {"s"}
           </div>
         </div>
         <div className="room-social">
-          {/* <PlayersList players={players} isRoomAdmin={isRoomAdmin} kickPlayer={kickPlayer} />
-          <Chat /> */}
+          <PlayersList players={players} isRoomAdmin={isRoomAdmin} kickPlayer={kickPlayer} />
+          {/* <Chat /> */}
         </div>
       </div>
       <UsersList />

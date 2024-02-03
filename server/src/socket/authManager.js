@@ -57,7 +57,7 @@ const handleReAuth = async (data, ws) => {
       };
     } else {
       // Logout routine
-      await User.findByIdAndUpdate(user._id, { isActive: false, inRoom: false, inGame: false });
+      await User.findByIdAndUpdate(user._id, { isActive: false, inRoom: false, inGame: false }).exec();
       handleLogout(data, ws);
 
       ws.send(
@@ -68,7 +68,7 @@ const handleReAuth = async (data, ws) => {
       );
     }
   } catch (error) {
-    console.log("Re-auth failed.", error);
+    console.log("Re-auth problem.", error);
   }
 };
 
