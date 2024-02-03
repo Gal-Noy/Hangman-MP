@@ -92,7 +92,7 @@ export default class Room {
     if (this.players.some((p) => p.user._id === player.user._id)) {
       return "Already in the room.";
     }
-    this.players.push({ user: player.user, ws: player.ws, status: "idle" });
+    this.players.push({ user: player.user, ws: player.ws, status: "idle", isAdmin: false });
     return "";
   }
 

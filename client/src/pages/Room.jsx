@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setRoom, setLobby, setKickedFromRoom } from "../store/clientStateSlice";
 import Chat from "../components/Chat/Chat";
 import "../styles/Room.scss";
+import { sortPlayersList } from "../utils/utils";
 
 function Room() {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
@@ -20,10 +21,11 @@ function Room() {
       if (type === "updateRoomInfo" || type === "createRoomResponse") {
         dispatch(setRoom(content.data.room));
         const players = [...content.data.room.players];
-        players.sort((a, b) => {
-          return a.status === "ready" ? -1 : 1;
-        });
-        setPlayers(players);
+        console.log("players", players);
+
+        const sortedPlayers = sortPlayersList(players);
+
+        setPlayers(sortedPlayers);
       } else if (type === "kickFromRoom") {
         const { room } = content.data;
         dispatch(setKickedFromRoom(room.name));
@@ -63,7 +65,7 @@ function Room() {
         </div>
         <div className="room-social">
           <PlayersList players={players} isRoomAdmin={isRoomAdmin} kickPlayer={kickPlayer} />
-          {/* <Chat /> */}
+          <Chat />
         </div>
       </div>
       <UsersList />

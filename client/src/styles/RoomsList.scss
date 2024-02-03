@@ -401,8 +401,7 @@
 }
 
 .rooms-list-error {
-  margin-top: 1%;
-  margin-left: -2%;
+  margin: 1% 0 -1% -2%;
   width: 93%;
   height: 5vh;
   display: flex;
@@ -415,25 +414,29 @@
   position: relative;
 }
 
+#join-room-error {
+  width: 100%;
+  margin-left: 0;
+}
+
+.rooms-list-alerts {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1vh;
+}
+
 #kick-from-room-error-cancel {
   position: absolute;
   right: 1%;
   cursor: pointer;
 }
 
-.rooms-list-invitation-alert {
-  margin-top: 1%;
-  margin-left: -2%;
-  width: 93%;
-  height: 5vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+#room-invitation-alert {
   color: rgb(53, 148, 51);
   background-color: rgb(213, 255, 213);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  font-weight: bold;
-  position: relative;
 }
 
 #invitation-alert-cancel {

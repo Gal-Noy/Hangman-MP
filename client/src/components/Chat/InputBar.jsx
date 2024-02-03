@@ -87,7 +87,7 @@ function InputBar({ roomId }) {
   }, []);
 
   return (
-    <div className="input-bar-container">
+    <div className={`input-bar-container${roomId ? " in-room" : ""}`}>
       {showAttachmentConfirmation && attachment && <AttachmentConfirmation />}
       <div className="input-bar">
         {attachmentError && (

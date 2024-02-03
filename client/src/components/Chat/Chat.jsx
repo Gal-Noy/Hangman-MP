@@ -7,6 +7,7 @@ import "../../styles/Chat.scss";
 
 function Chat() {
   const { roomData } = useSelector((state) => state.clientState);
+  const inRoom = !!roomData;
   const { lastJsonMessage } = useWebSocketContext();
   const [messages, setMessages] = useState([]);
 
@@ -27,13 +28,12 @@ function Chat() {
   }, [lastJsonMessage]);
 
   return (
-    <div className="chat-container">
-      {!roomData && (
-        <div className="chat-header-container">
-          <span className="chat-header-text">LOBBY CHAT</span>
-        </div>
-      )}
-      <ChatFeed messages={messages} />
+    <div className={`chat-container${inRoom ? " in-room" : ""}`}>
+      <div className="chat-header-container">
+        <span className={`chat-header-text${inRoom ? " in-room" : ""}`}>{inRoom ? "ROOM CHAT" : "LOBBY CHAT"}</span>
+      </div>
+
+      <ChatFeed messages={messages} inRoom={inRoom} />
       <InputBar messages={messages} setMessages={setMessages} roomId={roomData?.id} />
     </div>
   );

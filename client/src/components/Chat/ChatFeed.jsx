@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import Message from "./Message";
 
-function ChatFeed({ messages }) {
+function ChatFeed(props) {
+  const { messages, inRoom } = props;
   const chatMessagesRef = useRef(null);
 
   useEffect(() => {
@@ -14,10 +15,10 @@ function ChatFeed({ messages }) {
   }, [messages]);
 
   return (
-    <div className="chat-feed">
-        {messages.map((message, index) => (
-          <Message key={index} message={message} />
-        ))}
+    <div className={`chat-feed${inRoom ? " in-room" : ""}`}>
+      {messages.map((message, index) => (
+        <Message key={index} message={message} />
+      ))}
     </div>
   );
 }

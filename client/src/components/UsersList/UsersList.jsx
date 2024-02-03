@@ -38,41 +38,46 @@ function UsersList() {
     };
 
     return (
-      <div className="user-box">
-        <img
-          className="user-box-avatar"
-          src={!userAvatar ? defaultAvatar : URL.createObjectURL(userAvatar)}
-          alt="user-avatar"
-        />
-        <div className="user-box-details">
-          <div className="user-box-name">{user.name.toUpperCase()}</div>
-          <div className="user-box-status">
-            {user.inGame && <span className="user-box-ingame-status">IN-GAME</span>}
-            {user.inRoom && !user.inGame && <span className="user-box-inroom-status">IN-ROOM</span>}
-            {user.isActive && !user.inRoom && !user.inGame && <span className="user-box-isactive-status">ONLINE</span>}
-            {!user.isActive && !user.inRoom && !user.inGame && (
-              <span className="user-box-isoffline-status">OFFLINE</span>
-            )}
+      <div className="user-box-container" key={user._id}>
+        <div className="user-box">
+          <img
+            className="user-box-avatar"
+            src={!userAvatar ? defaultAvatar : URL.createObjectURL(userAvatar)}
+            alt="user-avatar"
+          />
+          <div className="user-box-details">
+            <div className="user-box-name">{user.name.toUpperCase()}</div>
+            <div className="user-box-status">
+              {user.inGame && <span className="user-box-ingame-status">IN-GAME</span>}
+              {user.inRoom && !user.inGame && <span className="user-box-inroom-status">IN-ROOM</span>}
+              {user.isActive && !user.inRoom && !user.inGame && (
+                <span className="user-box-isactive-status">ONLINE</span>
+              )}
+              {!user.isActive && !user.inRoom && !user.inGame && (
+                <span className="user-box-isoffline-status">OFFLINE</span>
+              )}
+            </div>
           </div>
-        </div>
 
-        {isAdmin &&
-          !user.inRoom &&
-          !user.inGame &&
-          user.isActive &&
-          (!isUserInvited ? (
-            <span
-              className="material-symbols-outlined user-box-invite-button"
-              type="button"
-              onClick={() => inviteUserToRoom(user)}
-            >
-              person_add
-            </span>
-          ) : (
-            <span className="material-symbols-outlined user-box-invite-button" type="button">
-              done
-            </span>
-          ))}
+          {isAdmin &&
+            !user.inRoom &&
+            !user.inGame &&
+            user.isActive &&
+            (!isUserInvited ? (
+              <span
+                className="material-symbols-outlined user-box-invite-button"
+                type="button"
+                onClick={() => inviteUserToRoom(user)}
+              >
+                person_add
+              </span>
+            ) : (
+              <span className="material-symbols-outlined user-box-invite-button" type="button">
+                done
+              </span>
+            ))}
+        </div>
+        {error && error.user._id === user._id && <div className="user-box-error-message">{error.message}</div>}
       </div>
     );
   };
@@ -121,45 +126,17 @@ function UsersList() {
         <input type="text" placeholder="Search" value={searchInput} onChange={handleSearchInput} />
       </div>
       <div className="users-list">
-        {!searchInput &&
-          users.map((user) => (
-            <div className="user-box-container" key={user._id}>
-              <UserBox user={user} />
-              {error && error.user._id === user._id && <div className="user-box-error-message">{error.message}</div>}
-            </div>
-          ))}
-        {searchInput &&
-          searchedUsers.map((user) => (
-            <div className="user-box-container" key={user._id}>
-              <UserBox user={user} />
-              {error && error.user._id === user._id && <div className="user-box-error-message">{error.message}</div>}
-            </div>
-          ))}
+        {!searchInput && users.map((user) => <UserBox user={user} key={user._id} />)}
+        {searchInput && searchedUsers.map((user) => <UserBox user={user} key={user._id} />)}
 
-        <div className="user-box-container">
-          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        </div>
-        <div className="user-box-container">
-          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        </div>
-        <div className="user-box-container">
-          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        </div>
-        <div className="user-box-container">
-          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        </div>
-        <div className="user-box-container">
-          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        </div>
-        <div className="user-box-container">
-          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        </div>
-        <div className="user-box-container">
-          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        </div>
-        <div className="user-box-container">
-          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        </div>
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
       </div>
     </div>
   );
