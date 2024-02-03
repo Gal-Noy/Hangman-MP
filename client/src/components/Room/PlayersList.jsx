@@ -29,7 +29,6 @@ const PlayerBox = ({ player, isRoomAdmin, kickPlayer }) => {
             </div>
           </div>
         </div>
-
         {isRoomAdmin && !player.isAdmin && (
           <span className="material-symbols-outlined" id="player-box-kick-button" onClick={() => kickPlayer(player.id)}>
             cancel

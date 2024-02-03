@@ -128,7 +128,7 @@ function RoomsList() {
       </div>
     );
     return (
-      <div className={`create-room-box-container`}>
+      <div className="create-room-box-container">
         <div className={`create-room-box${showCreateRoomForm ? " active" : ""}`}>
           {!showCreateRoomForm && (
             <div className="create-room-box-btn" type="button" onClick={() => setShowCreateRoomForm(true)}>
@@ -261,8 +261,6 @@ function RoomsList() {
 
     setJoinRoomError({ roomId: null, message: "" });
     setCreateRoomError("");
-    setInvitation(null);
-    dispatch(setKickedFromRoom(""));
   }, []);
 
   useEffect(() => {
@@ -337,9 +335,43 @@ function RoomsList() {
     });
   };
 
+  console.log(kickedFromRoom, "kickedFromRoom");
   return (
     <div className="rooms-list-container">
       <CreateRoomBox />
+      {kickedFromRoom && (
+        <div className="rooms-list-error">
+          <span>You have been kicked from {kickedFromRoom} by room's admin!</span>
+          <span
+            className="material-symbols-outlined"
+            id="kick-from-room-error-cancel"
+            onClick={() => dispatch(setKickedFromRoom(""))}
+          >
+            cancel
+          </span>
+        </div>
+      )}
+      {invitation && (
+        <div className="rooms-list-invitation-alert">
+          <span>
+            {invitation.inviter.toUpperCase()} invited you to join {invitation.invitedRoom.name}!
+          </span>
+          <span className="material-symbols-outlined" id="invitation-alert-cancel" onClick={() => setInvitation(null)}>
+            cancel
+          </span>
+          <span
+            className="material-symbols-outlined"
+            id="invitation-alert-accept"
+            onClick={() => {
+              const { invitedRoom, password } = invitation;
+              joinExistingRoom(invitedRoom, password);
+              setInvitation(null);
+            }}
+          >
+            check_circle
+          </span>
+        </div>
+      )}
       <div className="rooms-list">
         {rooms.map((room) => (
           <RoomBox key={room.id} room={room} joinRoomError={joinRoomError} joinExistingRoom={joinExistingRoom} />

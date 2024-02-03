@@ -189,8 +189,8 @@ const kickPlayer = async (data, ws) => {
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
 
     // Broadcast to clients in the lobby
-    broadcastRoomsListToLobby([ws]);
-    broadcastUsersList([ws]);
+    broadcastRoomsListToLobby([ws, kickedPlayerWs]);
+    broadcastUsersList([ws, kickedPlayerWs]);
   } else {
     console.log("Kick player failed.");
     ws.send(

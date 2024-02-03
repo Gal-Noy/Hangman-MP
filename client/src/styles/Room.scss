@@ -131,6 +131,7 @@
   display: flex;
   flex-direction: row;
   justify-content: start;
+  align-items: center;
   gap: 5%;
 }
 
@@ -147,9 +148,10 @@
 }
 
 .player-box-player-info-details {
+  height: 80%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: start;
   font-weight: bold;
 }
@@ -184,7 +186,8 @@
   top: -15%;
   font-size: 1.2rem;
   font-weight: bold;
-  color: rgb(173, 70, 69);
+  color: rgb(146, 59, 58);
+  background-color: #eeeeee;
   border: none;
   border-radius: 50%;
   cursor: pointer;

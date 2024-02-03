@@ -27,7 +27,7 @@ function ReadyBtn() {
       onClick={toggleReady}
     >
       <span className="label">Ready</span>
-      <span class="material-icons icon">chevron_right</span>
+      <span className="material-icons icon">chevron_right</span>
     </button>
   );
 }

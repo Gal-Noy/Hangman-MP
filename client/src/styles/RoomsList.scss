@@ -4,7 +4,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  
 }
 
 .rooms-list {
@@ -403,8 +402,9 @@
 
 .rooms-list-error {
   margin-top: 1%;
-  width: 100%;
-  height: 30px;
+  margin-left: -2%;
+  width: 93%;
+  height: 5vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -412,4 +412,38 @@
   background-color: rgb(255, 213, 213);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: bold;
+  position: relative;
+}
+
+#kick-from-room-error-cancel {
+  position: absolute;
+  right: 1%;
+  cursor: pointer;
+}
+
+.rooms-list-invitation-alert {
+  margin-top: 1%;
+  margin-left: -2%;
+  width: 93%;
+  height: 5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(53, 148, 51);
+  background-color: rgb(213, 255, 213);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: bold;
+  position: relative;
+}
+
+#invitation-alert-cancel {
+  position: absolute;
+  right: 1%;
+  cursor: pointer;
+}
+
+#invitation-alert-accept {
+  position: absolute;
+  right: 5%;
+  cursor: pointer;
 }
