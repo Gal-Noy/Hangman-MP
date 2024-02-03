@@ -78,13 +78,22 @@ function Dashboard({ onLogout }) {
         {clientState === "room" && (
           <div className="dashboard-menu-buttons">
             <ReadyBtn />
-            <BackToLobbyBtn />
+            <BackToLobbyBtn inGame={false} />
+          </div>
+        )}
+        {clientState === "game" && (
+          <div className="dashboard-menu-buttons">
+            <BackToLobbyBtn inGame={true} />
           </div>
         )}
       </div>
       <div className="dashboard-user-section">
         <div className="dashboard-user-info">
-          <img src={!userAvatar ? defaultAvatar : URL.createObjectURL(userAvatar)} alt="avatar" className="dashboard-user-info-avatar" />
+          <img
+            src={!userAvatar ? defaultAvatar : URL.createObjectURL(userAvatar)}
+            alt="avatar"
+            className="dashboard-user-info-avatar"
+          />
           <span className="dashboard-user-info-name">{user.name.toUpperCase()}</span>
         </div>
         <LogoutBtn onLogout={onLogout} isDashboard={true} />

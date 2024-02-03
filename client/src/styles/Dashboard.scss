@@ -37,14 +37,19 @@
   height: 5vh;
   width: 10.5vw;
   align-self: flex-end;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
   &.active {
     width: 20vw;
   }
 }
 
-#inRoom-backToLobby-button {
+#back-to-lobby-button {
   width: 10.5vw;
+
+  &.in-game {
+    width: 20vw;
+  }
 }
 
 #inRoom-ready-button {

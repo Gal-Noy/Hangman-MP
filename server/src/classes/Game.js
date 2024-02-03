@@ -26,7 +26,7 @@ export default class Game {
 
     this.timer = 0;
     this.timerInterval = null;
-    this.timerDuration = !timerDuration ? 61 : timerDuration + 1;
+    this.timerDuration = !timerDuration ? 61 : timerDuration + 1000000; // change to 1
 
     this.cooldown = 0;
     this.cooldownInterval = null;
@@ -133,6 +133,7 @@ export default class Game {
     const initialState = {
       players: this.room.players.map((player) => ({
         name: player.user.name,
+        avatar: player.user.avatar,
       })),
       remainingWrongAttempts: this.remainingWrongAttempts,
       score: this.score,
@@ -146,6 +147,7 @@ export default class Game {
     const gameState = {
       players: this.room.players.map((player) => ({
         name: player.user.name,
+        avatar: player.user.avatar,
       })),
       definition: this.currentWord.definition,
       hiddenWord: this.hiddenWord,

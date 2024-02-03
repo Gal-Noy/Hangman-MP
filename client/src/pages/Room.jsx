@@ -21,7 +21,6 @@ function Room() {
       if (type === "updateRoomInfo" || type === "createRoomResponse") {
         dispatch(setRoom(content.data.room));
         const players = [...content.data.room.players];
-        console.log("players", players);
 
         const sortedPlayers = sortPlayersList(players);
 

@@ -1,0 +1,84 @@
+.game-container {
+  width: 100%;
+  height: 62vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 1%;
+}
+
+.game-info-container {
+  width: 25%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  gap: 2%;
+}
+
+.game-state-container {
+  width: 100%;
+  height: 35%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #dddddd;
+}
+
+.game-state-detail {
+  width: 90%;
+  height: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5%;
+}
+
+.game-state-label {
+  font-size: 1em;
+}
+
+.game-state-value {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.game-players-list {
+  width: 100%;
+  height: 65%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  gap: 4%;
+}
+
+.game-player-box {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #eeeeee;
+  gap: 5%;
+}
+
+.game-player-box-avatar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 1.5% 0 1.5% 3%;
+}
+
+.game-player-box-avatar-img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+.game-player-box-player-name {
+  font-size: 1.5em;
+  font-weight: bold;
+}

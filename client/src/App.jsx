@@ -34,7 +34,7 @@ function App() {
   useEffect(() => {
     if (lastJsonMessage) {
       const { type, content } = lastJsonMessage;
-      if (type !== "timerUpdate" || type !== "cooldownUpdate") { // TODO: remove this line
+      if (type !== "timerUpdate" && type !== "cooldownUpdate") { // TODO: remove this line
         console.log(type, content);
       }
       if (type === "reAuthResponse") {
@@ -49,7 +49,6 @@ function App() {
       }
     }
   }, [lastJsonMessage]);
-
 
   return (
     <WebSocketProvider value={{ sendJsonMessage, lastJsonMessage }}>

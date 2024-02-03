@@ -28,10 +28,9 @@ function HomePage({ onLogout }) {
         <div className="main-game-container">
           {clientState === "lobby" && <Lobby lobbyState={lobbyState} />}
           {clientState === "room" && <Room />}
+          {clientState === "game" && <Game players={roomData.players} />}
         </div>
       </div>
-
-      {/* {clientState === "game" && <Game players={roomData.players} />} */}
     </div>
   );
 }

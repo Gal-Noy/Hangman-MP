@@ -3,7 +3,7 @@ import { useWebSocketContext } from "../../WebSocketContext";
 import { setLobby } from "../../store/clientStateSlice";
 import { useEffect } from "react";
 
-function BackToLobbyBtn() {
+function BackToLobbyBtn({ inGame }) {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const dispatch = useDispatch();
 
@@ -29,9 +29,9 @@ function BackToLobbyBtn() {
   return (
     <button
       type="button"
-      className="dashboard-menu-button pheasant-demure-button outline light hover blink"
-      id="inRoom-backToLobby-button"
+      className={`dashboard-menu-button pheasant-demure-button outline light hover blink${inGame ? " in-game" : ""}`}
       onClick={leaveRoom}
+      id="back-to-lobby-button"
     >
       <span className="label">Back to Lobby</span>
     </button>
