@@ -1,4 +1,3 @@
-import { set } from "mongoose";
 import { GameSocketManager } from "../socket/GameSocketManager.js";
 import { getRandomWord, getKeypadLetters } from "../utils/utils.js";
 
@@ -26,13 +25,11 @@ export default class Game {
 
     this.timer = 0;
     this.timerInterval = null;
-    // this.timerDuration = !timerDuration ? 61 : timerDuration + 1;
-    this.timerDuration = 100000;
+    this.timerDuration = !timerDuration ? 61 : timerDuration + 1;
 
     this.cooldown = 0;
     this.cooldownInterval = null;
-    // this.cooldownDuration = !cooldownDuration ? 4 : cooldownDuration + 1;
-    this.cooldownDuration = 3;
+    this.cooldownDuration = !cooldownDuration ? 4 : cooldownDuration + 1;
   }
 
   runGame() {
@@ -56,17 +53,18 @@ export default class Game {
     setTimeout(() => {
       this.sendGameState();
     }, 1000);
-    
+
     this.startTimer();
 
-    await this.waitForRoundEnd();
+    await this.handleRound();
   }
 
-  async waitForRoundEnd() {
+  async handleRound() {
     while (!this.checkRoundEnd()) {
       const { letter, playerId } = await this.gameSocketManager.waitForPlayersActions();
       this.handlePlayerAction(letter, playerId);
     }
+    this.endRound();
   }
 
   async nextWord() {
@@ -98,18 +96,22 @@ export default class Game {
             this.hiddenWord = this.hiddenWord.substring(0, i) + guessedLetter + this.hiddenWord.substring(i + 1);
           }
         }
-        this.gameSocketManager.sendResponseToClientGuess(
-          `${guessedLetter.toUpperCase()} - Correct guess!`,
-          true,
-          playerId
-        );
+        if (this.hiddenWord !== this.currentWord.word) {
+          this.gameSocketManager.sendResponseToClientGuess(
+            `${guessedLetter.toUpperCase()} - Correct guess!`,
+            true,
+            playerId
+          );
+        }
       } else {
         this.remainingWrongAttempts--;
-        this.gameSocketManager.sendResponseToClientGuess(
-          `${guessedLetter.toUpperCase()} - Incorrect guess!`,
-          false,
-          playerId
-        );
+        if (this.remainingWrongAttempts > 0) {
+          this.gameSocketManager.sendResponseToClientGuess(
+            `${guessedLetter.toUpperCase()} - Incorrect guess!`,
+            false,
+            playerId
+          );
+        }
       }
     }
 
@@ -134,9 +136,7 @@ export default class Game {
 
       this.gameSocketManager.broadcastEndOfRoundMessage(endOfRoundMessage);
 
-      setTimeout(() => {
-        this.nextRound();
-      }, 3000);
+      return true;
     }
     return false;
   }
@@ -150,6 +150,7 @@ export default class Game {
       remainingWrongAttempts: this.remainingWrongAttempts,
       score: this.score,
       round: this.currRound,
+      totalRounds: this.totalRounds,
     };
 
     this.gameSocketManager.broadcastGameState(initialState);
@@ -168,6 +169,7 @@ export default class Game {
       remainingWrongAttempts: this.remainingWrongAttempts,
       score: this.score,
       round: this.currRound,
+      totalRounds: this.totalRounds,
     };
 
     this.gameSocketManager.broadcastGameState(gameState);
@@ -203,6 +205,12 @@ export default class Game {
 
   stopTimer() {
     clearInterval(this.timerInterval);
+  }
+
+  endRound() {
+    setTimeout(() => {
+      this.nextRound();
+    }, 3000);
   }
 
   shouldEndGame() {

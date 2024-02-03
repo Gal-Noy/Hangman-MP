@@ -15,6 +15,7 @@ const roomsManager = (content, ws) => {
     leave: leaveRoom,
     invite: invitePlayer,
     kick: kickPlayer,
+    modfiy: modifyRoom,
     ready: toggleReadyPlayer,
     unready: toggleReadyPlayer,
   }[action];
@@ -197,6 +198,33 @@ const kickPlayer = async (data, ws) => {
       JSON.stringify({
         type: "kickPlayerResponse",
         content: { success: false, message: "Kick player failed.", data: null },
+      })
+    );
+  }
+};
+
+const modifyRoom = (data, ws) => {
+  const room = ws.session.room;
+  const { newName, newNumberOfPlayers, newPassword, newGameRules } = data;
+
+  if (room.modifyRoom(newName, newNumberOfPlayers, newPassword, newGameRules)) {
+    ws.send(
+      JSON.stringify({
+        type: "updateRoomInfo",
+        content: { success: true, message: "Modify room success.", data: { room: room.getRoomData() } },
+      })
+    );
+
+    room.updateRoomInfoPlayers(); // Broadcast to clients in the room
+
+    // Broadcast to clients in the lobby
+    broadcastRoomsListToLobby([ws]);
+  } else {
+    console.log("Modify room failed.");
+    ws.send(
+      JSON.stringify({
+        type: "modifyRoomResponse",
+        content: { success: false, message: "Modify room failed.", data: null },
       })
     );
   }

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useWebSocketContext } from "../../WebSocketContext";
 import { setKickedFromRoom, setRoom } from "../../store/clientStateSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { DropdownMenu } from "../../utils/utils";
 import "../../styles/RoomsList.scss";
 
 function RoomsList() {
@@ -104,31 +105,6 @@ function RoomsList() {
       cooldownDuration: 3,
     });
 
-    const DropdownMenu = ({ contentId, values, stateValue, setFunction }) => (
-      <div className="create-room-box-dropdown">
-        <button
-          className="create-room-box-dropdown-btn"
-          onMouseEnter={() => document.getElementById({ contentId })?.classList.remove("hide")}
-        >
-          {stateValue}
-        </button>
-        <div className="create-room-box-dropdown-content" id={contentId}>
-          {values.map((value) => (
-            <a
-              key={value}
-              className="create-room-box-dropdown-item"
-              type="button"
-              onClick={() => {
-                setFunction(value);
-                document.getElementById({ contentId })?.classList.add("hide");
-              }}
-            >
-              {value}
-            </a>
-          ))}
-        </div>
-      </div>
-    );
     return (
       <div className="create-room-box-container">
         <div className={`create-room-box${showCreateRoomForm ? " active" : ""}`}>

@@ -232,56 +232,6 @@
   align-items: center;
 }
 
-.create-room-box-dropdown {
-  margin-left: 3%;
-  position: relative;
-  display: inline-block;
-}
-
-.create-room-box-dropdown-btn {
-  background-color: #fafafa;
-  width: 50px;
-  padding: 4px;
-  border: none;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.create-room-box-dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #fafafa;
-  min-width: 160px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  z-index: 1;
-
-  &.hide {
-    a {
-      display: none;
-    }
-  }
-}
-
-.create-room-box-dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  cursor: pointer;
-}
-
-.create-room-box-dropdown-content a:hover {
-  background-color: #dddddd;
-}
-
-.create-room-box-dropdown:hover .create-room-box-dropdown-content {
-  display: block;
-}
-
-.create-room-box-dropdown:hover .create-room-box-dropdown-btn {
-  background-color: #dddddd;
-}
-
 .create-room-box-privacy {
   width: 90%;
   height: 25%;

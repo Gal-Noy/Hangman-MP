@@ -203,6 +203,7 @@
 .definition-header {
   font-size: 1.5em;
   font-weight: bold;
+  text-align: center;
 }
 
 .hidden-word {
@@ -242,6 +243,7 @@
   &.disabled {
     background-color: #666666;
     cursor: not-allowed;
+    pointer-events: none;
   }
 }
 

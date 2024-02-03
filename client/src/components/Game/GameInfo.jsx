@@ -24,7 +24,7 @@ function GameInfo({ gameState }) {
       <div className="game-state-container">
         <div className="game-state-detail">
           <span className="game-state-label">Round</span>
-          <span className="game-state-value">{gameState.round}</span>
+          <span className="game-state-value">{gameState.round} / {gameState.totalRounds}</span>
         </div>
         <div className="game-state-detail">
           <span className="game-state-label">Score</span>

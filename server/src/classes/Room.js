@@ -133,6 +133,22 @@ export default class Room {
     }
   }
 
+  modifyRoom(newName, newNumberOfPlayers, newPassword, newGameRules) {
+    if (newName) {
+      this.name = newName;
+    }
+    if (newNumberOfPlayers) {
+      this.numberOfPlayers = newNumberOfPlayers;
+    }
+    if (newPassword) {
+      this.password = newPassword;
+    }
+    if (newGameRules) {
+      this.gameRules = newGameRules;
+    }
+    return true;
+  }
+
   toggleReadyPlayer(player) {
     const playerIndex = this.players.findIndex((p) => p.user._id === player.user._id);
     if (playerIndex !== -1) {

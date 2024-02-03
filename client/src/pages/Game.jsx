@@ -54,7 +54,7 @@ function Game() {
 
   useEffect(() => {
     if (cooldown >= 0 && timer < 0) {
-      setGameMessage({ type: "info", message: `Get Ready! Game will start in ${cooldown} seconds` });
+      setGameMessage({ type: "info", message: `Get Ready! Round ${gameState.round} will start in ${cooldown} seconds` });
     }
   }, [cooldown, timer]);
 

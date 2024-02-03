@@ -19,16 +19,15 @@ const handleSocket = (app) => {
       try {
         const message = isBinary ? data : JSON.parse(data);
         const { type, content } = message;
-
         const handler = {
           auth: authManager,
           rooms: roomsManager,
           users: usersManager,
-          chats: chatsManager
+          chats: chatsManager,
         }[type];
 
         if (handler) {
-          console.log(`Received message from ${ws.session?.user?.name}:`, content.action)
+          console.log(`Received message from ${ws.session?.user?.name}:`, content.action);
           handler(content, ws);
         }
       } catch (e) {

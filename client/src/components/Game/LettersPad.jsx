@@ -7,8 +7,9 @@ function LettersPad(props) {
 
   const handleLetterClick = (letter) => {
     sendJsonMessage({
-      type: "guessLetter",
-      content: {
+      type: "game",
+      content:{
+        action: "guessLetter",
         data: letter,
       },
     });
