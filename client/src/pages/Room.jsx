@@ -8,6 +8,8 @@ import Chat from "../components/Chat/Chat";
 import "../styles/Room.scss";
 import { sortPlayersList } from "../utils/utils";
 
+// TODO: Implement edit game rules
+
 function Room() {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const [players, setPlayers] = useState([]);

@@ -12,7 +12,10 @@ function Game() {
   const { gameState, roomData } = useSelector((state) => state.clientState);
   const [timer, setTimer] = useState(60);
   const [cooldown, setCooldown] = useState(5);
-  const [alert, setAlert] = useState("");
+  const [gameMessage, setGameMessage] = useState({
+    type: "", // success, error, info
+    message: "",
+  });
 
   useEffect(() => {
     if (lastJsonMessage) {
@@ -23,6 +26,9 @@ function Game() {
           dispatch(setGameState(data));
           break;
         case "timerUpdate":
+          if (timer < 0) {
+            setGameMessage({ type: "info", message: "Game Started!" });
+          }
           setTimer(data);
           if (cooldown >= 0) setCooldown(-1);
           break;
@@ -30,12 +36,15 @@ function Game() {
           setCooldown(data);
           if (timer >= 0) setTimer(-1);
           break;
+        case "guessResponse":
+          const { success, message } = data;
+          setGameMessage({ type: success ? "success" : "error", message });
+          break;
         case "endOfRound":
-          setAlert(data);
+          setGameMessage({ type: "info", message: data });
           break;
         case "gameOver":
-          setAlert(data);
-          dispatch(setRoom(roomData));
+          setGameMessage({ type: "info", message: data });
           break;
         default:
           break;
@@ -43,11 +52,23 @@ function Game() {
     }
   }, [lastJsonMessage]);
 
+  useEffect(() => {
+    if (cooldown >= 0 && timer < 0) {
+      setGameMessage({ type: "info", message: `Get Ready! Game will start in ${cooldown} seconds` });
+    }
+  }, [cooldown, timer]);
+
   return (
     gameState && (
       <div className="game-container">
         <GameInfo gameState={gameState} />
-        {/* <GamePanel /> */}
+        <GamePanel
+          gameName={roomData.name}
+          gameState={gameState}
+          timer={timer}
+          cooldown={cooldown}
+          gameMessage={gameMessage}
+        />
       </div>
     )
   );

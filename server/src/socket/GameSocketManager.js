@@ -61,11 +61,16 @@ export class GameSocketManager {
     });
   }
 
-  sendResponseToClientGuess(response, playerId) {
+  sendResponseToClientGuess(response, success, playerId) {
     this.playersIdToWs[playerId].send(
       JSON.stringify({
         type: "guessResponse",
-        content: { data: response },
+        content: {
+          data: {
+            success,
+            message: response,
+          },
+        },
       })
     );
   }

@@ -8,8 +8,7 @@ import fiveStrikes from "../../assets/6.png";
 
 function HangmanCanvas({ remainingWrongAttempts }) {
   return (
-    <div className="rounded bg-light my-2 me-2 w-30 d-flex align-items-center justify-content-center">
-      <div>
+    <div className="hangman-canvas">
       {remainingWrongAttempts === 5 ? (
         <img src={zeroStrikes} alt="0 strikes" />
       ) : remainingWrongAttempts === 4 ? (
@@ -23,7 +22,6 @@ function HangmanCanvas({ remainingWrongAttempts }) {
       ) : remainingWrongAttempts === 0 ? (
         <img src={fiveStrikes} alt="5 strikes" />
       ) : null}
-      </div>
     </div>
   );
 }
