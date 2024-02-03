@@ -4,8 +4,6 @@ import { setKickedFromRoom, setRoom } from "../../store/clientStateSlice";
 import { useDispatch, useSelector } from "react-redux";
 import "../../styles/RoomsList.scss";
 
-// TODO: add kick and invitation
-
 function RoomsList() {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const dispatch = useDispatch();

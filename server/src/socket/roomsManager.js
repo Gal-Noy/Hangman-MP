@@ -190,7 +190,7 @@ const kickPlayer = async (data, ws) => {
 
     // Broadcast to clients in the lobby
     broadcastRoomsListToLobby([ws, kickedPlayerWs]);
-    broadcastUsersList([ws, kickedPlayerWs]);
+    broadcastUsersList([kickedPlayerWs]);
   } else {
     console.log("Kick player failed.");
     ws.send(

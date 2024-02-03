@@ -6,15 +6,15 @@ import defaultAvatar from "../../assets/default-avatar.jpg";
 import { b64toBlob } from "../../utils/utils";
 import "../../styles/UsersList.scss";
 
-// TODO: add user invitation to room
-
 function UsersList() {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
+  const { roomData } = useSelector((state) => state.clientState);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchedUsers, setSearchedUsers] = useState(users);
 
-  const UserBox = ({ user, error, setError }) => {
-    const { roomData } = useSelector((state) => state.clientState);
+  const UserBox = ({ user }) => {
     const isAdmin = JSON.parse(localStorage.getItem("user"))._id === roomData?.admin.id;
     const [isUserInvited, setIsUserInvited] = useState(false);
     const userAvatar = !user?.avatar ? null : b64toBlob(user.avatar, "image/");
@@ -54,22 +54,25 @@ function UsersList() {
               <span className="user-box-isoffline-status">OFFLINE</span>
             )}
           </div>
-          {
-            // TODO
-          }
-          {isAdmin && !isUserInvited && (
-            <div
-              className="user-box-invite-button"
+        </div>
+
+        {isAdmin &&
+          !user.inRoom &&
+          !user.inGame &&
+          user.isActive &&
+          (!isUserInvited ? (
+            <span
+              className="material-symbols-outlined user-box-invite-button"
               type="button"
-              id="invite-user-to-room"
               onClick={() => inviteUserToRoom(user)}
             >
-              INVITE
-            </div>
-          )}
-          {isAdmin && isUserInvited && <div className="user-box-invite-button">INVITED</div>}
-        </div>
-        {error && error.user._id === user._id && <div className="user-box-error-message">{error.message}</div>}
+              person_add
+            </span>
+          ) : (
+            <span className="material-symbols-outlined user-box-invite-button" type="button">
+              done
+            </span>
+          ))}
       </div>
     );
   };
@@ -82,6 +85,7 @@ function UsersList() {
         data: {},
       },
     });
+    setError(null);
   }, []);
 
   useEffect(() => {
@@ -92,40 +96,70 @@ function UsersList() {
 
         sortUsersList(users);
 
-        setUsers(users);
+        if (roomData) {
+          const filteredUsers = users.filter((user) => !user.inRoom && !user.inGame && user.isActive);
+          setUsers(filteredUsers);
+        } else {
+          setUsers(users);
+        }
+
+        setError(null);
       }
     }
   }, [lastJsonMessage]);
 
-  useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => {
-        setError(null);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [error]);
+  const handleSearchInput = (e) => {
+    setSearchInput(e.target.value);
+    const filteredUsers = users.filter((user) => user.name.toLowerCase().includes(e.target.value.toLowerCase()));
+    setSearchedUsers(filteredUsers);
+  };
 
   return (
     <div className="users-list-container">
       <div className="users-list-search-bar">
         <span className="material-symbols-outlined">search</span>
-        {
-          // TODO: add search functionality
-        }
-        <input type="text" placeholder="Search" />
+        <input type="text" placeholder="Search" value={searchInput} onChange={handleSearchInput} />
       </div>
       <div className="users-list">
-        {users.map((user) => (
-          <UserBox key={user._id} user={user} error={error} setError={setError} />
-        ))}
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} error={error} setError={setError} />
+        {!searchInput &&
+          users.map((user) => (
+            <div className="user-box-container" key={user._id}>
+              <UserBox user={user} />
+              {error && error.user._id === user._id && <div className="user-box-error-message">{error.message}</div>}
+            </div>
+          ))}
+        {searchInput &&
+          searchedUsers.map((user) => (
+            <div className="user-box-container" key={user._id}>
+              <UserBox user={user} />
+              {error && error.user._id === user._id && <div className="user-box-error-message">{error.message}</div>}
+            </div>
+          ))}
+
+        <div className="user-box-container">
+          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        </div>
+        <div className="user-box-container">
+          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        </div>
+        <div className="user-box-container">
+          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        </div>
+        <div className="user-box-container">
+          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        </div>
+        <div className="user-box-container">
+          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        </div>
+        <div className="user-box-container">
+          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        </div>
+        <div className="user-box-container">
+          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        </div>
+        <div className="user-box-container">
+          <UserBox user={JSON.parse(localStorage.getItem("user"))} />
+        </div>
       </div>
     </div>
   );

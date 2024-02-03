@@ -7,7 +7,7 @@ import { setLobby } from "../../store/clientStateSlice";
 
 function LogoutBtn(props) {
   const { onLogout, isDashboard } = props;
-  const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
+  const { sendJsonMessage } = useWebSocketContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -36,23 +36,19 @@ function LogoutBtn(props) {
             },
           });
 
-          alert(res.data.msg);
           onLogout();
           navigate("/login");
         }
       })
       .catch((err) => {
         console.log(err.message);
-        alert(err.response.data.msg);
       });
   };
 
   return (
     <button
       type="button"
-      className={`pheasant-demure-button hover icon ${
-        isDashboard ? "outline light blink" : "solid dark"
-      }`}
+      className={`pheasant-demure-button hover icon ${isDashboard ? "outline light blink" : "solid dark"}`}
       id="logout-button-dashboard"
       onClick={handleLogout}
     >
