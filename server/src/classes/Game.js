@@ -23,6 +23,7 @@ export default class Game {
     this.remainingWrongAttempts = 5;
     this.score = 0;
 
+    this.isRoundActive = false;
     this.timer = 0;
     this.timerInterval = null;
     this.timerDuration = !timerDuration ? 61 : timerDuration + 1;
@@ -43,6 +44,8 @@ export default class Game {
       return;
     }
 
+    this.isRoundActive = true;
+
     await this.nextWord();
 
     this.sendInitialState();
@@ -60,9 +63,16 @@ export default class Game {
   }
 
   async handleRound() {
-    while (!this.checkRoundEnd()) {
-      const { letter, playerId } = await this.gameSocketManager.waitForPlayersActions();
-      this.handlePlayerAction(letter, playerId);
+    while (this.isRoundActive) {
+      this.checkRoundEnd();
+      // const { letter, playerId } = await this.gameSocketManager.waitForPlayersActions();
+      const { letter, playerId } = await Promise.race([
+        this.gameSocketManager.waitForPlayersActions(),
+        this.waitForTimerExpiration(),
+      ]);
+      if (letter && playerId && this.isRoundActive) {
+        this.handlePlayerAction(letter, playerId);
+      }
     }
     this.endRound();
   }
@@ -112,7 +122,7 @@ export default class Game {
             false,
             playerId
           );
-          this.score -= 5;
+          this.score = Math.max(0, this.score - 5);
         }
       }
     }
@@ -125,6 +135,7 @@ export default class Game {
       // Increase score if the word is guessed correctly
       this.score += this.hiddenWord === this.currentWord.word ? 50 : 0;
 
+      this.isRoundActive = false;
       this.currRound++;
       this.stopTimer();
 
@@ -137,10 +148,7 @@ export default class Game {
           : "Time's up!";
 
       this.gameSocketManager.broadcastEndOfRoundMessage(endOfRoundMessage);
-
-      return true;
     }
-    return false;
   }
 
   sendInitialState() {
@@ -205,6 +213,14 @@ export default class Game {
         this.checkRoundEnd();
       }
     }, 1000);
+  }
+
+  waitForTimerExpiration() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({});
+      }, this.timerDuration * 1000);
+    });
   }
 
   stopTimer() {

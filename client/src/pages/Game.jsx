@@ -54,14 +54,17 @@ function Game() {
 
   useEffect(() => {
     if (cooldown >= 0 && timer < 0) {
-      setGameMessage({ type: "info", message: `Get Ready! Round ${gameState.round} will start in ${cooldown} seconds` });
+      setGameMessage({
+        type: "info",
+        message: `Get Ready! Round ${gameState.round} will start in ${cooldown} seconds`,
+      });
     }
   }, [cooldown, timer]);
 
   return (
     gameState && (
       <div className="game-container">
-        <GameInfo gameState={gameState} gameMessage={gameMessage}/>
+        <GameInfo gameState={gameState} gameMessage={gameMessage} />
         <GamePanel
           gameName={roomData.name}
           gameState={gameState}
