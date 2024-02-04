@@ -2,6 +2,7 @@ import Room from "../classes/Room.js";
 import { User } from "../models/userModel.js";
 import { clients } from "./socketListener.js";
 import { broadcastUsersList } from "./usersManager.js";
+import { broadcastLogToRoomChat } from "./chatsManager.js";
 
 export const rooms = {};
 
@@ -56,6 +57,7 @@ const createRoom = async (data, ws) => {
     );
 
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
+    broadcastLogToRoomChat(room, "create", `${ws.session.user.name.toUpperCase()} created the room '${room.name}'.`);
 
     // Broadcast to clients in the lobby
     broadcastRoomsListToLobby([ws]);
@@ -85,12 +87,12 @@ const joinRoom = async (data, ws) => {
     );
 
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
+    broadcastLogToRoomChat(room, "info", `${user.name.toUpperCase()} joined the room.`);
 
     // Broadcast to clients in the lobby
     broadcastRoomsListToLobby([ws]);
     broadcastUsersList([ws]);
   } else {
-    console.log("Join room failed.", error);
     ws.send(
       JSON.stringify({
         type: "joinRoomResponse",
@@ -122,6 +124,7 @@ export const leaveRoom = async (data, ws) => {
 
     if (!room.game) {
       room.updateRoomInfoPlayers();
+      broadcastLogToRoomChat(room, "info", `${user.name.toUpperCase()} left the room.`);
     } else {
       room.game.removePlayer(player);
     }
@@ -146,7 +149,7 @@ const invitePlayer = (data, ws) => {
   const { invitedPlayerId, password } = data;
   const room = ws.session.room;
 
-  const invitedPlayerWs = Object.values(clients).find((client) => client.session.user._id === invitedPlayerId);
+  const invitedPlayerWs = Object.values(clients).find((client) => client.session?.user._id === invitedPlayerId);
 
   if (invitedPlayerWs) {
     invitedPlayerWs.send(
@@ -174,7 +177,7 @@ const kickPlayer = async (data, ws) => {
   const { kickedPlayerId } = data;
   const room = ws.session.room;
 
-  const kickedPlayerWs = Object.values(clients).find((client) => client.session.user._id === kickedPlayerId);
+  const kickedPlayerWs = Object.values(clients).find((client) => client.session?.user._id === kickedPlayerId);
 
   if (kickedPlayerWs && room.kickPlayer(ws.session.user, kickedPlayerId)) {
     await User.findByIdAndUpdate(kickedPlayerId, { inRoom: false, inGame: false }).exec();
@@ -188,6 +191,7 @@ const kickPlayer = async (data, ws) => {
     );
 
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
+    broadcastLogToRoomChat(room, "info", `${kickedPlayerWs.session.user.name.toUpperCase()} was kicked from the room.`);
 
     // Broadcast to clients in the lobby
     broadcastRoomsListToLobby([ws, kickedPlayerWs]);
@@ -205,17 +209,11 @@ const kickPlayer = async (data, ws) => {
 
 const modifyRoom = (data, ws) => {
   const room = ws.session.room;
-  const { newName, newNumberOfPlayers, newPassword, newGameRules } = data;
-
-  if (room.modifyRoom(newName, newNumberOfPlayers, newPassword, newGameRules)) {
-    ws.send(
-      JSON.stringify({
-        type: "updateRoomInfo",
-        content: { success: true, message: "Modify room success.", data: { room: room.getRoomData() } },
-      })
-    );
-
+  const { newName, newNumberOfPlayers, newGameRules, newPassword, isPrivate } = data;
+  const modifyRoomLog = room.modifyRoom(newName, newNumberOfPlayers, newGameRules, newPassword, isPrivate);
+  if (modifyRoomLog !== "No changes made.") {
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
+    broadcastLogToRoomChat(room, "info", modifyRoomLog);
 
     // Broadcast to clients in the lobby
     broadcastRoomsListToLobby([ws]);
@@ -245,6 +243,7 @@ const toggleReadyPlayer = (data, ws) => {
     room.updateRoomInfoPlayers(); // Broadcast to clients in the room
 
     if (room.checkAllPlayersReady()) {
+      broadcastLogToRoomChat(room, "game-start", "All players are ready. Starting the game...");
       room.startGame();
       broadcastRoomsListToLobby(room.players.map((player) => player.ws));
       broadcastUsersList(room.players.map((player) => player.ws));

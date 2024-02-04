@@ -7,7 +7,7 @@
 }
 
 .rooms-list {
-  width: 97%;
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -18,7 +18,7 @@
 }
 
 .room-box-container {
-  width: 98%;
+  width: 94.5%;
 }
 
 .room-box {
@@ -135,15 +135,11 @@
   font-weight: bold;
 }
 
-.create-room-box-container {
-  margin-top: 1%;
-  width: 95%;
-  height: auto;
-}
-
 .create-room-box {
-  height: 6vh;
-  width: 98%;
+  margin-top: 1%;
+  height: 8vh;
+  width: 93%;
+  margin-right: 2%;
   background-color: #dddddd;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   display: flex;
@@ -152,7 +148,7 @@
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
   &.active {
-    height: 170px;
+    height: 45vh;
   }
 }
 
@@ -185,6 +181,7 @@
   height: 100%;
   display: flex;
   flex-direction: row;
+  font-size: 1.2rem;
 }
 
 .create-room-box-form-details {
@@ -215,9 +212,9 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   width: 90%;
   height: 25%;
-  font-size: 15px;
   padding-left: 15px;
   margin: 3% 0;
+  font-size: 1.2rem;
 }
 
 .create-room-input-name:focus {
@@ -264,9 +261,9 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   width: 60%;
   height: 90%;
-  font-size: 15px;
-  padding-left: 15px;
-  margin: 3% 0 3% 3%;
+  font-size: 1.2rem;
+  padding-left: 6%;
+  margin: 3% 0 3% 5%;
 
   &.disabled {
     background-color: #dddddd;
@@ -279,13 +276,14 @@
 }
 
 .create-room-box-modify-game {
-  width: 55%;
+  width: 70%;
   height: 20%;
   margin-top: 1%;
   display: flex;
   flex-direction: row;
   align-items: center;
   align-self: center;
+  justify-content: center;
 }
 
 .create-room-box-modify-game-checkbox {
@@ -304,7 +302,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  font-size: 15px;
+  font-size: 1.2rem;
 }
 
 .create-room-box-game-rules-rule {
@@ -350,7 +348,7 @@
   background-color: #333333;
 }
 
-.rooms-list-error {
+.rooms-list-alert {
   margin: 1% 0 -1% -2%;
   width: 93%;
   height: 5vh;
@@ -367,6 +365,7 @@
 #join-room-error {
   width: 100%;
   margin-left: 0;
+  margin-bottom: 0.1%;
 }
 
 .rooms-list-alerts {

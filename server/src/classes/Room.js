@@ -43,7 +43,6 @@ export default class Room {
     }
   }
 
-  // For rooms list
   getRoomData() {
     return {
       id: this.id,
@@ -133,20 +132,38 @@ export default class Room {
     }
   }
 
-  modifyRoom(newName, newNumberOfPlayers, newPassword, newGameRules) {
+  modifyRoom(newName, newNumberOfPlayers, newGameRules, newPassword, isPrivate) {
     if (newName) {
       this.name = newName;
+      return `Room name changed to ${newName}.`;
     }
     if (newNumberOfPlayers) {
       this.numberOfPlayers = newNumberOfPlayers;
-    }
-    if (newPassword) {
-      this.password = newPassword;
+      return `Number of players changed to ${newNumberOfPlayers}.`;
     }
     if (newGameRules) {
-      this.gameRules = newGameRules;
+      if (newGameRules.totalRounds) {
+        this.gameRules.totalRounds = newGameRules.totalRounds;
+        return `Total rounds changed to ${newGameRules.totalRounds}.`;
+      }
+      if (newGameRules.timerDuration) {
+        this.gameRules.timerDuration = newGameRules.timerDuration;
+        return `Timer duration changed to ${newGameRules.timerDuration}.`;
+      }
+      if (newGameRules.cooldownDuration) {
+        this.gameRules.cooldownDuration = newGameRules.cooldownDuration;
+        return `Cooldown duration changed to ${newGameRules.cooldownDuration}.`;
+      }
     }
-    return true;
+    if (!this.password && newPassword) {
+      this.password = newPassword;
+      return `Room privacy changed to private, with password '${newPassword}'.`;
+    }
+    if (this.password && !isPrivate) {
+      this.password = null;
+      return `Room privacy changed to public.`;
+    }
+    return "No changes made.";
   }
 
   toggleReadyPlayer(player) {

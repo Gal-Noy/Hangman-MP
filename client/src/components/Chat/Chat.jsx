@@ -18,15 +18,19 @@ function Chat() {
       if (type === "receiveChatMessage") {
         const { data, success } = content;
         if (success) {
-          const newMessages = [...messages, data];
+          const newMessages = [...messages, { messageType: "chat", messageData: data }];
           setMessages(newMessages);
-        } else {
-          console.log("Error receiving message");
+        }
+      }
+      if (type === "receiveChatLog") {
+        const { data, success } = content;
+        if (success) {
+          const newMessages = [...messages, { messageType: "log", messageData: data }];
+          setMessages(newMessages);
         }
       }
     }
   }, [lastJsonMessage]);
-
   return (
     <div className={`chat-container${inRoom ? " in-room" : ""}`}>
       <div className="chat-header-container">
@@ -34,7 +38,7 @@ function Chat() {
       </div>
 
       <ChatFeed messages={messages} inRoom={inRoom} />
-      <InputBar messages={messages} setMessages={setMessages} roomId={roomData?.id} />
+      <InputBar roomId={roomData?.id} />
     </div>
   );
 }

@@ -8,8 +8,6 @@ import Chat from "../components/Chat/Chat";
 import "../styles/Room.scss";
 import { sortPlayersList, DropdownMenu } from "../utils/utils";
 
-// TODO: can change room's password and participants with edit button
-
 function Room() {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const { roomData } = useSelector((state) => state.clientState);
@@ -18,13 +16,14 @@ function Room() {
   const [players, setPlayers] = useState([]);
   const [modifyRoomData, setModifyRoomData] = useState({
     newGameRules: {
-      totalRounds: roomData.gameRules.totalRounds,
-      timerDuration: roomData.gameRules.timerDuration,
-      cooldownDuration: roomData.gameRules.cooldownDuration,
+      totalRounds: null,
+      timerDuration: null,
+      cooldownDuration: null,
     },
-    newName: roomData.name,
-    newPassword: roomData.password,
-    newNumberOfPlayers: roomData.numberOfPlayers,
+    newName: "",
+    newNumberOfPlayers: null,
+    newPassword: "",
+    isPrivate: null,
   });
   const [showChangeName, setShowChangeName] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
@@ -48,23 +47,36 @@ function Room() {
   }, [lastJsonMessage]);
 
   const modifyRoom = () => {
-    const { newGameRules, newNumberOfPlayers, newName, newPassword } = modifyRoomData;
+    console.log(modifyRoomData);
     sendJsonMessage({
       type: "rooms",
       content: {
         action: "modify",
-        data: {
-          newGameRules,
-          newNumberOfPlayers,
-          newName,
-          newPassword,
-        },
+        data: modifyRoomData,
       },
+    });
+    setModifyRoomData({
+      newGameRules: {
+        totalRounds: null,
+        timerDuration: null,
+        cooldownDuration: null,
+      },
+      newName: "",
+      newNumberOfPlayers: null,
+      newPassword: "",
+      isPrivate: null,
     });
   };
 
   useEffect(() => {
-    modifyRoom();
+    if (
+      modifyRoomData.newGameRules.totalRounds ||
+      modifyRoomData.newGameRules.timerDuration ||
+      modifyRoomData.newGameRules.cooldownDuration ||
+      modifyRoomData.newNumberOfPlayers
+    ) {
+      modifyRoom();
+    }
   }, [modifyRoomData.newGameRules, modifyRoomData.newNumberOfPlayers]);
 
   const kickPlayer = (playerId) => {
@@ -78,7 +90,6 @@ function Room() {
       },
     });
   };
-
   return (
     <div className="room-container">
       <div className="room-content">
@@ -91,7 +102,7 @@ function Room() {
               </div>
             ) : !showChangeName ? (
               <div className="room-info-room-name">
-                <span className="room-name-value">{modifyRoomData.newName}</span>
+                <span className="room-name-value">{roomData.name}</span>
                 <span
                   className="material-symbols-outlined room-info-room-name-edit-button"
                   onClick={() => setShowChangeName(true)}
@@ -122,45 +133,72 @@ function Room() {
             )}
 
             {/* Password Section */}
-            {roomData.isPrivate && !isRoomAdmin ? (
-              <div className="room-info-room-password">
-                <span className="room-password-title">PASSWORD:</span>
-                <span className="room-password-value">{roomData.password}</span>
-              </div>
-            ) : roomData.isPrivate && !showChangePassword ? (
-              <div className="room-info-room-password">
-                <span className="room-password-title">PASSWORD:</span>
-                <span className="room-password-value">{modifyRoomData.newPassword}</span>
-                <span
-                  className="material-symbols-outlined room-info-room-password-edit-button"
-                  onClick={() => setShowChangePassword(true)}
-                >
-                  edit
-                </span>
+            {!isRoomAdmin ? (
+              <div className="room-info-room-privacy-container">
+                {!roomData.isPrivate && <span className="room-privacy-title">PUBLIC</span>}
+                {roomData.isPrivate && (
+                  <div className="room-info-room-privacy">
+                    <span className="room-privacy-title">PASSWORD:</span>
+                    <span className="room-password-value">{roomData.password}</span>
+                  </div>
+                )}
               </div>
             ) : (
-              roomData.isPrivate && (
-                <div className="room-info-room-password">
-                  <span className="room-password-title">PASSWORD:</span>
-                  <input
-                    className="room-info-room-password-change-password-input"
-                    type="text"
-                    value={modifyRoomData.newPassword}
-                    onChange={(e) => {
-                      setModifyRoomData({ ...modifyRoomData, newPassword: e.target.value });
-                    }}
-                  />
-                  <span
-                    className="material-symbols-outlined room-info-room-password-accept-button"
-                    onClick={() => {
-                      setShowChangePassword(false);
-                      modifyRoom();
-                    }}
-                  >
-                    done
-                  </span>
-                </div>
-              )
+              <div className="room-info-room-privacy-container">
+                {!showChangePassword && (
+                  <div className="room-info-room-privacy">
+                    <span className="room-privacy-title">{roomData.isPrivate ? "PASSWORD: " : "PUBLIC "}</span>
+                    <span className="room-password-value">{roomData.isPrivate ? roomData.password : ""}</span>
+                    <span
+                      className="material-symbols-outlined room-info-room-password-edit-button"
+                      onClick={() => setShowChangePassword(true)}
+                    >
+                      edit
+                    </span>
+                    {roomData.isPrivate && (
+                      <span
+                        className="material-symbols-outlined room-info-room-public-button"
+                        onClick={() => {
+                          setModifyRoomData({
+                            ...modifyRoomData,
+                            newPassword: "",
+                            isPrivate: false,
+                          });
+                          console.log(modifyRoomData);
+                          modifyRoom();
+                        }}
+                      >
+                        close
+                      </span>
+                    )}
+                  </div>
+                )}
+                {showChangePassword && (
+                  <div className="room-info-room-privacy">
+                    <span className="room-privacy-title">PASSWORD:</span>
+                    <input
+                      className="room-info-room-password-change-password-input"
+                      type="text"
+                      value={modifyRoomData.newPassword}
+                      onChange={(e) => {
+                        setModifyRoomData({
+                          ...modifyRoomData,
+                          newPassword: e.target.value,
+                        });
+                      }}
+                    />
+                    <span
+                      className="material-symbols-outlined room-info-room-password-accept-button"
+                      onClick={() => {
+                        setShowChangePassword(false);
+                        modifyRoom();
+                      }}
+                    >
+                      done
+                    </span>
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
@@ -174,7 +212,7 @@ function Room() {
                   <DropdownMenu
                     contentId={"room-info-game-rule-total-rounds-dropdown"}
                     values={[1, 3, 5, 7, 10]}
-                    stateValue={modifyRoomData.newGameRules?.totalRounds}
+                    stateValue={roomData.gameRules.totalRounds}
                     setFunction={(number) =>
                       setModifyRoomData({
                         ...modifyRoomData,
@@ -194,7 +232,7 @@ function Room() {
                   <DropdownMenu
                     contentId={"room-info-game-rule-timer-duration-dropdown"}
                     values={[10, 20, 30, 40, 50, 60, 70, 80, 90]}
-                    stateValue={modifyRoomData.newGameRules.timerDuration}
+                    stateValue={roomData.gameRules.timerDuration}
                     setFunction={(number) =>
                       setModifyRoomData({
                         ...modifyRoomData,
@@ -214,7 +252,7 @@ function Room() {
                   <DropdownMenu
                     contentId={"room-info-game-rule-cooldown-duration-dropdown"}
                     values={[1, 3, 5, 10]}
-                    stateValue={modifyRoomData.newGameRules.cooldownDuration}
+                    stateValue={roomData.gameRules.cooldownDuration}
                     setFunction={(number) =>
                       setModifyRoomData({
                         ...modifyRoomData,

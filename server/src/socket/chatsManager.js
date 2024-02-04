@@ -80,4 +80,23 @@ const broadcastMessageToRoomChat = (message, roomId, ws) => {
   });
 };
 
+export const broadcastLogToRoomChat = (room, logType, logMessage) => {
+  if (!room) {
+    return;
+  }
+
+  room.players.forEach((player) => {
+    player.ws.send(
+      JSON.stringify({
+        type: "receiveChatLog",
+        content: {
+          success: true,
+          message: "Receive log - room.",
+          data: { logType, logMessage },
+        },
+      })
+    );
+  });
+};
+
 export default chatsManager;

@@ -81,7 +81,7 @@ function RoomsList() {
           </div>
         </div>
         {joinRoomError?.roomId === room.id && (
-          <div className="rooms-list-error" id="join-room-error">
+          <div className="rooms-list-alert" id="join-room-error">
             {joinRoomError.message}
           </div>
         )}
@@ -106,124 +106,117 @@ function RoomsList() {
     });
 
     return (
-      <div className="create-room-box-container">
-        <div className={`create-room-box${showCreateRoomForm ? " active" : ""}`}>
-          {!showCreateRoomForm && (
-            <div className="create-room-box-btn" type="button" onClick={() => setShowCreateRoomForm(true)}>
-              CREATE ROOM
-            </div>
-          )}
-          {showCreateRoomForm && (
-            <div className="create-room-box-form">
-              <div className="create-room-box-form-details" id="create-room-box-room-details">
-                <input
-                  className="create-room-input-name"
-                  type="text"
-                  placeholder="Room name"
-                  value={newRoomSettings.name}
-                  onChange={(e) => setNewRoomSettings({ ...newRoomSettings, name: e.target.value })}
+      <div className={`create-room-box${showCreateRoomForm ? " active" : ""}`}>
+        {!showCreateRoomForm && (
+          <div className="create-room-box-btn" type="button" onClick={() => setShowCreateRoomForm(true)}>
+            CREATE ROOM
+          </div>
+        )}
+        {showCreateRoomForm && (
+          <div className="create-room-box-form">
+            <div className="create-room-box-form-details" id="create-room-box-room-details">
+              <input
+                className="create-room-input-name"
+                type="text"
+                placeholder="Room name"
+                value={newRoomSettings.name}
+                onChange={(e) => setNewRoomSettings({ ...newRoomSettings, name: e.target.value })}
+              />
+              <div className="create-room-box-number-of-players">
+                <span>Number of players:&nbsp;</span>
+                <DropdownMenu
+                  contentId="create-room-box-number-of-players-dropdown"
+                  values={[1, 2, 3, 4]}
+                  stateValue={newRoomSettings.numberOfPlayers}
+                  setFunction={(number) => setNewRoomSettings({ ...newRoomSettings, numberOfPlayers: number })}
                 />
-                <div className="create-room-box-number-of-players">
-                  <span>Number of players:&nbsp;</span>
-                  <DropdownMenu
-                    contentId="create-room-box-number-of-players-dropdown"
-                    values={[1, 2, 3, 4]}
-                    stateValue={newRoomSettings.numberOfPlayers}
-                    setFunction={(number) => setNewRoomSettings({ ...newRoomSettings, numberOfPlayers: number })}
+              </div>
+              <div className="create-room-box-privacy">
+                <div className="create-room-box-privacy-check">
+                  <span>Private:&nbsp;</span>
+                  <input
+                    className="create-room-privacy-checkbox"
+                    type="checkbox"
+                    checked={isPrivate}
+                    onChange={() => {
+                      setIsPrivate(!isPrivate);
+                      setNewRoomSettings({ ...newRoomSettings, isPrivate: !isPrivate });
+                    }}
                   />
                 </div>
-                <div className="create-room-box-privacy">
-                  <div className="create-room-box-privacy-check">
-                    <span>Private:&nbsp;</span>
-                    <input
-                      className="create-room-privacy-checkbox"
-                      type="checkbox"
-                      checked={isPrivate}
-                      onChange={() => {
-                        setIsPrivate(!isPrivate);
-                        setNewRoomSettings({ ...newRoomSettings, isPrivate: !isPrivate });
-                      }}
+                <input
+                  className={`create-room-input-password${!isPrivate ? " disabled" : ""}`}
+                  type="text"
+                  placeholder="Password"
+                  value={newRoomSettings.password}
+                  onChange={(e) => setNewRoomSettings({ ...newRoomSettings, password: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="create-room-box-form-details" id="create-room-box-game-details">
+              <div className="create-room-box-modify-game">
+                <span className="create-room-box-modify-game-header">Modify game rules?&nbsp;</span>
+                <input
+                  className="create-room-box-modify-game-checkbox"
+                  type="checkbox"
+                  onChange={() => {
+                    setShowGameRules(!showGameRules);
+                  }}
+                />
+              </div>
+              {showGameRules && (
+                <div className="create-room-box-game-rules">
+                  <div className="create-room-box-game-rules-rule">
+                    <span>Total rounds:&nbsp;</span>
+                    <DropdownMenu
+                      contentId="create-room-box-game-rules-total-rounds-dropdown"
+                      values={[1, 3, 5, 7, 10]}
+                      stateValue={gameRules.totalRounds}
+                      setFunction={(number) => setGameRules({ ...gameRules, totalRounds: number })}
                     />
                   </div>
-                  <input
-                    className={`create-room-input-password${!isPrivate ? " disabled" : ""}`}
-                    type="text"
-                    placeholder="Password"
-                    value={newRoomSettings.password}
-                    onChange={(e) => setNewRoomSettings({ ...newRoomSettings, password: e.target.value })}
-                  />
+                  <div className="create-room-box-game-rules-rule">
+                    <span>
+                      Timer duration {"("}in seconds{")"}:&nbsp;
+                    </span>
+                    <DropdownMenu
+                      contentId="create-room-box-game-rules-timer-duration-dropdown"
+                      values={[10, 20, 30, 40, 50, 60, 70, 80, 90]}
+                      stateValue={gameRules.timerDuration}
+                      setFunction={(number) => setGameRules({ ...gameRules, timerDuration: number })}
+                    />
+                  </div>
+                  <div className="create-room-box-game-rules-rule">
+                    <span>
+                      Cooldown duration {"("}in seconds{")"}:&nbsp;
+                    </span>
+                    <DropdownMenu
+                      contentId="create-room-box-game-rules-cooldown-duration-dropdown"
+                      values={[1, 3, 5, 10]}
+                      stateValue={gameRules.cooldownDuration}
+                      setFunction={(number) => setGameRules({ ...gameRules, cooldownDuration: number })}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="create-room-box-form-details" id="create-room-box-game-details">
-                <div className="create-room-box-modify-game">
-                  <span>Modify game rules?&nbsp;</span>
-                  <input
-                    className="create-room-box-modify-game-checkbox"
-                    type="checkbox"
-                    onChange={() => {
-                      setShowGameRules(!showGameRules);
-                    }}
-                  />
+              )}
+              <div className="create-room-box-buttons">
+                <div className="create-room-box-buttons-btn" type="button" onClick={() => setShowCreateRoomForm(false)}>
+                  CANCEL
                 </div>
-                {showGameRules && (
-                  <div className="create-room-box-game-rules">
-                    <div className="create-room-box-game-rules-rule">
-                      <span>Total rounds:&nbsp;</span>
-                      <DropdownMenu
-                        contentId="create-room-box-game-rules-total-rounds-dropdown"
-                        values={[1, 3, 5, 7, 10]}
-                        stateValue={gameRules.totalRounds}
-                        setFunction={(number) => setGameRules({ ...gameRules, totalRounds: number })}
-                      />
-                    </div>
-                    <div className="create-room-box-game-rules-rule">
-                      <span>
-                        Timer duration {"("}in seconds{")"}:&nbsp;
-                      </span>
-                      <DropdownMenu
-                        contentId="create-room-box-game-rules-timer-duration-dropdown"
-                        values={[10, 20, 30, 40, 50, 60, 70, 80, 90]}
-                        stateValue={gameRules.timerDuration}
-                        setFunction={(number) => setGameRules({ ...gameRules, timerDuration: number })}
-                      />
-                    </div>
-                    <div className="create-room-box-game-rules-rule">
-                      <span>
-                        Cooldown duration {"("}in seconds{")"}:&nbsp;
-                      </span>
-                      <DropdownMenu
-                        contentId="create-room-box-game-rules-cooldown-duration-dropdown"
-                        values={[1, 3, 5, 10]}
-                        stateValue={gameRules.cooldownDuration}
-                        setFunction={(number) => setGameRules({ ...gameRules, cooldownDuration: number })}
-                      />
-                    </div>
-                  </div>
-                )}
-                <div className="create-room-box-buttons">
-                  <div
-                    className="create-room-box-buttons-btn"
-                    type="button"
-                    onClick={() => setShowCreateRoomForm(false)}
-                  >
-                    CANCEL
-                  </div>
-                  <div
-                    className="create-room-box-buttons-btn"
-                    type="button"
-                    onClick={() => {
-                      setCreateRoomError("");
-                      createNewRoom({ ...newRoomSettings, gameRules });
-                    }}
-                  >
-                    CREATE
-                  </div>
+                <div
+                  className="create-room-box-buttons-btn"
+                  type="button"
+                  onClick={() => {
+                    setCreateRoomError("");
+                    createNewRoom({ ...newRoomSettings, gameRules });
+                  }}
+                >
+                  CREATE
                 </div>
               </div>
             </div>
-          )}
-        </div>
-        {createRoomError && <div className="rooms-list-error">{createRoomError}</div>}
+          </div>
+        )}
       </div>
     );
   };
@@ -317,8 +310,13 @@ function RoomsList() {
     <div className="rooms-list-container">
       <CreateRoomBox />
       <div className="rooms-list-alerts">
+        {createRoomError && (
+          <div className="rooms-list-alert" id="create-room-error">
+            {createRoomError}
+          </div>
+        )}
         {kickedFromRoom && (
-          <div className="rooms-list-error">
+          <div className="rooms-list-alert">
             <span>You have been kicked from {kickedFromRoom} by room's admin!</span>
             <span
               className="material-symbols-outlined"
@@ -330,7 +328,7 @@ function RoomsList() {
           </div>
         )}
         {invitation && (
-          <div className="rooms-list-error" id="room-invitation-alert">
+          <div className="rooms-list-alert" id="room-invitation-alert">
             <span>
               {invitation.inviter.toUpperCase()} invited you to join {invitation.invitedRoom.name}!
             </span>

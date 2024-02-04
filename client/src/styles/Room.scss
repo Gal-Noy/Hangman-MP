@@ -82,7 +82,7 @@
   outline: none;
 }
 
-.room-info-room-password {
+.room-info-room-privacy-container, .room-info-room-privacy {
   width: 100%;
   height: 100%;
   display: flex;
@@ -90,11 +90,12 @@
   justify-content: start;
   align-items: center;
   font-size: 0.9rem;
-  gap: 4%;
+  gap: 3%;
   color: #666666;
 }
 
-.room-password-title {
+
+.room-privacy-title {
   margin-left: 5%;
 }
 
@@ -113,6 +114,11 @@
   font-size: 1.2rem;
   cursor: pointer;
   font-weight: bold;
+}
+
+.room-info-room-public-button {
+  cursor: pointer;
+  margin-left: -3%;
 }
 
 .room-info-room-password-change-password-input {
@@ -137,7 +143,7 @@
   height: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
 }
 .room-info-game-rule {
@@ -146,7 +152,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 1.2rem;
+  font-size: 1.24rem;
   font-weight: bold;
   gap: 2%;
 }
@@ -158,7 +164,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 400;
 }
 
@@ -205,7 +211,8 @@
   }
 }
 
-#player-box-add-button, #player-box-remove-button {
+#player-box-add-button,
+#player-box-remove-button {
   color: #999999;
   font-size: 1.8rem;
   cursor: pointer;
@@ -281,7 +288,6 @@
   right: -5%;
   top: -15%;
   font-size: 1.2rem;
-  font-weight: bold;
   color: rgb(146, 59, 58);
   background-color: #eeeeee;
   border: none;

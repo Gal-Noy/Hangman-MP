@@ -30,7 +30,7 @@ function Message({ message }) {
   };
 
   return (
-    <div className={`message-container${isUserSender ? " user-sender" : " contact-sender"}`} key={message._id}>
+    <div className={`message-container${isUserSender ? " user-sender" : " contact-sender"}`}>
       {!isUserSender && (
         <div className="message-sender-name">
           <strong>{sender.name}</strong>
