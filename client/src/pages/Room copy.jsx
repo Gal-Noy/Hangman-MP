@@ -16,7 +16,7 @@ function Room() {
   const isRoomAdmin = JSON.parse(localStorage.getItem("user"))._id === roomData.admin.id;
   const dispatch = useDispatch();
   const [players, setPlayers] = useState([]);
-  const [modifyRoomDetails, setModifyRoomDetails] = useState({
+  const [modifyRoomData, setModifyRoomData] = useState({
     newGameRules: {
       totalRounds: roomData.gameRules.totalRounds,
       timerDuration: roomData.gameRules.timerDuration,
@@ -47,7 +47,7 @@ function Room() {
   }, [lastJsonMessage]);
 
   const modifyRoom = () => {
-    const { newGameRules, newNumberOfPlayers, newName, newPassword } = modifyRoomDetails;
+    const { newGameRules, newNumberOfPlayers, newName, newPassword } = modifyRoomData;
     sendJsonMessage({
       type: "rooms",
       content: {
@@ -95,9 +95,9 @@ function Room() {
               <input
                 className="room-info-room-name-change-name-input"
                 type="text"
-                value={modifyRoomDetails.newName}
+                value={modifyRoomData.newName}
                 onChange={(e) => {
-                  setModifyRoomDetails({ ...modifyRoomDetails, newName: e.target.value });
+                  setModifyRoomData({ ...modifyRoomData, newName: e.target.value });
                 }}
               />
               <span
@@ -120,10 +120,8 @@ function Room() {
                 <DropdownMenu
                   contentId={"room-info-game-rule-total-rounds-dropdown"}
                   values={[1, 3, 5, 7, 10]}
-                  stateValue={modifyRoomDetails.newGameRules?.totalRounds}
-                  setFunction={(number) =>
-                    setModifyRoomDetails({ ...modifyRoomDetails.newGameRules, totalRounds: number })
-                  }
+                  stateValue={modifyRoomData.newGameRules?.totalRounds}
+                  setFunction={(number) => setModifyRoomData({ ...modifyRoomData.newGameRules, totalRounds: number })}
                 />
               )}
             </div>
@@ -137,10 +135,8 @@ function Room() {
                 <DropdownMenu
                   contentId={"room-info-game-rule-timer-duration-dropdown"}
                   values={[10, 20, 30, 40, 50, 60, 70, 80, 90]}
-                  stateValue={modifyRoomDetails.newGameRules?.timerDuration}
-                  setFunction={(number) =>
-                    setModifyRoomDetails({ ...modifyRoomDetails.newGameRules, timerDuration: number })
-                  }
+                  stateValue={modifyRoomData.newGameRules?.timerDuration}
+                  setFunction={(number) => setModifyRoomData({ ...modifyRoomData.newGameRules, timerDuration: number })}
                 />
               )}
             </div>
@@ -154,9 +150,9 @@ function Room() {
                 <DropdownMenu
                   contentId={"room-info-game-rule-cooldown-duration-dropdown"}
                   values={[1, 3, 5, 10]}
-                  stateValue={modifyRoomDetails.newGameRules?.cooldownDuration}
+                  stateValue={modifyRoomData.newGameRules?.cooldownDuration}
                   setFunction={(number) =>
-                    setModifyRoomDetails({ ...modifyRoomDetails.newGameRules, cooldownDuration: number })
+                    setModifyRoomData({ ...modifyRoomData.newGameRules, cooldownDuration: number })
                   }
                 />
               )}

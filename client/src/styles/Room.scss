@@ -26,15 +26,25 @@
   border-bottom: 2px solid #dddddd;
 }
 
-.room-info-room-name {
-  width: 40%;
+.room-info-room-details {
+  width: 33%;
   height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  font-weight: bold;
+  margin-right: -5%;
+}
+
+.room-info-room-name {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: row;
   justify-content: start;
   align-items: center;
   font-size: 1.4rem;
-  font-weight: bold;
   gap: 4%;
   overflow: hidden;
   white-space: nowrap;
@@ -43,16 +53,22 @@
 .room-name-value {
   overflow: hidden;
   white-space: nowrap;
+  text-overflow: clip;
   margin-left: 5%;
 }
 
-.room-info-room-name .material-symbols-outlined {
+.room-info-room-name-edit-button {
   cursor: pointer;
+}
+
+.room-info-room-name-accept-button {
+  cursor: pointer;
+  font-weight: bold;
 }
 
 .room-info-room-name-change-name-input {
   width: 100%;
-  height: 60%;
+  height: 80%;
   font-size: 1.4rem;
   font-weight: bold;
   background-color: #dddddd;
@@ -66,8 +82,65 @@
   outline: none;
 }
 
+.room-info-room-password {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  font-size: 0.9rem;
+  gap: 4%;
+  color: #666666;
+}
+
+.room-password-title {
+  margin-left: 5%;
+}
+
+.room-password-value {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+}
+
+.room-info-room-password-edit-button {
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.room-info-room-password-accept-button {
+  font-size: 1.2rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.room-info-room-password-change-password-input {
+  width: 100%;
+  height: 80%;
+  font-size: 0.9rem;
+  font-weight: bold;
+  background-color: #dddddd;
+  border: none;
+  padding-left: 5%;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #333333;
+}
+
+.room-info-room-password-change-password-input:focus {
+  outline: none;
+}
+
+.room-info-game-rules-container {
+  width: 65%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
 .room-info-game-rule {
-  width: 30%;
   height: 90%;
   display: flex;
   flex-direction: column;
@@ -75,6 +148,7 @@
   align-items: center;
   font-size: 1.2rem;
   font-weight: bold;
+  gap: 2%;
 }
 
 .room-info-game-rule-title {
