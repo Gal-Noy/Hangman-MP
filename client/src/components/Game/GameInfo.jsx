@@ -1,7 +1,8 @@
 import { b64toBlob } from "../../utils/utils";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 
-const GamePlayerBox = ({ player }) => {
+const GamePlayerBox = (props) => {
+  const { player, gameMessage } = props;
   const playerAvatar = !player?.avatar ? null : b64toBlob(player.avatar, "image/");
 
   return (
@@ -14,17 +15,23 @@ const GamePlayerBox = ({ player }) => {
         />
       </div>
       <span className="game-player-box-player-name">{player.name.toUpperCase()}</span>
+      {gameMessage && <span className={`game-player-box-message-${gameMessage.type}`}>{gameMessage.message}</span>}
     </div>
   );
 };
 
-function GameInfo({ gameState }) {
+function GameInfo(props) {
+  const { gameState, gameMessage } = props;
+  const { type, message, playerId } = gameMessage;
+
   return (
     <div className="game-info-container">
       <div className="game-state-container">
         <div className="game-state-detail">
           <span className="game-state-label">Round</span>
-          <span className="game-state-value">{gameState.round} / {gameState.totalRounds}</span>
+          <span className="game-state-value">
+            {gameState.round} / {gameState.totalRounds}
+          </span>
         </div>
         <div className="game-state-detail">
           <span className="game-state-label">Score</span>
@@ -37,7 +44,11 @@ function GameInfo({ gameState }) {
       </div>
       <div className="game-players-list">
         {gameState.players.map((player, index) => (
-          <GamePlayerBox key={index} player={player} />
+          <GamePlayerBox
+            key={index}
+            player={player}
+            gameMessage={!playerId || playerId != player.id ? null : gameMessage}
+          />
         ))}
       </div>
     </div>

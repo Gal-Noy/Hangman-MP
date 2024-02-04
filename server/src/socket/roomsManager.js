@@ -19,6 +19,7 @@ const roomsManager = (content, ws) => {
     modify: modifyRoom,
     ready: toggleReadyPlayer,
     unready: toggleReadyPlayer,
+    return: returnPlayerToRoom,
   }[action];
 
   if (handler) {
@@ -258,6 +259,38 @@ const toggleReadyPlayer = (data, ws) => {
     );
   }
 };
+
+const returnPlayerToRoom = async (data, ws) => {
+  const room = ws.session.room;
+  const playerId = ws.session.user._id;
+
+  if (room.returnPlayerToRoom(playerId)) {
+
+    await User.findByIdAndUpdate(playerId, { inGame: false }).exec();
+
+    ws.send(
+      JSON.stringify({
+        type: "returnToRoomResponse",
+        content: { success: true, message: "Return to room success.", data: { room: room.getRoomData() } },
+      })
+    );
+
+    room.updateRoomInfoPlayers(); // Broadcast to clients in the room
+    broadcastLogToRoomChat(room, "info", `${ws.session.user.name.toUpperCase()} returned to the room.`);
+
+    // Broadcast to clients in the lobby
+    broadcastRoomsListToLobby([ws]);
+    broadcastUsersList([ws]);
+  } else {
+    console.log("Return to room failed.");
+    ws.send(
+      JSON.stringify({
+        type: "returnToRoomResponse",
+        content: { success: false, message: "Return to room failed.", data: null },
+      })
+    );
+  }
+}
 
 export const getAllRooms = () => {
   return Object.values(rooms).map((room) => room.getRoomData());

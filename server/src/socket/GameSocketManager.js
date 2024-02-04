@@ -76,6 +76,23 @@ export class GameSocketManager {
     );
   }
 
+  sendResponseToAllPlayers(response, success, playerId) {
+    Object.values(this.playersIdToWs).forEach((ws) => {
+      ws.send(
+        JSON.stringify({
+          type: "guessResponse",
+          content: {
+            data: {
+              success,
+              message: response,
+              playerId,
+            },
+          },
+        })
+      );
+    });
+  }
+
   broadcastEndOfRoundMessage(endOfRoundMessage) {
     Object.values(this.playersIdToWs).forEach((ws) => {
       ws.send(

@@ -29,8 +29,8 @@ const sortPlayersList = (players) =>
     }
 
     // Sort by ready status
-    if (a.isReady !== b.isReady) {
-      return a.isReady ? -1 : 1;
+    if (a.status !== b.status) {
+      return a.status === "ready" ? -1 : 1;
     }
 
     // Sort by name

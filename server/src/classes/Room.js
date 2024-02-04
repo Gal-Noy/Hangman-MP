@@ -1,6 +1,5 @@
 import { v4 } from "uuid";
 import Game from "./Game.js";
-import { broadcastRoomsListToLobby } from "../socket/roomsManager.js";
 import { User } from "../models/userModel.js";
 
 /*
@@ -92,6 +91,9 @@ export default class Room {
       return "Already in the room.";
     }
     this.players.push({ user: player.user, ws: player.ws, status: "idle", isAdmin: false });
+
+    this.unreadyAllPlayers();
+
     return "";
   }
 
@@ -106,6 +108,8 @@ export default class Room {
         this.players[0].isAdmin = true;
         this.admin = this.players[0];
       }
+
+      this.unreadyAllPlayers();
 
       return true;
     } else {
@@ -125,6 +129,8 @@ export default class Room {
     if (playerIndex !== -1) {
       this.players.splice(playerIndex, 1);
 
+      this.unreadyAllPlayers();
+
       return true;
     } else {
       console.log("Player not found.");
@@ -133,37 +139,48 @@ export default class Room {
   }
 
   modifyRoom(newName, newNumberOfPlayers, newGameRules, newPassword, isPrivate) {
+    let response = "No changes made.";
+
     if (newName) {
       this.name = newName;
-      return `Room name changed to ${newName}.`;
+      response = `Room name changed to ${newName}.`;
     }
     if (newNumberOfPlayers) {
       this.numberOfPlayers = newNumberOfPlayers;
-      return `Number of players changed to ${newNumberOfPlayers}.`;
+      response = `Number of players changed to ${newNumberOfPlayers}.`;
     }
     if (newGameRules) {
       if (newGameRules.totalRounds) {
         this.gameRules.totalRounds = newGameRules.totalRounds;
-        return `Total rounds changed to ${newGameRules.totalRounds}.`;
+        response = `Total rounds changed to ${newGameRules.totalRounds}.`;
       }
       if (newGameRules.timerDuration) {
         this.gameRules.timerDuration = newGameRules.timerDuration;
-        return `Timer duration changed to ${newGameRules.timerDuration}.`;
+        response = `Timer duration changed to ${newGameRules.timerDuration}.`;
       }
       if (newGameRules.cooldownDuration) {
         this.gameRules.cooldownDuration = newGameRules.cooldownDuration;
-        return `Cooldown duration changed to ${newGameRules.cooldownDuration}.`;
+        response = `Cooldown duration changed to ${newGameRules.cooldownDuration}.`;
       }
     }
-    if (!this.password && newPassword) {
+    if (this.password) {
+      if (!isPrivate) {
+        this.password = null;
+        response = `Room privacy changed to public.`;
+      }
+      if (newPassword) {
+        this.password = newPassword;
+        response = `Room password changed to '${newPassword}'.`;
+      }
+    } else if (newPassword) {
       this.password = newPassword;
-      return `Room privacy changed to private, with password '${newPassword}'.`;
+      response = `Room privacy changed to private, with password '${newPassword}'.`;
     }
-    if (this.password && !isPrivate) {
-      this.password = null;
-      return `Room privacy changed to public.`;
+
+    if (response !== "No changes made.") {
+      this.unreadyAllPlayers();
     }
-    return "No changes made.";
+    return response;
   }
 
   toggleReadyPlayer(player) {
@@ -176,6 +193,10 @@ export default class Room {
       console.log("Player not found.");
       return false;
     }
+  }
+
+  unreadyAllPlayers() {
+    this.players.map((player) => (player.status = "idle"));
   }
 
   checkAllPlayersReady() {
@@ -215,11 +236,17 @@ export default class Room {
   async endGame() {
     this.status = "waiting";
     this.game = null;
-    this.players.map((player) => (player.status = "idle"));
-    this.players.forEach((player) => (player.ws.session.game = null));
-    await User.updateMany({ _id: { $in: this.players.map((player) => player.user._id) } }, { inGame: false }).exec();
+  }
 
-    this.updateRoomInfoPlayers(); // Broadcast to clients in the room
-    broadcastRoomsListToLobby(this.players.map((player) => player.ws)); // Broadcast to clients in the lobby
+  async returnPlayerToRoom(playerId) {
+    const playerIndex = this.players.findIndex((p) => p.user._id === playerId);
+    if (playerIndex !== -1) {
+      this.players[playerIndex].status = "idle";
+      this.players[playerIndex].ws.session.game = null;
+      return true;
+    } else {
+      console.log("Player not found.");
+      return false;
+    }
   }
 }

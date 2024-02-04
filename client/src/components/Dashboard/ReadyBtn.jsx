@@ -1,4 +1,3 @@
-import { useDispatch } from "react-redux";
 import { useWebSocketContext } from "../../WebSocketContext";
 import { useState } from "react";
 
@@ -20,9 +19,7 @@ function ReadyBtn() {
   return (
     <button
       type="button"
-      className={`dashboard-menu-button pheasant-demure-button outline light hover blink icon${
-        isPlayerReady ? " active" : " inactive"
-      }`}
+      className="dashboard-menu-button pheasant-demure-button outline light hover blink icon"
       id="inRoom-ready-button"
       onClick={toggleReady}
     >

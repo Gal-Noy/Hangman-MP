@@ -45,25 +45,19 @@
 }
 
 #back-to-lobby-button {
-  width: 10.5vw;
+  width: 12.5vw;
 
   &.in-game {
     width: 20vw;
   }
 }
 
+#back-to-room-button {
+  width: 12.5vw;
+}
+
 #inRoom-ready-button {
   width: 20vw;
-
-  &.active {
-    background-color: white;
-    color: black;
-  }
-
-  &.inactive {
-    background: black;
-    color: white;
-  }
 }
 
 #inRoom-ready-button:hover {
@@ -79,7 +73,7 @@
   flex-direction: column;
   justify-content: space-between;
   margin-right: 1vw;
-  margin-bottom: 1vh;
+  margin-bottom: 1.5vh;
 }
 
 .dashboard-user-info {

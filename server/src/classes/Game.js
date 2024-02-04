@@ -97,20 +97,22 @@ export default class Game {
           }
         }
         if (this.hiddenWord !== this.currentWord.word) {
-          this.gameSocketManager.sendResponseToClientGuess(
+          this.gameSocketManager.sendResponseToAllPlayers(
             `${guessedLetter.toUpperCase()} - Correct guess!`,
             true,
             playerId
           );
+          this.score += 10;
         }
       } else {
         this.remainingWrongAttempts--;
         if (this.remainingWrongAttempts > 0) {
-          this.gameSocketManager.sendResponseToClientGuess(
+          this.gameSocketManager.sendResponseToAllPlayers(
             `${guessedLetter.toUpperCase()} - Incorrect guess!`,
             false,
             playerId
           );
+          this.score -= 5;
         }
       }
     }
@@ -121,7 +123,7 @@ export default class Game {
   checkRoundEnd() {
     if (this.hiddenWord === this.currentWord.word || this.remainingWrongAttempts === 0 || this.timer === 0) {
       // Increase score if the word is guessed correctly
-      this.score += this.hiddenWord === this.currentWord.word ? 1 : 0;
+      this.score += this.hiddenWord === this.currentWord.word ? 50 : 0;
 
       this.currRound++;
       this.stopTimer();
@@ -146,6 +148,7 @@ export default class Game {
       players: this.room.players.map((player) => ({
         name: player.user.name,
         avatar: player.user.avatar,
+        id: player.user._id,
       })),
       remainingWrongAttempts: this.remainingWrongAttempts,
       score: this.score,
@@ -161,6 +164,7 @@ export default class Game {
       players: this.room.players.map((player) => ({
         name: player.user.name,
         avatar: player.user.avatar,
+        id: player.user._id,
       })),
       definition: this.currentWord.definition,
       hiddenWord: this.hiddenWord,

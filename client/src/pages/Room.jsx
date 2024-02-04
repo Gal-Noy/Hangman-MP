@@ -29,6 +29,14 @@ function Room() {
   const [showChangePassword, setShowChangePassword] = useState(false);
 
   useEffect(() => {
+    if (!players && roomData) {
+      const players = [...roomData.players];
+      const sortedPlayers = sortPlayersList(players);
+      setPlayers(sortedPlayers);
+    }
+  }, []);
+
+  useEffect(() => {
     if (lastJsonMessage) {
       const { type, content } = lastJsonMessage;
       if (type === "updateRoomInfo" || type === "createRoomResponse") {
@@ -36,12 +44,17 @@ function Room() {
         const players = [...content.data.room.players];
 
         const sortedPlayers = sortPlayersList(players);
+        console.log(sortedPlayers);
 
         setPlayers(sortedPlayers);
       } else if (type === "kickFromRoom") {
         const { room } = content.data;
-        dispatch(setKickedFromRoom(room.name));
         dispatch(setLobby(room));
+
+        dispatch(setKickedFromRoom(room.name));
+        setTimeout(() => {
+          dispatch(setKickedFromRoom(""));
+        }, 10000);
       }
     }
   }, [lastJsonMessage]);
@@ -115,7 +128,7 @@ function Room() {
                 <input
                   className="room-info-room-name-change-name-input"
                   type="text"
-                  value={modifyRoomData.newName}
+                  value={modifyRoomData.newName || roomData.name}
                   onChange={(e) => {
                     setModifyRoomData({ ...modifyRoomData, newName: e.target.value });
                   }}
@@ -179,11 +192,12 @@ function Room() {
                     <input
                       className="room-info-room-password-change-password-input"
                       type="text"
-                      value={modifyRoomData.newPassword}
+                      value={modifyRoomData.newPassword || roomData.password}
                       onChange={(e) => {
                         setModifyRoomData({
                           ...modifyRoomData,
                           newPassword: e.target.value,
+                          isPrivate: true,
                         });
                       }}
                     />

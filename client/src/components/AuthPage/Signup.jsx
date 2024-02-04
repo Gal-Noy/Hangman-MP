@@ -82,7 +82,7 @@ function Signup({ setSubmitResponseMessage }) {
   return (
     <div>
       {signupSuccess ? (
-        <div>
+        <div className="signup-success">
           <h2>Signup Successful!</h2>
           <p>You have successfully signed up.</p>
           <Link to="/login" onClick={handleLoginClick}>

@@ -1,6 +1,7 @@
 import LogoutBtn from "./LogoutBtn";
 import BackToLobbyBtn from "./BackToLobbyBtn";
 import ReadyBtn from "./ReadyBtn";
+import BackToRoomBtn from "./BackToRoomBtn";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { useWebSocketContext } from "../../WebSocketContext";
@@ -11,37 +12,21 @@ import { setLobbyChat, setLobbyRoomsList } from "../../store/clientStateSlice";
 import { b64toBlob } from "../../utils/utils";
 
 function Dashboard({ onLogout }) {
-  const { clientState, lobbyState, roomData, gameState } = useSelector((state) => state.clientState);
+  const { clientState, lobbyState, roomData } = useSelector((state) => state.clientState);
   const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("user"));
   const userAvatar = !user?.avatar ? null : b64toBlob(user.avatar, "image/");
   const { lastJsonMessage } = useWebSocketContext();
-  const [timer, setTimer] = useState(60);
-  const [cooldown, setCooldown] = useState(5);
-  const [alert, setAlert] = useState("");
+  const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
     if (lastJsonMessage) {
       const { type } = lastJsonMessage;
-      if (type === "timerUpdate") {
-        setTimer(lastJsonMessage.content.data);
-        if (cooldown >= 0) setCooldown(-1);
-      } else if (type === "cooldownUpdate") {
-        setCooldown(lastJsonMessage.content.data);
-        if (timer >= 0) setTimer(-1);
-      } else if (type === "gameOver" || type === "endOfRound") {
-        setAlert(lastJsonMessage.content.data);
+      if (type === "gameOver") {
+        setGameOver(true);
       }
     }
   }, [lastJsonMessage]);
-
-  useEffect(() => {
-    if (alert) {
-      setTimeout(() => {
-        setAlert("");
-      }, 3000);
-    }
-  }, [alert]);
 
   const setLobbyState = (clickedState) => {
     clickedState === "roomsList" ? dispatch(setLobbyRoomsList()) : dispatch(setLobbyChat());
@@ -83,7 +68,8 @@ function Dashboard({ onLogout }) {
         )}
         {clientState === "game" && (
           <div className="dashboard-menu-buttons">
-            <BackToLobbyBtn inGame={true} />
+            <BackToLobbyBtn inGame={!gameOver} />
+            {gameOver && <BackToRoomBtn />}
           </div>
         )}
       </div>

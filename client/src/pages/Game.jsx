@@ -37,8 +37,8 @@ function Game() {
           if (timer >= 0) setTimer(-1);
           break;
         case "guessResponse":
-          const { success, message } = data;
-          setGameMessage({ type: success ? "success" : "error", message });
+          const { success, message, playerId } = data;
+          setGameMessage({ type: success ? "success" : "error", message, playerId });
           break;
         case "endOfRound":
           setGameMessage({ type: "info", message: data });
@@ -61,7 +61,7 @@ function Game() {
   return (
     gameState && (
       <div className="game-container">
-        <GameInfo gameState={gameState} />
+        <GameInfo gameState={gameState} gameMessage={gameMessage}/>
         <GamePanel
           gameName={roomData.name}
           gameState={gameState}
