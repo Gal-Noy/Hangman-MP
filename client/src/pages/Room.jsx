@@ -65,7 +65,7 @@ function Room() {
 
   useEffect(() => {
     modifyRoom();
-  }, [modifyRoomData.newGameRules]);
+  }, [modifyRoomData.newGameRules, modifyRoomData.newNumberOfPlayers]);
 
   const kickPlayer = (playerId) => {
     sendJsonMessage({
@@ -228,7 +228,13 @@ function Room() {
           </div>
         </div>
         <div className="room-social">
-          <PlayersList players={players} isRoomAdmin={isRoomAdmin} kickPlayer={kickPlayer} />
+          <PlayersList
+            players={players}
+            isRoomAdmin={isRoomAdmin}
+            kickPlayer={kickPlayer}
+            modifyRoomData={modifyRoomData}
+            setModifyRoomData={setModifyRoomData}
+          />
           <Chat />
         </div>
       </div>
