@@ -62,10 +62,6 @@ function Room() {
     });
   };
 
-  useEffect(() => {
-    modifyRoom();
-  }, [modifyRoomDetails.newGameRules]);
-
   const kickPlayer = (playerId) => {
     sendJsonMessage({
       type: "rooms",
@@ -126,10 +122,7 @@ function Room() {
                   values={[1, 3, 5, 7, 10]}
                   stateValue={modifyRoomDetails.newGameRules?.totalRounds}
                   setFunction={(number) =>
-                    setModifyRoomDetails({
-                      ...modifyRoomDetails,
-                      newGameRules: { ...modifyRoomDetails.newGameRules, totalRounds: number },
-                    })
+                    setModifyRoomDetails({ ...modifyRoomDetails.newGameRules, totalRounds: number })
                   }
                 />
               )}
@@ -144,12 +137,9 @@ function Room() {
                 <DropdownMenu
                   contentId={"room-info-game-rule-timer-duration-dropdown"}
                   values={[10, 20, 30, 40, 50, 60, 70, 80, 90]}
-                  stateValue={modifyRoomDetails.newGameRules.timerDuration}
+                  stateValue={modifyRoomDetails.newGameRules?.timerDuration}
                   setFunction={(number) =>
-                    setModifyRoomDetails({
-                      ...modifyRoomDetails,
-                      newGameRules: { ...modifyRoomDetails.newGameRules, timerDuration: number },
-                    })
+                    setModifyRoomDetails({ ...modifyRoomDetails.newGameRules, timerDuration: number })
                   }
                 />
               )}
@@ -164,12 +154,9 @@ function Room() {
                 <DropdownMenu
                   contentId={"room-info-game-rule-cooldown-duration-dropdown"}
                   values={[1, 3, 5, 10]}
-                  stateValue={modifyRoomDetails.newGameRules.cooldownDuration}
+                  stateValue={modifyRoomDetails.newGameRules?.cooldownDuration}
                   setFunction={(number) =>
-                    setModifyRoomDetails({
-                      ...modifyRoomDetails,
-                      newGameRules: { ...modifyRoomDetails.newGameRules, cooldownDuration: number },
-                    })
+                    setModifyRoomDetails({ ...modifyRoomDetails.newGameRules, cooldownDuration: number })
                   }
                 />
               )}

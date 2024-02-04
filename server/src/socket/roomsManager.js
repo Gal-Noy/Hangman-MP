@@ -15,7 +15,7 @@ const roomsManager = (content, ws) => {
     leave: leaveRoom,
     invite: invitePlayer,
     kick: kickPlayer,
-    modfiy: modifyRoom,
+    modify: modifyRoom,
     ready: toggleReadyPlayer,
     unready: toggleReadyPlayer,
   }[action];

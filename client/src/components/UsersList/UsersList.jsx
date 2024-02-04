@@ -128,15 +128,6 @@ function UsersList() {
       <div className="users-list">
         {!searchInput && users.map((user) => <UserBox user={user} key={user._id} />)}
         {searchInput && searchedUsers.map((user) => <UserBox user={user} key={user._id} />)}
-
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
-        <UserBox user={JSON.parse(localStorage.getItem("user"))} />
       </div>
     </div>
   );
