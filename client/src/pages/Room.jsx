@@ -27,6 +27,7 @@ function Room() {
   });
   const [showChangeName, setShowChangeName] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [showPasswordLengthError, setShowPasswordLengthError] = useState(false);
 
   useEffect(() => {
     if (!players && roomData) {
@@ -60,25 +61,31 @@ function Room() {
   }, [lastJsonMessage]);
 
   const modifyRoom = () => {
-    console.log(modifyRoomData);
-    sendJsonMessage({
-      type: "rooms",
-      content: {
-        action: "modify",
-        data: modifyRoomData,
-      },
-    });
-    setModifyRoomData({
-      newGameRules: {
-        totalRounds: null,
-        timerDuration: null,
-        cooldownDuration: null,
-      },
-      newName: "",
-      newNumberOfPlayers: null,
-      newPassword: "",
-      isPrivate: null,
-    });
+    if (modifyRoomData.newPassword && modifyRoomData.newPassword.length < 4) {
+      setShowPasswordLengthError(true);
+      setTimeout(() => {
+        setShowPasswordLengthError(false);
+      }, 3000);
+    } else {
+      sendJsonMessage({
+        type: "rooms",
+        content: {
+          action: "modify",
+          data: modifyRoomData,
+        },
+      });
+      setModifyRoomData({
+        newGameRules: {
+          totalRounds: null,
+          timerDuration: null,
+          cooldownDuration: null,
+        },
+        newName: "",
+        newNumberOfPlayers: null,
+        newPassword: "",
+        isPrivate: null,
+      });
+    }
   };
 
   useEffect(() => {
@@ -164,7 +171,10 @@ function Room() {
                     <span className="room-password-value">{roomData.isPrivate ? roomData.password : ""}</span>
                     <span
                       className="material-symbols-outlined room-info-room-password-edit-button"
-                      onClick={() => setShowChangePassword(true)}
+                      onClick={() => {
+                        setShowChangePassword(true);
+                        setShowPasswordLengthError(false);
+                      }}
                     >
                       edit
                     </span>
@@ -177,13 +187,13 @@ function Room() {
                             newPassword: "",
                             isPrivate: false,
                           });
-                          console.log(modifyRoomData);
                           modifyRoom();
                         }}
                       >
                         close
                       </span>
                     )}
+                    {showPasswordLengthError && <span className="room-password-length-error">Min 4 letters.</span>}
                   </div>
                 )}
                 {showChangePassword && (

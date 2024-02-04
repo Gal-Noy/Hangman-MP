@@ -167,14 +167,21 @@ export default class Room {
       if (!isPrivate) {
         this.password = null;
         response = `Room privacy changed to public.`;
-      }
-      if (newPassword) {
-        this.password = newPassword;
-        response = `Room password changed to '${newPassword}'.`;
+      } else if (newPassword !== this.password) {
+        if (newPassword.length >= 4) {
+          this.password = newPassword;
+          response = `Room password changed to '${newPassword}'.`;
+        } else {
+          response = `Password must be at least 4 characters long.`;
+        }
       }
     } else if (newPassword) {
-      this.password = newPassword;
-      response = `Room privacy changed to private, with password '${newPassword}'.`;
+      if (newPassword.length >= 4) {
+        this.password = newPassword;
+        response = `Room privacy changed to private, with password '${newPassword}'.`;
+      } else {
+        response = `Password must be at least 4 characters long.`;
+      }
     }
 
     if (response !== "No changes made.") {

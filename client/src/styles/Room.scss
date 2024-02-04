@@ -138,6 +138,14 @@
   outline: none;
 }
 
+.room-password-length-error {
+  color: rgb(190, 3, 0);
+  background-color: #f8d7da;
+  font-size: 0.8rem;
+  // padding: 2%;
+  
+}
+
 .room-info-game-rules-container {
   width: 65%;
   height: 100%;
@@ -207,13 +215,13 @@
   background-color: #eeeeee;
 
   &.add-player {
-    background-color: #dddddd;
+    background-color: #bebebe;
   }
 }
 
 #player-box-add-button,
 #player-box-remove-button {
-  color: #999999;
+  color: #868686;
   font-size: 1.8rem;
   cursor: pointer;
 }
