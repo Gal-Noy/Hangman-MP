@@ -3,7 +3,7 @@ import { Word } from "../src/models/wordModel.js";
 import dotenv from "dotenv";
 import fs from "fs";
 
-dotenv.config({ path: "./config/.env" });
+dotenv.config();
 console.log(process.env.DB_URI);
 
 const init = async () => {
