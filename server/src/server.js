@@ -6,7 +6,7 @@ import handleSocket from "./socket/socketListener.js";
 import router from "./routes/index.js";
 
 const server = (app) => {
-  dotenv.config({ path: "./config/.env" });
+  dotenv.config();
 
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ limit: "10mb" }));
