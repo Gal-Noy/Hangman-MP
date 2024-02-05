@@ -49,21 +49,27 @@ function App() {
 
   return (
     <WebSocketProvider value={{ sendJsonMessage, lastJsonMessage }}>
-      <Router>
+      <Router basename={"/Hangman-MP/"}>
         <Routes>
           <Route
-            path="/"
-            element={isLoggedIn ? <HomePage onLogout={() => setIsLoggedIn(false)} /> : <Navigate to="/login" replace />}
+            path="/Hangman-MP/"
+            element={
+              isLoggedIn ? (
+                <HomePage onLogout={() => setIsLoggedIn(false)} />
+              ) : (
+                <Navigate to="/Hangman-MP/login" replace />
+              )
+            }
           />
           <Route
-            path="/login"
+            path="/Hangman-MP/login"
             element={
               <AuthPage formType={"login"} onLogin={() => setIsLoggedIn(true)} onLogout={() => setIsLoggedIn(false)} />
             }
           />
           <Route
-            path="/register"
-            element={isLoggedIn ? <Navigate to="/login" replace /> : <AuthPage formType={"signup"} />}
+            path="/Hangman-MP/register"
+            element={isLoggedIn ? <Navigate to="/Hangman-MP/login" replace /> : <AuthPage formType={"signup"} />}
           />
         </Routes>
       </Router>
