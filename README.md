@@ -2,6 +2,7 @@
 ### A Full-Stack Online Game
 This project is a web-based, real-time Hangman game developed entirely from scratch using MERN stack and more.
 It offers a collaborative and engaging gameplay experience for users to connect and compete.
+Access the interactive Hangman Multiplayer experience directly through the project's GitHub Pages deployment at [this link](https://gal-noy.github.io/Hangman-MP/).
 
 ## Stack
 - **Frontend** - React.js (Redux, useWebSocket), CSS.
