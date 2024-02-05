@@ -4,7 +4,7 @@ import GamePanel from "../components/Game/GamePanel";
 import { useWebSocketContext } from "../WebSocketContext";
 import { useDispatch, useSelector } from "react-redux";
 import { setGameState, setRoom } from "../store/clientStateSlice";
-import "../styles/Game.scss";
+import "../styles/Game.css";
 
 function Game() {
   const { lastJsonMessage } = useWebSocketContext();

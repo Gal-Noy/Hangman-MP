@@ -6,7 +6,7 @@ import Game from "./Game";
 import { useWebSocketContext } from "../WebSocketContext";
 import { useEffect } from "react";
 import { setGame } from "../store/clientStateSlice";
-import "../styles/HomePage.scss";
+import "../styles/HomePage.css";
 
 function HomePage({ onLogout }) {
   const { clientState, roomData, lobbyState } = useSelector((state) => state.clientState);

@@ -59,15 +59,14 @@ export default class Game {
 
     this.startTimer();
 
-    await this.handleRound();
+    this.handleRound();
   }
 
   async handleRound() {
     while (this.isRoundActive) {
-      this.checkRoundEnd();
-      // const { letter, playerId } = await this.gameSocketManager.waitForPlayersActions();
       const { letter, playerId } = await Promise.race([
         this.gameSocketManager.waitForPlayersActions(),
+        this.checkRoundEnd(),
         this.waitForTimerExpiration(),
       ]);
       if (letter && playerId && this.isRoundActive) {
@@ -131,24 +130,24 @@ export default class Game {
   }
 
   checkRoundEnd() {
-    if (this.hiddenWord === this.currentWord.word || this.remainingWrongAttempts === 0 || this.timer === 0) {
-      // Increase score if the word is guessed correctly
-      this.score += this.hiddenWord === this.currentWord.word ? 50 : 0;
-
-      this.isRoundActive = false;
-      this.currRound++;
-      this.stopTimer();
-
-      // Determine the reason for the round end
-      const endOfRoundMessage =
-        this.hiddenWord === this.currentWord.word
-          ? "Correct word!"
-          : this.remainingWrongAttempts === 0
-          ? "Out of attempts!"
-          : "Time's up!";
-
-      this.gameSocketManager.broadcastEndOfRoundMessage(endOfRoundMessage);
-    }
+    return new Promise((resolve) => {
+      if (this.hiddenWord === this.currentWord.word) {
+        this.isRoundActive = false;
+        this.stopTimer();
+        this.gameSocketManager.broadcastEndOfRoundMessage("Correct word!");
+        this.score += this.remainingWrongAttempts * 10;
+        this.currRound++;
+        resolve({});
+      } else if (this.remainingWrongAttempts === 0) {
+        this.isRoundActive = false;
+        this.stopTimer();
+        this.gameSocketManager.broadcastEndOfRoundMessage(
+          `Out of attempts! The word was '${this.currentWord.word.toUpperCase()}'`
+        );
+        this.currRound++;
+        resolve({});
+      }
+    });
   }
 
   sendInitialState() {
@@ -210,7 +209,12 @@ export default class Game {
       this.timer--;
       this.gameSocketManager.broadcastTimer();
       if (this.timer === 0) {
-        this.checkRoundEnd();
+        this.isRoundActive = false;
+        this.stopTimer();
+        this.gameSocketManager.broadcastEndOfRoundMessage(
+          `Time's up! The word was '${this.currentWord.word.toUpperCase()}'`
+        );
+        this.currRound++;
       }
     }, 1000);
   }
@@ -230,7 +234,7 @@ export default class Game {
   endRound() {
     setTimeout(() => {
       this.nextRound();
-    }, 3000);
+    }, 2000);
   }
 
   shouldEndGame() {

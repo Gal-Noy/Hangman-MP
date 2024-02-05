@@ -4,8 +4,6 @@ import { clients } from "./socketListener.js";
 const chatsManager = (content, ws) => {
   const { action, data } = content;
 
-  console.log("INCOMING CHATS MANAGER", action, data, ws.session?.user.name);
-
   const handler = {
     send: sendMessage,
   }[action];

@@ -52,7 +52,6 @@ export class GameSocketManager {
       Object.values(this.playersIdToWs).forEach((ws) => {
         ws.once("message", function message(data, isBinary) {
           const message = isBinary ? data : JSON.parse(data);
-          console.log(message, ws.session.user.name);
           const { type, content } = message;
           if (type === "game" && content.action === "guessLetter") {
             resolve({ letter: content.data, playerId: ws.session.user._id });

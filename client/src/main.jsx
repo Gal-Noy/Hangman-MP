@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-// import "./scss/custom.scss";
-import "./styles/App.scss";
+import "./styles/App.css";
 import "./styles/pheasant-demure-buttons.css";
 import App from "./App.jsx";
 import store from "./store/store.jsx";

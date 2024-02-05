@@ -1,6 +1,5 @@
 import { v4 } from "uuid";
 import Game from "./Game.js";
-import { User } from "../models/userModel.js";
 
 /*
 player: {
@@ -139,55 +138,49 @@ export default class Room {
   }
 
   modifyRoom(newName, newNumberOfPlayers, newGameRules, newPassword, isPrivate) {
-    let response = "No changes made.";
-
     if (newName) {
       this.name = newName;
-      response = `Room name changed to ${newName}.`;
+      return `Room name changed to ${newName}.`;
     }
     if (newNumberOfPlayers) {
       this.numberOfPlayers = newNumberOfPlayers;
-      response = `Number of players changed to ${newNumberOfPlayers}.`;
+      return `Number of players changed to ${newNumberOfPlayers}.`;
     }
     if (newGameRules) {
       if (newGameRules.totalRounds) {
         this.gameRules.totalRounds = newGameRules.totalRounds;
-        response = `Total rounds changed to ${newGameRules.totalRounds}.`;
+        return `Total rounds changed to ${newGameRules.totalRounds}.`;
       }
       if (newGameRules.timerDuration) {
         this.gameRules.timerDuration = newGameRules.timerDuration;
-        response = `Timer duration changed to ${newGameRules.timerDuration}.`;
+        return `Timer duration changed to ${newGameRules.timerDuration}.`;
       }
       if (newGameRules.cooldownDuration) {
         this.gameRules.cooldownDuration = newGameRules.cooldownDuration;
-        response = `Cooldown duration changed to ${newGameRules.cooldownDuration}.`;
+        return `Cooldown duration changed to ${newGameRules.cooldownDuration}.`;
       }
     }
     if (this.password) {
       if (!isPrivate) {
         this.password = null;
-        response = `Room privacy changed to public.`;
+        return `Room privacy changed to public.`;
       } else if (newPassword !== this.password) {
         if (newPassword.length >= 4) {
           this.password = newPassword;
-          response = `Room password changed to '${newPassword}'.`;
+          return `Room password changed to '${newPassword}'.`;
         } else {
-          response = `Password must be at least 4 characters long.`;
+          return `Password must be at least 4 characters long.`;
         }
       }
     } else if (newPassword) {
       if (newPassword.length >= 4) {
         this.password = newPassword;
-        response = `Room privacy changed to private, with password '${newPassword}'.`;
+        return `Room privacy changed to private, with password '${newPassword}'.`;
       } else {
-        response = `Password must be at least 4 characters long.`;
+        return `Password must be at least 4 characters long.`;
       }
     }
-
-    if (response !== "No changes made.") {
-      this.unreadyAllPlayers();
-    }
-    return response;
+    return "No changes made.";
   }
 
   toggleReadyPlayer(player) {
@@ -214,10 +207,6 @@ export default class Room {
     if (this.players.every((player) => player.status === "ready")) {
       this.players.map((player) => (player.status = "playing"));
       this.status = "playing";
-
-      this.updateRoomInfoPlayers();
-
-      await User.updateMany({ _id: { $in: this.players.map((player) => player.user._id) } }, { inGame: true }).exec();
 
       this.game = new Game(this, this.gameRules);
       this.players.forEach((player) => {

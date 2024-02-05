@@ -1,8 +1,8 @@
 import React from "react";
-import UsersList from "../components/UsersList/UsersList";
-import RoomsList from "../components/Lobby/RoomsList";
+import UsersList from "../components/UsersList";
+import RoomsList from "../components/RoomsList";
 import Chat from "../components/Chat/Chat";
-import "../styles/Lobby.scss";
+import "../styles/Lobby.css";
 
 function Lobby({ lobbyState }) {
   return (

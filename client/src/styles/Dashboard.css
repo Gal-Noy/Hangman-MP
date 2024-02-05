@@ -58,6 +58,11 @@
 
 #inRoom-ready-button {
   width: 20vw;
+
+  &.ready {
+    color: white;
+    background-color: black;
+  }
 }
 
 #inRoom-ready-button:hover {

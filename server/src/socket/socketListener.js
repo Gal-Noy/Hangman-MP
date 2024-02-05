@@ -27,7 +27,6 @@ const handleSocket = (app) => {
         }[type];
 
         if (handler) {
-          console.log(`Received message from ${ws.session?.user?.name}:`, content.action);
           handler(content, ws);
         }
       } catch (e) {

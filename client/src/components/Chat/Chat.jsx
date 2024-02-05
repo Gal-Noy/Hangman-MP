@@ -3,7 +3,7 @@ import { useWebSocketContext } from "../../WebSocketContext";
 import ChatFeed from "./ChatFeed";
 import InputBar from "./InputBar";
 import { useSelector } from "react-redux";
-import "../../styles/Chat.scss";
+import "../../styles/Chat.css";
 
 function Chat() {
   const { roomData } = useSelector((state) => state.clientState);

@@ -112,12 +112,12 @@ function Login(props) {
               {isPending ? <div className="lds-dual-ring"></div> : "Login"}
             </button>
           </form>
-          <p className="auth-form-footer">
+          <span className="auth-form-footer">
             Don&apos;t have an account?&nbsp;
             <Link to="/register" onClick={handleSignupClick}>
               Register
             </Link>
-          </p>
+          </span>
         </div>
       )}
     </div>

@@ -1,9 +1,8 @@
-import React from "react";
 import { useState } from "react";
 import Login from "../components/AuthPage/Login";
 import Signup from "../components/AuthPage/Signup";
 import Logo from "../assets/logo.png";
-import "../styles/AuthPage.scss";
+import "../styles/AuthPage.css";
 
 function AuthPage(props) {
   const { formType, onLogin, onLogout } = props;

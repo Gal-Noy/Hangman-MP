@@ -5,7 +5,7 @@ import BackToRoomBtn from "./BackToRoomBtn";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { useWebSocketContext } from "../../WebSocketContext";
-import "../../styles/Dashboard.scss";
+import "../../styles/Dashboard.css";
 import Logo from "../../assets/logo.png";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import { setLobbyChat, setLobbyRoomsList } from "../../store/clientStateSlice";
@@ -27,6 +27,12 @@ function Dashboard({ onLogout }) {
       }
     }
   }, [lastJsonMessage]);
+
+  useEffect(() => {
+    if (clientState === "game") {
+      setGameOver(false);
+    }
+  }, []);
 
   const setLobbyState = (clickedState) => {
     clickedState === "roomsList" ? dispatch(setLobbyRoomsList()) : dispatch(setLobbyChat());

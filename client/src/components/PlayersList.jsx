@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
-import { b64toBlob } from "../../utils/utils";
-import defaultAvatar from "../../assets/default-avatar.jpg";
+import { b64toBlob } from "../utils/utils";
+import defaultAvatar from "../assets/default-avatar.jpg";
 
 function PlayersList(props) {
   const { players, isRoomAdmin, kickPlayer, modifyRoomData, setModifyRoomData } = props;
@@ -50,13 +50,15 @@ function PlayersList(props) {
   const EmptyPlayerBox = () => {
     return (
       <div className="player-box-container empty">
-        <span
-          className="material-symbols-outlined"
-          id="player-box-remove-button"
-          onClick={() => setModifyRoomData({ ...modifyRoomData, newNumberOfPlayers: numberOfPlayers - 1 })}
-        >
-          cancel
-        </span>
+        {isRoomAdmin && (
+          <span
+            className="material-symbols-outlined"
+            id="player-box-remove-button"
+            onClick={() => setModifyRoomData({ ...modifyRoomData, newNumberOfPlayers: numberOfPlayers - 1 })}
+          >
+            cancel
+          </span>
+        )}
       </div>
     );
   };
@@ -86,7 +88,7 @@ function PlayersList(props) {
           .map((_, index) => (
             <EmptyPlayerBox key={index} />
           ))}
-        {numberOfPlayers < 4 && <AddPlayerBtn />}
+        {numberOfPlayers < 4 && isRoomAdmin && <AddPlayerBtn />}
       </div>
     </div>
   );

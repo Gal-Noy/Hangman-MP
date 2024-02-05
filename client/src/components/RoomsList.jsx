@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useWebSocketContext } from "../../WebSocketContext";
-import { setKickedFromRoom, setRoom } from "../../store/clientStateSlice";
+import { useWebSocketContext } from "../WebSocketContext";
+import { setKickedFromRoom, setRoom } from "../store/clientStateSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { DropdownMenu } from "../../utils/utils";
-import "../../styles/RoomsList.scss";
+import DropdownMenu from "./DropdownMenu";
+import "../styles/RoomsList.css";
 
 function RoomsList() {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();

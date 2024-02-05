@@ -3,3 +3,5 @@
 
 /server/config/.env
 /server/node_modules
+
+/demo

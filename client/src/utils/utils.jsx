@@ -1,5 +1,3 @@
-import "../styles/Dropdown.scss";
-
 const sortUsersList = (users) =>
   users.sort((a, b) => {
     // Sort by active status
@@ -72,27 +70,4 @@ const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
   return blob;
 };
 
-const DropdownMenu = ({ contentId, values, stateValue, setFunction }) => (
-  <div className="dropdown">
-    <button className="dropdown-btn" onMouseEnter={() => document.getElementById(contentId)?.classList.remove("hide")}>
-      {stateValue}
-    </button>
-    <div className="dropdown-content" id={contentId}>
-      {values.map((value) => (
-        <a
-          key={value}
-          className="dropdown-item"
-          type="button"
-          onClick={() => {
-            setFunction(value);
-            document.getElementById(contentId)?.classList.add("hide");
-          }}
-        >
-          {value}
-        </a>
-      ))}
-    </div>
-  </div>
-);
-
-export { convertToBase64, b64toBlob, sortUsersList, sortPlayersList, DropdownMenu };
+export { convertToBase64, b64toBlob, sortUsersList, sortPlayersList };

@@ -4,7 +4,7 @@ import authController from "../controllers/authController.js";
 
 const authRouter = express.Router();
 
-// POST: create a new user
+// POST: Signup (create a new user)
 authRouter.post("/register", authController.registerUser);
 
 // POST: Login

@@ -64,7 +64,6 @@ function Signup({ setSubmitResponseMessage }) {
       )
       .then((res) => {
         if (res.status === 200 || res.status === 201) {
-          console.log(res.data);
           setSubmitResponseMessage({ success: true, msg: res.data.msg });
           setIsPending(false);
           setSignupSuccess(true);

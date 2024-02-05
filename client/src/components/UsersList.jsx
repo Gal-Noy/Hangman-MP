@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useWebSocketContext } from "../../WebSocketContext";
+import { useWebSocketContext } from "../WebSocketContext";
 import { useSelector } from "react-redux";
-import { sortUsersList } from "../../utils/utils";
-import defaultAvatar from "../../assets/default-avatar.jpg";
-import { b64toBlob } from "../../utils/utils";
-import "../../styles/UsersList.scss";
+import { sortUsersList } from "../utils/utils";
+import defaultAvatar from "../assets/default-avatar.jpg";
+import { b64toBlob } from "../utils/utils";
+import "../styles/UsersList.css";
 
 function UsersList() {
   const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import AuthPage from "./pages/AuthPage";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import useWebSocket from "react-use-websocket";
 import { WebSocketProvider } from "./WebSocketContext";
 import { useDispatch } from "react-redux";
@@ -34,9 +34,6 @@ function App() {
   useEffect(() => {
     if (lastJsonMessage) {
       const { type, content } = lastJsonMessage;
-      if (type !== "timerUpdate" && type !== "cooldownUpdate") { // TODO: remove this line
-        console.log(type, content);
-      }
       if (type === "reAuthResponse") {
         const { success, message } = content;
         if (!success) {

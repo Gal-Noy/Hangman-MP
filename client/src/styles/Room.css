@@ -82,7 +82,8 @@
   outline: none;
 }
 
-.room-info-room-privacy-container, .room-info-room-privacy {
+.room-info-room-privacy-container,
+.room-info-room-privacy {
   width: 100%;
   height: 100%;
   display: flex;
@@ -93,7 +94,6 @@
   gap: 3%;
   color: #666666;
 }
-
 
 .room-privacy-title {
   margin-left: 5%;
@@ -142,8 +142,6 @@
   color: rgb(190, 3, 0);
   background-color: #f8d7da;
   font-size: 0.8rem;
-  // padding: 2%;
-  
 }
 
 .room-info-game-rules-container {

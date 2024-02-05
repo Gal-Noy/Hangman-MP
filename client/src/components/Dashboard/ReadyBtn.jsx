@@ -19,7 +19,7 @@ function ReadyBtn() {
   return (
     <button
       type="button"
-      className="dashboard-menu-button pheasant-demure-button outline light hover blink icon"
+      className={"dashboard-menu-button pheasant-demure-button outline light hover blink icon" + (isPlayerReady ? " ready" : "")}
       id="inRoom-ready-button"
       onClick={toggleReady}
     >

@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
-import UsersList from "../components/UsersList/UsersList";
-import PlayersList from "../components/Room/PlayersList";
+import { useState, useEffect } from "react";
+import UsersList from "../components/UsersList";
+import PlayersList from "../components/PlayersList";
+import DropdownMenu from "../components/DropdownMenu";
 import { useWebSocketContext } from "../WebSocketContext";
 import { useDispatch, useSelector } from "react-redux";
 import { setRoom, setLobby, setKickedFromRoom } from "../store/clientStateSlice";
 import Chat from "../components/Chat/Chat";
-import "../styles/Room.scss";
-import { sortPlayersList, DropdownMenu } from "../utils/utils";
+import { sortPlayersList } from "../utils/utils";
+import "../styles/Room.css";
 
 function Room() {
-  const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
+  const dispatch = useDispatch();
   const { roomData } = useSelector((state) => state.clientState);
   const isRoomAdmin = JSON.parse(localStorage.getItem("user"))._id === roomData.admin.id;
-  const dispatch = useDispatch();
+  const { lastJsonMessage, sendJsonMessage } = useWebSocketContext();
   const [players, setPlayers] = useState([]);
   const [modifyRoomData, setModifyRoomData] = useState({
     newGameRules: {
@@ -45,7 +46,6 @@ function Room() {
         const players = [...content.data.room.players];
 
         const sortedPlayers = sortPlayersList(players);
-        console.log(sortedPlayers);
 
         setPlayers(sortedPlayers);
       } else if (type === "kickFromRoom") {
@@ -60,34 +60,6 @@ function Room() {
     }
   }, [lastJsonMessage]);
 
-  const modifyRoom = () => {
-    if (modifyRoomData.newPassword && modifyRoomData.newPassword.length < 4) {
-      setShowPasswordLengthError(true);
-      setTimeout(() => {
-        setShowPasswordLengthError(false);
-      }, 3000);
-    } else {
-      sendJsonMessage({
-        type: "rooms",
-        content: {
-          action: "modify",
-          data: modifyRoomData,
-        },
-      });
-      setModifyRoomData({
-        newGameRules: {
-          totalRounds: null,
-          timerDuration: null,
-          cooldownDuration: null,
-        },
-        newName: "",
-        newNumberOfPlayers: null,
-        newPassword: "",
-        isPrivate: null,
-      });
-    }
-  };
-
   useEffect(() => {
     if (
       modifyRoomData.newGameRules.totalRounds ||
@@ -98,6 +70,39 @@ function Room() {
       modifyRoom();
     }
   }, [modifyRoomData.newGameRules, modifyRoomData.newNumberOfPlayers]);
+
+  const clearModifyRoomData = () => {
+    setModifyRoomData({
+      newGameRules: {
+        totalRounds: null,
+        timerDuration: null,
+        cooldownDuration: null,
+      },
+      newName: "",
+      newNumberOfPlayers: null,
+      newPassword: "",
+      isPrivate: null,
+    });
+  };
+
+  const modifyRoom = () => {
+    if (modifyRoomData.newPassword && modifyRoomData.newPassword.length < 4) {
+      setShowPasswordLengthError(true);
+      setTimeout(() => {
+        setShowPasswordLengthError(false);
+      }, 3000);
+    } else {
+      console.log(modifyRoomData);
+      sendJsonMessage({
+        type: "rooms",
+        content: {
+          action: "modify",
+          data: modifyRoomData,
+        },
+      });
+    }
+    clearModifyRoomData();
+  };
 
   const kickPlayer = (playerId) => {
     sendJsonMessage({
@@ -110,6 +115,7 @@ function Room() {
       },
     });
   };
+  
   return (
     <div className="room-container">
       <div className="room-content">
