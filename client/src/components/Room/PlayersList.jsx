@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
-import { b64toBlob } from "../utils/utils";
-import defaultAvatar from "../assets/default-avatar.jpg";
+import { b64toBlob } from "../../utils/utils";
+import defaultAvatar from "../../assets/default-avatar.jpg";
 
 function PlayersList(props) {
   const { players, isRoomAdmin, kickPlayer, modifyRoomData, setModifyRoomData } = props;
