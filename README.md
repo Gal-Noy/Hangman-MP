@@ -39,7 +39,9 @@ Players work together to guess hidden words based on definitions within a time l
 ![game_demo](https://github.com/Gal-Noy/Hangman-MP/assets/109943831/24a8042d-9c46-470a-bab3-bfb2bd7e5afc)
 
 ### Admin Controls
-Room administrators have the power to kick players, invite others, and maintain order.
+Room administrators have the power to change room settings, kick players, invite others, and maintain order.
 
-![room_demo](https://github.com/Gal-Noy/Hangman-MP/assets/109943831/e54bafe2-7fa1-4e9e-bf3f-a2140a84cb93)
+![room_demo](https://github.com/Gal-Noy/Hangman-MP/assets/109943831/faa3c5e7-a547-4e64-87eb-787f1b4f5e4f)
+
+
 
