@@ -52,24 +52,18 @@ function App() {
       <Router basename={"/Hangman-MP/"}>
         <Routes>
           <Route
-            path="/Hangman-MP/"
-            element={
-              isLoggedIn ? (
-                <HomePage onLogout={() => setIsLoggedIn(false)} />
-              ) : (
-                <Navigate to="/Hangman-MP/login" replace />
-              )
-            }
+            path="/"
+            element={isLoggedIn ? <HomePage onLogout={() => setIsLoggedIn(false)} /> : <Navigate to="/login" replace />}
           />
           <Route
-            path="/Hangman-MP/login"
+            path="/login"
             element={
               <AuthPage formType={"login"} onLogin={() => setIsLoggedIn(true)} onLogout={() => setIsLoggedIn(false)} />
             }
           />
           <Route
-            path="/Hangman-MP/register"
-            element={isLoggedIn ? <Navigate to="/Hangman-MP/login" replace /> : <AuthPage formType={"signup"} />}
+            path="/register"
+            element={isLoggedIn ? <Navigate to="/login" replace /> : <AuthPage formType={"signup"} />}
           />
         </Routes>
       </Router>

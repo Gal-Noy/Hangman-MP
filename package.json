@@ -1,7 +1,7 @@
 {
   "name": "client",
   "private": true,
-  "homepage": "https://Gal-Noy.github.io/Hangman-MP/",
+  "homepage": "https://Gal-Noy.github.io/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
