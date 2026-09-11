@@ -1,6 +1,6 @@
 /client/node_modules
 
-/server/config/.env
+/server/.env
 /server/node_modules
 
 /demo
